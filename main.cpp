@@ -3,8 +3,32 @@
 #include<iostream>
 #include<string>
 #include<ctype.h>
+#include<vector>
 
 using namespace std;
+
+//CONSTANTS
+const int TypingSpeed = 25;
+const int LineCharacterLimit = 100;
+const int DialougeXOffset = 100;
+const int FirstLineY = 150;
+const int SecondLineY = 0;
+const int ThirdLineY = 0;
+
+enum LineNumber {FirstLine , SecondLine , ThirdLine};
+
+LineNumber currentLineNumber = FirstLine;
+
+vector<string> Scene1 = { "Hii!! ",
+                          "You Exicted for the trip that we are gonna have this sunday at goa coming soon also , did u bring your essentials , we dont anyone having any issues??? ",
+                               "You bet I am ",
+                           "This is gonna be one of the best trips of our lives ",
+                            "Lets just hope nothing bad happens for these few days ",
+                            "AAAANNND you've jixed it .......Great " };
+
+int currentDialouge = 0;
+
+
 
 
 class QueueText {
@@ -100,12 +124,31 @@ void drawText(char* string, int x, int y)
     }
 }
 
-void AnimateText()
+
+
+
+void AnimateText(string dialouge)
 {
     queue = createQueue(1000);
-    string text = "A wiki  is a hypertext publication collaboratively edited and managed by its own audience directly. ";
+    string text;
+    bool Overflow = false;
     char bufferText[400] = "";
     int i = 0;
+
+   
+    if (dialouge.length() > 100)
+    {
+        Overflow = true;
+        text = dialouge.substr(0, 100);
+        dialouge.erase(0, 100); //erases first 100 characters
+    }
+    else
+    {
+        text = dialouge;
+    }
+   
+
+   // text = dialouge;
 
     glClear(GL_COLOR_BUFFER_BIT);
     glEnd();
@@ -116,24 +159,65 @@ void AnimateText()
         Enqueue(queue, x);
     }
 
-    cout << Dequeue(queue);
+    //cout << Dequeue(queue);
 
-    while(!isEmpty(queue) && State == 1)
+    bool moreDialouge = true;
+
+
+    while(!isEmpty(queue))
     {
-        glClear(GL_COLOR_BUFFER_BIT);
-        bufferText[i] = Dequeue(queue);
-        drawText(bufferText, 10, 80);
-        Sleep(25);
-        i++;
-        glEnd();
-        glFlush();
+            glClear(GL_COLOR_BUFFER_BIT);
+            bufferText[i] = Dequeue(queue);
+            drawText(bufferText, DialougeXOffset, FirstLineY);
+            Sleep(TypingSpeed);
+            i++;
+            glEnd();
+            glFlush();
+    }
+
+
+    if (Overflow)
+    {
+        char FirstLine[101];
+        char bufferSecondLine[400] = "";
+        i = 0;
+
+        for (int i = 0; i < 100 ; i ++)
+        {
+            FirstLine[i] = text[i];
+        }
+
+        text = dialouge;
+        cout << text;
+
+        for (auto x : text)
+        {
+            Enqueue(queue, x);
+        }
+
+        while (!isEmpty(queue))
+        {
+            
+            glClear(GL_COLOR_BUFFER_BIT);
+            bufferSecondLine[i] = Dequeue(queue);
+            drawText(FirstLine, DialougeXOffset, FirstLineY);
+            drawText(bufferSecondLine, 100, 100);
+            Sleep(TypingSpeed);
+            i++;
+            glEnd();
+            glFlush();
+            
+        }
     }
 }
 
-void CallMouseButton(int button, int state, int x, int y)
+
+void AnimateNextDialouge(int button, int state, int x, int y)
 {
-    cout << button << state;
-    State = 0;
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+    {
+        currentDialouge++;
+    }
    
 }
 
@@ -143,19 +227,23 @@ void init()
     gluOrtho2D(0.0, 1280.0, 0.0, 720.0);
 }
 
-void display()
+void display() //display function is called repeatedly by the main function so keep all rendering functions here
 {
-    AnimateText();
+    glClear(GL_COLOR_BUFFER_BIT);
+    AnimateText(Scene1[currentDialouge]);
+    glEnd();
+    glFlush();
 }
 
 int main(int argc, char** argv)
 {
+   
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowSize(1280, 720);
     glutInitWindowPosition(300, 200);
-    glutCreateWindow("Bresenham's Lune Drawing");
-    glutMouseFunc(CallMouseButton);
+    glutCreateWindow("MurderMystery");
+    glutMouseFunc(AnimateNextDialouge);
     init();
     glutDisplayFunc(display);
     glutMainLoop();
