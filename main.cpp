@@ -1,10 +1,13 @@
 #include<GL/glut.h>
 #include<stdio.h>
+#include<stdlib.h>
 #include<iostream>
 #include<string>
 #include<ctype.h>
 #include<vector>
 #include<math.h>
+#define STB_IMAGE_IMPLEMENTATION    
+#include "stb_image.h"
 
 using namespace std;
 
@@ -19,6 +22,8 @@ const int SpeakerXPos = 200;
 const int SpeakerYPos = 195;
 
 string PlayerName;
+GLuint characterTexture;
+GLuint characterTexture2;
 
 //States
 enum Scenes {START , DESCRIPTION ,SCENE1 ,SCENE2};
@@ -210,6 +215,51 @@ void RecoverFrame()
     DrawDialougeBox();
 }
 
+
+
+void DrawCharacter()
+{
+    glColor3f(0, 0, 0);
+    //Loading texture
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glGenTextures(1, &characterTexture);
+    stbi_set_flip_vertically_on_load(true);
+    int width, height, nrChannels;
+    unsigned char* character = stbi_load("character.png", &width, &height, &nrChannels, 0);
+    glBindTexture(GL_TEXTURE_2D, characterTexture);
+
+    if (character != NULL)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, character);
+        cout << "Character loaded";
+    }
+    else
+    {
+        cout << "Failed to load character" << endl;
+    }
+    stbi_image_free(character);
+
+    //displaying
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    glEnable(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, characterTexture);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);   glVertex2f(500, 300);
+    glTexCoord2f(0.0f, 1.0f);   glVertex2f(500, 700);
+    glTexCoord2f(1.0f, 1.0f);   glVertex2f(700, 700);
+    glTexCoord2f(1.0f, 0.0f);   glVertex2f(700, 300);
+    glEnd();
+    //glDeleteTextures(1, &characterTexture);
+}
+
+
 bool CheckOverFlow(string &dialouge , string &text)
 {
     if (dialouge.length() > 120)
@@ -251,11 +301,9 @@ void AnimateText(string dialouge)
     string text;
     bool OverflowFirstLine = false;
     bool OverflowSecondLine = false;
-    char bufferText[400] = "";
-    char FirstLine[201];
-    char bufferSecondLine[400] = "";
-    char SecondLine[201];
-    char bufferThirdLine[400] = "";
+    char FirstLine[201] = "";
+    char SecondLine[201] = "";
+    char ThirdLine[201] = "";
     int i = 0;
 
     if (CheckOverFlow(dialouge, text))
@@ -268,8 +316,8 @@ void AnimateText(string dialouge)
     while(!isEmpty(queue))
     {
             //glClear(GL_COLOR_BUFFER_BIT);
-            bufferText[i] = Dequeue(queue);
-            DrawDialouge(bufferText, DialougeXOffset, FirstLineY ,1);
+            FirstLine[i] = Dequeue(queue);
+            DrawDialouge(FirstLine, DialougeXOffset, FirstLineY ,1);
             Sleep(TypingSpeed);
             i++;
             glEnd();
@@ -282,13 +330,9 @@ void AnimateText(string dialouge)
         ClearFrame();
         RecoverFrame();
         RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
-
+        DrawCharacter();
+       
         i = 0;
- 
-        for (int i = 0; i <= text.length() ; i ++)
-        {
-            FirstLine[i] = text[i];
-        }
       
         if (CheckOverFlow(dialouge, text))
         {
@@ -303,9 +347,9 @@ void AnimateText(string dialouge)
 
         while (!isEmpty(queue))
         {
-            bufferSecondLine[j] = Dequeue(queue);
+            SecondLine[j] = Dequeue(queue);
             DrawDialouge(FirstLine, DialougeXOffset, FirstLineY, 1);
-            DrawDialouge(bufferSecondLine, DialougeXOffset, SecondLineY, 1);
+            DrawDialouge(SecondLine, DialougeXOffset, SecondLineY, 1);
             Sleep(TypingSpeed);
             j++;
             glEnd();
@@ -318,14 +362,10 @@ void AnimateText(string dialouge)
             //clear old frame
             ClearFrame();
             RecoverFrame();
+            DrawCharacter();
             RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
 
             i = 0;
-
-            for (int i = 0; i <= text.length(); i++)
-            {
-                SecondLine[i] = text[i];
-            }
 
             text = dialouge;
 
@@ -338,10 +378,10 @@ void AnimateText(string dialouge)
             while (!isEmpty(queue))
             {
                 //glClear(GL_COLOR_BUFFER_BIT);
-                bufferThirdLine[j] = Dequeue(queue);
+                ThirdLine[j] = Dequeue(queue);
                 DrawDialouge(FirstLine, DialougeXOffset, FirstLineY, 1);
                 DrawDialouge(SecondLine, DialougeXOffset, SecondLineY, 1);
-                DrawDialouge(bufferThirdLine, DialougeXOffset, ThirdLineY, 1);
+                DrawDialouge(ThirdLine, DialougeXOffset, ThirdLineY, 1);
                 Sleep(TypingSpeed);
                 j++;
                 glEnd();
@@ -423,6 +463,15 @@ void DrawHouseAndWindow()
 
         glEnd();
     }
+
+    //Door Knob
+    glColor3f(0, 0, 0);
+    glPointSize(5.0);
+    glBegin(GL_POINTS);
+    glVertex2f(360, 250);
+    glEnd();
+    
+
 }
 
 
@@ -601,6 +650,7 @@ void AnimateDescription()
 
 }
 
+
 void LoadMainScreen()
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -611,6 +661,8 @@ void LoadMainScreen()
     glEnd();
     glFlush();
 }
+
+
 
 void init()
 {
@@ -635,7 +687,10 @@ void display() //display function is called repeatedly by the main function so k
    case SCENE1:
        RecoverFrame();
        RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
+       DrawCharacter();
        AnimateText(Scene1DialougesWithSpeakers[currentDialouge].second);
+      
+      
        break;
 
    default:
