@@ -28,7 +28,7 @@ GLuint characterTexture2;
 //States
 enum Scenes {START , DESCRIPTION ,SCENE1 ,SCENE2};
 
-Scenes Scene = START;
+Scenes Scene = SCENE1;
 vector<string> Description; 
 vector<pair<string, string>> Scene1DialougesWithSpeakers;
 
@@ -203,6 +203,235 @@ void DrawDialouge(char* string, int x, int y , int type)
 
 //----------------RENDERING TEXT ON SCREEN END--------------//
 
+void DrawScene1BG()
+{
+    //LeftWall - Upper
+    glColor3f(1, 0.99, 0.81);
+    glBegin(GL_POLYGON);
+    glVertex2f(0, 240);
+    glVertex2f(187, 419);
+    glVertex2f(187, 588);
+    glVertex2f(0, 720);
+    glEnd();
+
+
+
+    //RightWall - Upper
+    glBegin(GL_POLYGON);
+    glVertex2f(1280, 240);
+    glVertex2f(1093, 419);
+    glVertex2f(1093, 588);
+    glVertex2f(1280, 720);
+    glEnd();
+
+
+
+    //UpperWall
+    glBegin(GL_POLYGON);
+    glVertex2f(187, 588);
+    glVertex2f(0, 720);
+    glVertex2f(1280, 720);
+    glVertex2f(1093, 588);
+    glEnd();
+
+    //FrontWall - Upper
+    glBegin(GL_POLYGON);
+    glVertex2f(187, 419);
+    glVertex2f(187, 588);
+    glVertex2f(1093, 588);
+    glVertex2f(1093, 419);
+    glEnd();
+
+    //LeftWall - Lower
+    glColor3f(0.58, 0.43, 0.20);
+    glBegin(GL_POLYGON);
+    glVertex2f(0, 0);
+    glVertex2f(187, 245);
+    glVertex2f(187, 420);
+    glVertex2f(0, 240);
+    glEnd();
+
+    //RightWall - Lower
+    glBegin(GL_POLYGON);
+    glVertex2f(1280, 0);
+    glVertex2f(1093, 245);
+    glVertex2f(1093, 419);
+    glVertex2f(1280, 245);
+    glEnd();
+
+    //FrontWall - lower
+    glBegin(GL_POLYGON);
+    glVertex2f(187, 245);
+    glVertex2f(187, 419);
+    glVertex2f(1093, 419);
+    glVertex2f(1093, 245);
+    glEnd();
+
+    //Ground
+    glBegin(GL_POLYGON);
+    glVertex2f(0, 0);
+    glVertex2f(187, 245);
+    glVertex2f(1093, 245);
+    glVertex2f(1280, 0);
+    glEnd();
+
+
+    //LeftWallOutline 
+    glColor3f(0, 0, 0);
+    glLineWidth(2);
+    glBegin(GL_LINE_STRIP);
+    glVertex2f(0, 0);
+    glVertex2f(187, 250);
+    glVertex2f(187, 588);
+    glVertex2f(0, 720);
+    glEnd();
+
+    //RightWallOutline
+    glBegin(GL_LINE_STRIP);
+    glVertex2f(1280, 0);
+    glVertex2f(1093, 250);
+    glVertex2f(1093, 588);
+    glVertex2f(1280, 720);
+    glEnd();
+
+    //UpperWallOutLine
+    glBegin(GL_LINES);
+    glVertex2f(187, 588);
+    glVertex2f(1093, 588);
+    glEnd();
+
+    //LowerWallOutLine
+    glBegin(GL_LINES);
+    glVertex2f(187, 250);
+    glVertex2f(1093, 250);
+    glEnd();
+
+    //SplitLine
+    glBegin(GL_LINE_STRIP);
+    glVertex2f(0, 241);
+    glVertex2f(187, 419);
+    glVertex2f(1093, 419);
+    glVertex2f(1280, 243);
+    glEnd();
+
+    //DrawWindow
+
+    //Window Outline
+    glLineWidth(4);
+    glBegin(GL_LINE_LOOP);
+    glColor3f(0, 0, 0);
+    glVertex2f(50, 330);
+    glVertex2f(50, 430);
+    glVertex2f(110, 480);
+    glVertex2f(110, 380);
+    glEnd();
+
+    //Window Body
+    glBegin(GL_POLYGON);
+    glColor3f(1, 1, 1);
+    glVertex2f(50, 330);
+    glVertex2f(50, 430);
+    glVertex2f(110, 480);
+    glVertex2f(110, 380);
+    glEnd();
+
+    //WindowLine - Vertical
+    glLineWidth(2);
+    glColor3f(0, 0, 0);
+    glBegin(GL_LINES);
+    glVertex2f(80, 355);
+    glVertex2f(80, 455);
+    glEnd();
+
+    //WindowLine - Horizontal
+    glBegin(GL_LINES);
+    glVertex2f(50, 380);
+    glVertex2f(110, 430);
+    glEnd();
+
+    //DrawClock
+    //Outline
+    glBegin(GL_POLYGON);
+    int x = 700, y = 520, r = 50;
+
+    glColor3f(0, 0, 0);
+
+    for (int i = 0; i < 360; i++)
+    {
+        float theta = i * 3.14 / 180;
+
+        glVertex2f(x + r * cos(theta), y + r * sin(theta));
+    }
+
+    glEnd();
+
+    //Face outline
+    glBegin(GL_POLYGON);
+    x = 700, y = 520, r = 45;
+
+    glColor3f(1, 1, 1);
+
+    for (int i = 0; i < 360; i++)
+    {
+        float theta = i * 3.14 / 180;
+
+        glVertex2f(x + r * cos(theta), y + r * sin(theta));
+    }
+
+    glEnd();
+
+    //Clock Marks
+    //LeftMark
+    glColor3f(0, 0, 0);
+    glBegin(GL_LINES);
+    glVertex2f(655, 520);
+    glVertex2f(675, 520);
+    glEnd();
+
+    //RightMark
+    glColor3f(0, 0, 0);
+    glBegin(GL_LINES);
+    glVertex2f(745, 520);
+    glVertex2f(725, 520);
+    glEnd();
+
+    //TopMark
+    glColor3f(0, 0, 0);
+    glBegin(GL_LINES);
+    glVertex2f(700, 565);
+    glVertex2f(700, 545);
+    glEnd();
+
+    //Bottom Mark
+    glColor3f(0, 0, 0);
+    glBegin(GL_LINES);
+    glVertex2f(700, 475);
+    glVertex2f(700, 495);
+    glEnd();
+
+    //ClockHourhand
+    glColor3f(0, 0, 0);
+    glBegin(GL_LINES);
+    glVertex2f(700, 520);
+    glVertex2f(680, 530);
+    glEnd();
+
+    //ClockMinutehand
+    glColor3f(0, 0, 0);
+    glBegin(GL_LINES);
+    glVertex2f(700, 520);
+    glVertex2f(720, 550);
+    glEnd();
+
+    //Clock Center
+    glPointSize(4);
+    glColor3f(0, 0, 0);
+    glBegin(GL_POINTS);
+    glVertex2f(699, 521);
+    glEnd();
+
+}
+
 void ClearFrame()
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -212,14 +441,16 @@ void ClearFrame()
 
 void RecoverFrame()
 {
+    DrawScene1BG();
     DrawDialougeBox();
+    
 }
 
 
 
 void DrawCharacter()
 {
-    glColor3f(0, 0, 0);
+    glColor3f(0, 0, 1);
     //Loading texture
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -664,6 +895,7 @@ void LoadMainScreen()
 
 
 
+
 void init()
 {
     glClearColor(0, 0, 0, 1);
@@ -685,10 +917,11 @@ void display() //display function is called repeatedly by the main function so k
        break;
 
    case SCENE1:
-       RecoverFrame();
-       RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
-       DrawCharacter();
-       AnimateText(Scene1DialougesWithSpeakers[currentDialouge].second);
+       DrawScene1BG();
+       //RecoverFrame();
+       //RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
+       //DrawCharacter();
+       //AnimateText(Scene1DialougesWithSpeakers[currentDialouge].second);
       
       
        break;
@@ -722,6 +955,7 @@ void InitializeVariables()
     {"Ashwin Sir " ,  "Completed Record and manual need to submit during internal time. "}
     };
 }
+
 
 int main(int argc, char** argv)
 {
