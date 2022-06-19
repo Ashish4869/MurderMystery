@@ -28,14 +28,14 @@ GLuint characterTexture2;
 bool NewScene = true;
 
 //States
-enum Scenes {START , DESCRIPTION ,SCENE1 ,SCENE2};
+enum Scenes { START, DESCRIPTION, SCENE1, SCENE2, TOBECONTINUED };
 
 Scenes Scene = START;
-vector<string> Description; 
+vector<string> Description;
 vector<pair<string, string>> Scene1DialougesWithSpeakers;
 
-vector<vector<pair<int, int>>> HouseAndWindows = 
-{ 
+vector<vector<pair<int, int>>> HouseAndWindows =
+{
     { {100,200},{100,500},{200,500}, {200,200} }, //Left Pillar
     { {500,200},{500,500},{600,500}, {600,200} }, //Right Pillar
     { {200,180},{200,450},{500,450}, {500,180} }, //Middle House
@@ -188,13 +188,13 @@ void DrawDialougeBox()
 
 //----------------RENDERING TEXT ON SCREEN--------------//
 
-void DrawDialouge(char* string, int x, int y , int type)
+void DrawDialouge(char* string, int x, int y, int type)
 {
     if (type == 1)
     {
         glColor3f(1, 1, 1);
     }
-    else if(type == 0)
+    else if (type == 0)
     {
         glColor3f(0, 0, 0);
     }
@@ -500,7 +500,7 @@ void DrawScene1BG()
     //------CUPBOARD-------
 
     //CupBoardBody
-    glColor3f(1, 0, 0); 
+    glColor3f(1, 0, 0);
     glBegin(GL_POLYGON);
     glVertex2f(900, 150);
     glVertex2f(900, 430);
@@ -511,7 +511,7 @@ void DrawScene1BG()
     //cupboardlegs
 
     //cupboard left leg
-    glColor3f(0, 0, 0); 
+    glColor3f(0, 0, 0);
     glBegin(GL_POLYGON);
     glVertex2f(900, 150);
     glVertex2f(900, 100);
@@ -520,7 +520,7 @@ void DrawScene1BG()
     glEnd();
 
     //cupboard right leg
-    glColor3f(0, 0, 0); 
+    glColor3f(0, 0, 0);
     glBegin(GL_POLYGON);
     glVertex2f(1074, 150);
     glVertex2f(1074, 100);
@@ -586,30 +586,29 @@ void DrawCharacter(string Speaker)
 {
     string characterSprite;
 
-    char characterS[100]  = "";
+    char characterS[100] = "";
     vector<pair<int, int>> position;
 
-    if (Speaker == "Dan ")
+    if (Speaker == "Chris")
     {
-        characterSprite = "character.png";
+        characterSprite = "Chris.png";
 
         for (int i = 0; i < characterSprite.length(); i++)
         {
             characterS[i] = characterSprite[i];
         }
 
-        cout << characterS;
         position =
         {
-            {500, 172},
-            {500, 410},
+            {450, 172},
+            {450, 410},
             {700, 410},
             {700, 172}
         };
     }
-    else if(Speaker == "John ")
+    else if (Speaker == "Andy")
     {
-        characterSprite = "character2.png";
+        characterSprite = "Andy.png";
 
         for (int i = 0; i < characterSprite.length(); i++)
         {
@@ -624,10 +623,94 @@ void DrawCharacter(string Speaker)
             {900, 172}
         };
     }
-    else
+    else  if (Speaker == "You")  //showing all characters
     {
+        //later i have to clean this saav
+
+        glColor3f(0.58, 0.43, 0.20); //woodColor
+         //Loading texture
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        glGenTextures(1, &characterTexture);
+        stbi_set_flip_vertically_on_load(true);
+        int width, height, nrChannels;
+        unsigned char* character = stbi_load("Chris.png", &width, &height, &nrChannels, 0);
+        glBindTexture(GL_TEXTURE_2D, characterTexture);
+
+        if (character != NULL)
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, character);
+            cout << "Character loaded" << endl;
+        }
+        else
+        {
+            cout << "Failed to load character" << endl;
+        }
+        stbi_image_free(character);
+
+        //displaying
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        glEnable(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, characterTexture);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);   glVertex2f(450, 172);
+        glTexCoord2f(0.0f, 1.0f);   glVertex2f(450, 410);
+        glTexCoord2f(1.0f, 1.0f);   glVertex2f(700, 410);
+        glTexCoord2f(1.0f, 0.0f);   glVertex2f(700, 172);
+        glEnd();
+
+
+        glColor3f(0.58, 0.43, 0.20); //woodColor
+   //Loading texture
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        glGenTextures(1, &characterTexture);
+        stbi_set_flip_vertically_on_load(true);
+        width, height, nrChannels;
+        unsigned char* character2 = stbi_load("Andy.png", &width, &height, &nrChannels, 0);
+        glBindTexture(GL_TEXTURE_2D, characterTexture);
+
+        if (character2 != NULL)
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, character2);
+            cout << "Character loaded" << endl;
+        }
+        else
+        {
+            cout << "Failed to load character" << endl;
+        }
+        stbi_image_free(character2);
+
+        //displaying
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        glEnable(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, characterTexture);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);   glVertex2f(700, 172);
+        glTexCoord2f(0.0f, 1.0f);   glVertex2f(700, 418);
+        glTexCoord2f(1.0f, 1.0f);   glVertex2f(900, 418);
+        glTexCoord2f(1.0f, 0.0f);   glVertex2f(900, 172);
+        glEnd();
+        glDeleteTextures(1, &characterTexture);
         return;
     }
+    else
+    {
+    return;
+ }
+    
 
     glColor3f(0.58, 0.43, 0.20); //woodColor
     //Loading texture
@@ -642,7 +725,7 @@ void DrawCharacter(string Speaker)
     if (character != NULL)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, character);
-        cout << "Character loaded";
+        cout << "Character loaded"<<endl;
     }
     else
     {
@@ -659,21 +742,19 @@ void DrawCharacter(string Speaker)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, characterTexture);
-    
+
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);   glVertex2f(position[0].first, position[0].second);
     glTexCoord2f(0.0f, 1.0f);   glVertex2f(position[1].first, position[1].second);
     glTexCoord2f(1.0f, 1.0f);   glVertex2f(position[2].first, position[2].second);
     glTexCoord2f(1.0f, 0.0f);   glVertex2f(position[3].first, position[3].second);
     glEnd();
-  
- 
 
     glDeleteTextures(1, &characterTexture);
 }
 
 
-bool CheckOverFlow(string &dialouge , string &text)
+bool CheckOverFlow(string& dialouge, string& text)
 {
     if (dialouge.length() > 120)
     {
@@ -710,7 +791,7 @@ void RenderSpeaker(string speaker)
 
 void AnimateText(string dialouge)
 {
-    char name[400] = "";  
+    char name[400] = "";
     string text;
     bool OverflowFirstLine = false;
     bool OverflowSecondLine = false;
@@ -721,31 +802,31 @@ void AnimateText(string dialouge)
 
     if (CheckOverFlow(dialouge, text))
     {
-        OverflowFirstLine =true;
+        OverflowFirstLine = true;
     }
 
     FillQueue(text);
 
-    while(!isEmpty(queue))
+    while (!isEmpty(queue))
     {
-            //glClear(GL_COLOR_BUFFER_BIT);
-            FirstLine[i] = Dequeue(queue);
-            DrawDialouge(FirstLine, DialougeXOffset, FirstLineY ,1);
-            Sleep(TypingSpeed);
-            i++;
-            glEnd();
-            glFlush();
+        //glClear(GL_COLOR_BUFFER_BIT);
+        FirstLine[i] = Dequeue(queue);
+        DrawDialouge(FirstLine, DialougeXOffset, FirstLineY, 1);
+        Sleep(TypingSpeed);
+        i++;
+        glEnd();
+        glFlush();
     }
 
-    if(OverflowFirstLine)
+    if (OverflowFirstLine)
     {
         i = 0;
-      
+
         if (CheckOverFlow(dialouge, text))
         {
             OverflowSecondLine = true;
         }
-       
+
         FillQueue(text);
 
         int j = 0;
@@ -759,7 +840,7 @@ void AnimateText(string dialouge)
             j++;
             glEnd();
             glFlush();
-            
+
         }
 
         if (OverflowSecondLine)
@@ -793,19 +874,30 @@ void AnimateNextDialouge(int button, int state, int x, int y)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
     {
-        if (Scene == START)
+        switch (Scene)
         {
-            queue = createQueue(1000); //create a fresh queue
+        case START:
             Scene = DESCRIPTION;
-        }
-        else if (Scene == DESCRIPTION)
-        {
-            queue = createQueue(1000);//create a fresh queue
+            break;
+
+        case DESCRIPTION:
             Scene = SCENE1;
-        }
-        else
-        {
-            currentDialouge++;
+            break;
+
+        case SCENE1:
+            if (currentDialouge == Scene1DialougesWithSpeakers.size() - 1)
+            {
+                currentDialouge = 0;
+                Scene = TOBECONTINUED;
+                //NewScene = true;
+            }
+            else
+            {
+                currentDialouge++;
+            }
+
+        default:
+            break;
         }
     }
 }
@@ -827,7 +919,6 @@ void  DrawStartBox()
 
 }
 
-
 void DrawHouseAndWindow()
 {
     for (int i = 0; i < HouseAndWindows.size(); i++)
@@ -838,7 +929,7 @@ void DrawHouseAndWindow()
         }
         else
         {
-            glColor3f(1,1,1);
+            glColor3f(1, 1, 1);
         }
 
         if (i < 12)
@@ -851,7 +942,7 @@ void DrawHouseAndWindow()
             glLineWidth(3);
             glBegin(GL_LINES);
         }
-        
+
 
         for (int j = 0; j < HouseAndWindows[i].size(); j++)
         {
@@ -867,7 +958,7 @@ void DrawHouseAndWindow()
     glBegin(GL_POINTS);
     glVertex2f(360, 250);
     glEnd();
-    
+
 
 }
 
@@ -886,17 +977,17 @@ void  DrawMoon()
     glBegin(GL_POLYGON);
     int x = 1100, y = 550, r = 100;
 
-    glColor3f(0,0.22,0.39);
+    glColor3f(0, 0.22, 0.39);
 
     for (int i = 0; i < 360; i++)
     {
         float theta = i * 3.14 / 180;
 
-        glVertex2f(x + r * cos(theta) , y + r * sin(theta));
+        glVertex2f(x + r * cos(theta), y + r * sin(theta));
     }
 
     glEnd();
-    
+
     glColor3f(1, 0, 0);
     DrawDialouge(Title1, 1040, 560, 2);
     DrawDialouge(Title2, 1080, 535, 2);
@@ -928,15 +1019,87 @@ void DrawDescriptionText(char* string, int x, int y)
     }
 }
 
+//------------------THROW AWAY CODE----------------
+void DrawTOBECONTINUED()
+{
+    string tobeContinued = "TO BE CONTINUED...... ";
+    string in = "IN ";
+    string Phase2 = "PHASE 2 ";
+    string saav = "Yenchina Saav Ya";
+
+    char buffer1[200] = "";
+    char buffer2[200] = "";
+    char buffer3[200] = "";
+    char buffer4[200] = "";
+
+    
+    int i = 0;
+
+    FillQueue(tobeContinued);
+
+    while (!isEmpty(queue))
+    {
+        buffer1[i] = Dequeue(queue);
+        DrawDescriptionText(buffer1, 400, 400);
+        Sleep(100);
+        i++;
+        glEnd();
+        glFlush();
+    }
+
+    for (int i = 0; i < tobeContinued.length(); i++)
+    {
+        buffer1[i] = tobeContinued[i];
+    }
+
+    for (int i = 0; i < in.length(); i++)
+    {
+        buffer2[i] = in[i];
+    }
+
+    for (int i = 0; i < Phase2.length(); i++)
+    {
+        buffer3[i] = Phase2[i];
+    }
+
+    for (int i = 0; i < saav.length(); i++)
+    {
+        buffer4[i] = saav[i];
+    }
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    DrawDescriptionText(buffer1, 400, 400);
+    glEnd();
+    glFlush();
+
+    Sleep(500);
+
+    DrawDescriptionText(buffer2, 500, 350);
+    glEnd();
+    glFlush();
+    Sleep(500);
+
+    DrawDescriptionText(buffer3, 480, 300);
+
+    glEnd();
+    glFlush();
+
+    Sleep(1000);
+    DrawDescriptionText(buffer4, 1000, 20);
+
+    glEnd();
+    glFlush();
+
+}
+
 //I just hardCoded this crap , i will try to find a better solution
 void AnimateDescription()
-{  
+{
     string Line1 = Description[0];
     string Line2 = Description[1];
     string Line3 = Description[2];
     string Line4 = Description[3];
     string Line5 = Description[4];
-    string Line6 = Description[5];
 
     char line1Buffer[300] = "";
     char line2Buffer[300] = "";
@@ -1026,25 +1189,6 @@ void AnimateDescription()
         glFlush();
     }
 
-    FillQueue(Line6);
-    i = 0;
-    Dequeue(queue); //remove extra character
-
-    while (!isEmpty(queue))
-    {
-        line6Buffer[i] = Dequeue(queue);
-        DrawDescriptionText(line1Buffer, 100, 500);
-        DrawDescriptionText(line2Buffer, 100, 450);
-        DrawDescriptionText(line3Buffer, 100, 400);
-        DrawDescriptionText(line4Buffer, 100, 350);
-        DrawDescriptionText(line5Buffer, 100, 300);
-        DrawDescriptionText(line6Buffer, 100, 250);
-        Sleep(TypingSpeed);
-        i++;
-        glEnd();
-        glFlush();
-    }
-
 }
 
 
@@ -1072,31 +1216,35 @@ void display() //display function is called repeatedly by the main function so k
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-   switch(Scene)
-   {
-   case START:
+    switch (Scene)
+    {
+    case START:
         LoadMainScreen();
         break;
 
-   case DESCRIPTION:
-       AnimateDescription();
-       break;
+    case DESCRIPTION:
+        queue = createQueue(1000); //create a fresh queue
+        AnimateDescription();
+        break;
 
-   case SCENE1:
-       DrawScene1BG();
-       RecoverFrame();
-       RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
-       DrawCharacter(Scene1DialougesWithSpeakers[currentDialouge].first);
-       AnimateText(Scene1DialougesWithSpeakers[currentDialouge].second);
-      
-      
-       break;
+    case SCENE1:
+        queue = createQueue(1000);//create a fresh queue
+        DrawScene1BG();
+        RecoverFrame();
+        RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
+        DrawCharacter(Scene1DialougesWithSpeakers[currentDialouge].first);
+        AnimateText(Scene1DialougesWithSpeakers[currentDialouge].second);
+        break;
 
-   default:
-       cout << "Something went wrong";
-       break;
+    case TOBECONTINUED:
+        DrawTOBECONTINUED();
+        break;
 
-   }
+    default:
+        cout << "Something went wrong";
+        break;
+
+    }
     glEnd();
     glFlush();
 }
@@ -1104,22 +1252,24 @@ void display() //display function is called repeatedly by the main function so k
 void InitializeVariables()
 {
     Description = {
-    "One day John, Peter, Dan, Angela, Chris, Emily and " + PlayerName + " ,the seven friends, who work in different MNCs ",
-    "got tired of their day to day life, wanted to go on a long vaccation. John suggested to go to the countryside so that " ,
-    "they can get rid of the city rush, and all the friends agreed.They decided to book a hotel but later Dan suggested that ",
-    "he knows a person who owns a mansion and is willing to rent it for a fair price, all of them agreed and were very  ",
-    "excited. They began their journey 3 days from then in John’s car and reached there the next morning. All of them ",
-    "were very excited to see the magnificent mansion and began to explore the mansion....  "
+    "One day John, Peter, Dan, Angela, Chris, Emily and "+ PlayerName +" , who were best friends since college, who work in ",
+    "different MNCs got tired of their day to day life and wanted to go on a long vaccation. John suggested to go to the ",
+    "countryside so that they can get rid of the city rush and all the friends agreed. They decided to book a hotel but later ",
+    "Dan suggested that he knows a person who owns a mansion and is willing to rent it for a fair price, all of them agreed ",
+    "and were very excited. They began their journey 3 days from then in John's car and reached there the next morning.  ",
     };
 
     Scene1DialougesWithSpeakers = {
-    {"Scene 1" , "After a Little Exploration, You , Dan and John got a room with a nice view and decided to take the room for the night and started unpacking their luggage "},
-    {"John " , "Hello this is some dummy text... "},
-    {"John " , "In C++, std::substr() is a predefined function used for string handling. string.h is the header file required for string functions. This function takes two values pos and len as an argument and returns a newly constructed string object with its value initialized to a copy of a sub - string of this object. "},
-    { "Dan " , "Write a JavaScript to design a simple calculator to perform the following operations: sum, product, difference and quotient. "},
-    {"John " , "Write a JavaScript that calculates the squares and cubes of the numbers from 0 to 10 and outputs HTML text that displays the resulting values in an HTML table format. "},
-    {"Dan " , "Mini Project Final demo will be on 30/06/22 and 1/07/22  time slot will be shared later. "},
-    {"John " ,  "Completed Record and manual need to submit during internal time. "}
+    {"Narrator" , "As they entered , they were awestruck looking at the magnificent mansion and start exploring it and checked out the rooms they were going to stay in and started unpacking their luggages. "},
+    {"Chris" , "Hey "+ PlayerName + " , Andy come check this room out..... its even bigger than my living room!! "},
+    {"You" , "Wow.... my whole family can stay here. "},
+    { "Andy" , "Ha ha ha... C'mon it isn't that big. But I have been wondering how did Dan get this mansion for such a low price. Something doesnt feel right. "},
+    {"Chris" , "C'mon Andy.... why are you like this, overthinking about everything, we are here to relax... we dont get this opportunity everyday. "},
+    {"You" , "Yes Andy is right... we are here to release our stress so dont increase it by overthinking. "},
+    {"Andy" ,  "Yeah I think you guys are right.... if only I was a little more carefree like you guys. We are in this beautiful mansion in this peaceful place and we are going to make the best of it. Besides, what can go wrong? "},
+    {"????" ,  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHH!!!!! (Sudden scream from the other room....) "},
+    {"You" ,  "I think I just heard Angela screaming...... we must hurry up and check what happened!! "},
+    {"Narrator" ,  "They rush towards the scream.... "}
     };
 }
 
@@ -1127,7 +1277,7 @@ void InitializeVariables()
 int main(int argc, char** argv)
 {
     cout << "Enter your name : " << endl;
-    cin>>PlayerName;
+    cin >> PlayerName;
     queue = createQueue(1000);
     InitializeVariables();
 
