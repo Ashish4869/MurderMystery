@@ -12,23 +12,25 @@
 using namespace std;
 
 //CONSTANTS
-const int TypingSpeed = 25;
-const int LineCharacterLimit = 100;
+const int TypingSpeed = 20; //20
+const int LineCharacterLimit = 120;
 const int DialougeXOffset = 150;
-const int FirstLineY = 150;
-const int SecondLineY = 120;
-const int ThirdLineY = 90;
+const int FirstLineY = 110;
+const int SecondLineY = 80;
+const int ThirdLineY = 50;
 const int SpeakerXPos = 200;
-const int SpeakerYPos = 195;
+const int SpeakerYPos = 165;
 
 string PlayerName;
 GLuint characterTexture;
 GLuint characterTexture2;
 
+bool NewScene = true;
+
 //States
 enum Scenes {START , DESCRIPTION ,SCENE1 ,SCENE2};
 
-Scenes Scene = SCENE1;
+Scenes Scene = START;
 vector<string> Description; 
 vector<pair<string, string>> Scene1DialougesWithSpeakers;
 
@@ -151,25 +153,35 @@ int rear(QueueText* queueText)
 
 void DrawDialougeBox()
 {
+    //BlackBackground
+    glColor3f(0, 0, 0);
+    glBegin(GL_POLYGON);
+    glVertex2f(75, 20);
+    glVertex2f(75, 170);
+    glVertex2f(1200, 170);
+    glVertex2f(1200, 20);
+    glEnd();
+
+
     //OutLine of the DialougeBox
     glLineWidth(2);
     glColor3f(1, 1, 1);
     glBegin(GL_LINE_LOOP);
-    glVertex2f(75, 50);
-    glVertex2f(75, 200);
-    glVertex2f(1200, 200);
-    glVertex2f(1200, 50);
+    glVertex2f(75, 20);
+    glVertex2f(75, 170);
+    glVertex2f(1200, 170);
+    glVertex2f(1200, 20);
     glEnd();
 
     //Speaker's Box
     glBegin(GL_POLYGON);
     glColor3f(1, 0, 0);
-    glVertex2f(120, 200);
-    glVertex2f(150, 220);
-    glVertex2f(400, 220);
-    glVertex2f(430, 200);
-    glVertex2f(400, 180);
-    glVertex2f(150, 180);
+    glVertex2f(120, 170);
+    glVertex2f(150, 190);
+    glVertex2f(400, 190);
+    glVertex2f(430, 170);
+    glVertex2f(400, 150);
+    glVertex2f(150, 150);
     glEnd();
 }
 
@@ -243,7 +255,7 @@ void DrawScene1BG()
     glEnd();
 
     //LeftWall - Lower
-    glColor3f(0.58, 0.43, 0.20);
+    glColor3f(0.58, 0.43, 0.20); //WoodColor
     glBegin(GL_POLYGON);
     glVertex2f(0, 0);
     glVertex2f(187, 245);
@@ -430,6 +442,129 @@ void DrawScene1BG()
     glVertex2f(699, 521);
     glEnd();
 
+    //--------CHAIR----------
+
+    //Chair Bottom
+    glColor3f(1, 0.64, 0); //Chair color
+    glBegin(GL_POLYGON);
+    glVertex2f(200, 250);
+    glVertex2f(260, 230);
+    glVertex2f(320, 260);
+    glVertex2f(260, 280);
+    glEnd();
+
+    //Chair Joiner
+    glLineWidth(3);
+    glColor3f(1, 1, 1);
+    glBegin(GL_LINES);
+    glVertex2f(200, 251);
+    glVertex2f(260, 281);
+    glEnd();
+
+    //Chair Top
+    glColor3f(1, 0.64, 0); //Chair color
+    glBegin(GL_POLYGON);
+    glVertex2f(200, 252);
+    glVertex2f(200, 350);
+    glVertex2f(260, 370);
+    glVertex2f(260, 282);
+    glEnd();
+
+
+    //Chair Legs
+
+    //Chair Leg left
+    glLineWidth(2);
+    glColor3f(0, 0, 0);
+    glBegin(GL_LINES);
+    glVertex2f(200, 250);
+    glVertex2f(200, 200);
+    glEnd();
+
+    //Chair Leg middle
+    glLineWidth(2);
+    glColor3f(0, 0, 0);
+    glBegin(GL_LINES);
+    glVertex2f(260, 230);
+    glVertex2f(260, 180);
+    glEnd();
+
+    //Chair Leg right
+    glLineWidth(2);
+    glColor3f(0, 0, 0);
+    glBegin(GL_LINES);
+    glVertex2f(320, 260);
+    glVertex2f(320, 210);
+    glEnd();
+
+    //------CUPBOARD-------
+
+    //CupBoardBody
+    glColor3f(1, 0, 0); 
+    glBegin(GL_POLYGON);
+    glVertex2f(900, 150);
+    glVertex2f(900, 430);
+    glVertex2f(1094, 430);
+    glVertex2f(1094, 150);
+    glEnd();
+
+    //cupboardlegs
+
+    //cupboard left leg
+    glColor3f(0, 0, 0); 
+    glBegin(GL_POLYGON);
+    glVertex2f(900, 150);
+    glVertex2f(900, 100);
+    glVertex2f(920, 100);
+    glVertex2f(920, 150);
+    glEnd();
+
+    //cupboard right leg
+    glColor3f(0, 0, 0); 
+    glBegin(GL_POLYGON);
+    glVertex2f(1074, 150);
+    glVertex2f(1074, 100);
+    glVertex2f(1094, 100);
+    glVertex2f(1094, 150);
+    glEnd();
+
+    //Cupboard Line
+    glLineWidth(3);
+    glColor3f(0, 0, 0);
+    glBegin(GL_LINES);
+    glVertex2f(997, 150);
+    glVertex2f(997, 430);
+    glEnd();
+
+    //Cupboard Knob left
+    glPointSize(5);
+    glBegin(GL_POINTS);
+    glVertex2f(985, 290);
+    glEnd();
+
+    //Cupboard Knob right
+    glPointSize(5);
+    glBegin(GL_POINTS);
+    glVertex2f(1005, 290);
+    glEnd();
+
+    //Cupboard upper Design
+    glLineWidth(2);
+    glBegin(GL_LINE_STRIP);
+    glVertex2f(900, 430);
+    glVertex2f(920, 500);
+    glVertex2f(1074, 500);
+    glVertex2f(1094, 430);
+    glEnd();
+
+
+    if (NewScene)
+    {
+        cout << "hello";
+        NewScene = false;
+        glFlush();
+        Sleep(1000);
+    }
 }
 
 void ClearFrame()
@@ -443,21 +578,65 @@ void RecoverFrame()
 {
     DrawScene1BG();
     DrawDialougeBox();
-    
 }
 
 
 
-void DrawCharacter()
+void DrawCharacter(string Speaker)
 {
-    glColor3f(0, 0, 1);
+    string characterSprite;
+
+    char characterS[100]  = "";
+    vector<pair<int, int>> position;
+
+    if (Speaker == "Dan ")
+    {
+        characterSprite = "character.png";
+
+        for (int i = 0; i < characterSprite.length(); i++)
+        {
+            characterS[i] = characterSprite[i];
+        }
+
+        cout << characterS;
+        position =
+        {
+            {500, 172},
+            {500, 410},
+            {700, 410},
+            {700, 172}
+        };
+    }
+    else if(Speaker == "John ")
+    {
+        characterSprite = "character2.png";
+
+        for (int i = 0; i < characterSprite.length(); i++)
+        {
+            characterS[i] = characterSprite[i];
+        }
+
+        position =
+        {
+            {700, 172},
+            {700, 418},
+            {900, 418},
+            {900, 172}
+        };
+    }
+    else
+    {
+        return;
+    }
+
+    glColor3f(0.58, 0.43, 0.20); //woodColor
     //Loading texture
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glGenTextures(1, &characterTexture);
     stbi_set_flip_vertically_on_load(true);
     int width, height, nrChannels;
-    unsigned char* character = stbi_load("character.png", &width, &height, &nrChannels, 0);
+    unsigned char* character = stbi_load(characterS, &width, &height, &nrChannels, 0);
     glBindTexture(GL_TEXTURE_2D, characterTexture);
 
     if (character != NULL)
@@ -480,14 +659,17 @@ void DrawCharacter()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, characterTexture);
-
+    
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f);   glVertex2f(500, 300);
-    glTexCoord2f(0.0f, 1.0f);   glVertex2f(500, 700);
-    glTexCoord2f(1.0f, 1.0f);   glVertex2f(700, 700);
-    glTexCoord2f(1.0f, 0.0f);   glVertex2f(700, 300);
+    glTexCoord2f(0.0f, 0.0f);   glVertex2f(position[0].first, position[0].second);
+    glTexCoord2f(0.0f, 1.0f);   glVertex2f(position[1].first, position[1].second);
+    glTexCoord2f(1.0f, 1.0f);   glVertex2f(position[2].first, position[2].second);
+    glTexCoord2f(1.0f, 0.0f);   glVertex2f(position[3].first, position[3].second);
     glEnd();
-    //glDeleteTextures(1, &characterTexture);
+  
+ 
+
+    glDeleteTextures(1, &characterTexture);
 }
 
 
@@ -557,12 +739,6 @@ void AnimateText(string dialouge)
 
     if(OverflowFirstLine)
     {
-        //clear old text
-        ClearFrame();
-        RecoverFrame();
-        RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
-        DrawCharacter();
-       
         i = 0;
       
         if (CheckOverFlow(dialouge, text))
@@ -573,8 +749,6 @@ void AnimateText(string dialouge)
         FillQueue(text);
 
         int j = 0;
-
-        Dequeue(queue); //remove extra character
 
         while (!isEmpty(queue))
         {
@@ -590,12 +764,6 @@ void AnimateText(string dialouge)
 
         if (OverflowSecondLine)
         {
-            //clear old frame
-            ClearFrame();
-            RecoverFrame();
-            DrawCharacter();
-            RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
-
             i = 0;
 
             text = dialouge;
@@ -603,8 +771,6 @@ void AnimateText(string dialouge)
             FillQueue(text);
 
             int j = 0;
-
-            Dequeue(queue); //remove extra character
 
             while (!isEmpty(queue))
             {
@@ -918,10 +1084,10 @@ void display() //display function is called repeatedly by the main function so k
 
    case SCENE1:
        DrawScene1BG();
-       //RecoverFrame();
-       //RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
-       //DrawCharacter();
-       //AnimateText(Scene1DialougesWithSpeakers[currentDialouge].second);
+       RecoverFrame();
+       RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
+       DrawCharacter(Scene1DialougesWithSpeakers[currentDialouge].first);
+       AnimateText(Scene1DialougesWithSpeakers[currentDialouge].second);
       
       
        break;
@@ -947,12 +1113,13 @@ void InitializeVariables()
     };
 
     Scene1DialougesWithSpeakers = {
-    {"You " , "Hello this is some dummy text... "},
-    {"Computer " , "In C++, std::substr() is a predefined function used for string handling. string.h is the header file required for string functions. This function takes two values pos and len as an argument and returns a newly constructed string object with its value initialized to a copy of a sub - string of this object. "},
-    { "Melwyn Sir " , "Write a JavaScript to design a simple calculator to perform the following operations: sum, product, difference and quotient. "},
-    {"Melwyn Sir " , "Write a JavaScript that calculates the squares and cubes of the numbers from 0 to 10 and outputs HTML text that displays the resulting values in an HTML table format. "},
-    {"Ashwin Sir " , "Mini Project Final demo will be on 30/06/22 and 1/07/22  time slot will be shared later. "},
-    {"Ashwin Sir " ,  "Completed Record and manual need to submit during internal time. "}
+    {"Scene 1" , "After a Little Exploration, You , Dan and John got a room with a nice view and decided to take the room for the night and started unpacking their luggage "},
+    {"John " , "Hello this is some dummy text... "},
+    {"John " , "In C++, std::substr() is a predefined function used for string handling. string.h is the header file required for string functions. This function takes two values pos and len as an argument and returns a newly constructed string object with its value initialized to a copy of a sub - string of this object. "},
+    { "Dan " , "Write a JavaScript to design a simple calculator to perform the following operations: sum, product, difference and quotient. "},
+    {"John " , "Write a JavaScript that calculates the squares and cubes of the numbers from 0 to 10 and outputs HTML text that displays the resulting values in an HTML table format. "},
+    {"Dan " , "Mini Project Final demo will be on 30/06/22 and 1/07/22  time slot will be shared later. "},
+    {"John " ,  "Completed Record and manual need to submit during internal time. "}
     };
 }
 
@@ -967,7 +1134,7 @@ int main(int argc, char** argv)
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowSize(1280, 720);
-    glutInitWindowPosition(300, 200);
+    glutInitWindowPosition(100, 50);
     glutCreateWindow("MurderMystery");
     glutMouseFunc(AnimateNextDialouge);
     init();
