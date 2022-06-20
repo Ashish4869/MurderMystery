@@ -12,7 +12,7 @@
 using namespace std;
 
 //CONSTANTS
-const int TypingSpeed = 20; //20
+const int TypingSpeed = 2; //20
 const int LineCharacterLimit = 120;
 const int DialougeXOffset = 150;
 const int FirstLineY = 110;
@@ -58,6 +58,28 @@ vector<vector<pair<int, int>>> HouseAndWindows =
     { {530,300},{560,300} }, //WindowRails - Right Bottom horizontal
     { {325,460},{375,460} }, //WindowRails - Middle Horizontal
     { {350,410},{350,485} }, //WindowRails - Middle Vertical
+};
+
+vector<vector<pair<int, int>>> GenericRoom =
+{
+    { {0,240},{187, 419},{187, 588}, {0, 720} },            //1.LeftWall - Upper - Polygon - color glColor3f(1, 0.99, 0.81) Cream Color
+    { {1280, 240},{1093, 419},{1093, 588}, {1280, 720} },   //2.RightWall - Upper - Polygon 
+    { {187, 588},{0, 720},{1280, 720}, {1093, 588} },       //3.//UpperWall - Polygon 
+    { {187, 419},{187, 588},{1093, 588}, {1093, 419} },     //4. //FrontWall - Upper - Polygon 
+    { {0, 0},{187, 245},{187, 420}, {0, 240} },             //5. //LeftWall - Lower - Polygon - color glColor3f(0.58, 0.43, 0.20) //WoodColor
+    { {1280, 0},{1093, 245},{1093, 419}, {1280, 245} },     //6. //RightWall - Lower - Polygon
+    { {187, 245},{187, 419},{1093, 419}, {1093, 245} },     //7. //FrontWall - Lower - Polygon
+    { {0, 0},{187, 245},{1093, 245}, {1280, 0} },           //8.  //Ground - Polygon
+    { {50, 330},{50, 430},{110, 480}, {110, 380} },         //9.  //Window Body - Polygon glColor3f(1, 1, 1) // white
+    { {0, 0},{187, 250},{187, 588}, {0, 720} },             //10. //LeftWallOutline  - GL_LINE_STRIP glColor3f(0, 0, 0) // black; width = 2
+    { {1280, 0},{1093, 250},{1093, 588}, {1280, 720} },     //11. //RightWallOutline  - GL_LINE_STRIP
+    { {0, 241},{187, 419},{1093, 419}, {1280, 243} },       //12. //SplitLine  - GL_LINE_STRIP
+    { {187, 588},{1093, 588} },                             //13. //UpperWallOutLine  - GL_LINES
+    { {187, 250},{1093, 250} },                             //14. //LowerWallOutLine  - GL_LINES
+    { {80, 355},{80, 455} },                                //15.  //WindowLine - Vertical  - GL_LINES
+    { {50, 380},{110, 430} },                               //16.  //WindowLine - Horizontal  - GL_LINES
+    { {50, 330},{50, 430} , {110, 480}, {110, 380} },       //17.  //Window Outline  - GL_LINE_LOOP width = 3
+    
 };
 
 int currentDialouge = 0;
@@ -215,151 +237,40 @@ void DrawDialouge(char* string, int x, int y, int type)
 
 //----------------RENDERING TEXT ON SCREEN END--------------//
 
+//Drawing a Generic Room
+void DrawRoomBG()
+{
+    for (int i = 0; i < GenericRoom.size(); i++)
+    {
+        //Sorting Colors
+        if (i < 4) {glColor3f(1, 0.99, 0.81); } // Cream Color
+        else if (i < 8) { glColor3f(0.58, 0.43, 0.20); } // Wood Color
+        else if (i == 8) { glColor3f(1, 1, 1); } // white color
+        else if (i >= 9) { glColor3f(0, 0, 0); } // Black color
+
+        //LineWidth
+        if (i >= 9 && i < 16) { glLineWidth(2); }
+        if (i == 16) { glLineWidth(3); }
+
+        //Shape
+        if (i <= 8) { glBegin(GL_POLYGON); }
+        if (i >= 9 && i <= 11) { glBegin(GL_LINE_STRIP); }
+        if (i >= 12 && i <= 15) { glBegin(GL_LINES); }
+        if (i == 16) { glBegin(GL_LINE_LOOP); }
+
+
+        for (int j = 0; j < GenericRoom[i].size(); j++)
+        {
+            glVertex2f(GenericRoom[i][j].first, GenericRoom[i][j].second);
+        }
+        glEnd();
+    }
+
+}
+
 void DrawScene1BG()
 {
-    //LeftWall - Upper
-    glColor3f(1, 0.99, 0.81);
-    glBegin(GL_POLYGON);
-    glVertex2f(0, 240);
-    glVertex2f(187, 419);
-    glVertex2f(187, 588);
-    glVertex2f(0, 720);
-    glEnd();
-
-
-
-    //RightWall - Upper
-    glBegin(GL_POLYGON);
-    glVertex2f(1280, 240);
-    glVertex2f(1093, 419);
-    glVertex2f(1093, 588);
-    glVertex2f(1280, 720);
-    glEnd();
-
-
-
-    //UpperWall
-    glBegin(GL_POLYGON);
-    glVertex2f(187, 588);
-    glVertex2f(0, 720);
-    glVertex2f(1280, 720);
-    glVertex2f(1093, 588);
-    glEnd();
-
-    //FrontWall - Upper
-    glBegin(GL_POLYGON);
-    glVertex2f(187, 419);
-    glVertex2f(187, 588);
-    glVertex2f(1093, 588);
-    glVertex2f(1093, 419);
-    glEnd();
-
-    //LeftWall - Lower
-    glColor3f(0.58, 0.43, 0.20); //WoodColor
-    glBegin(GL_POLYGON);
-    glVertex2f(0, 0);
-    glVertex2f(187, 245);
-    glVertex2f(187, 420);
-    glVertex2f(0, 240);
-    glEnd();
-
-    //RightWall - Lower
-    glBegin(GL_POLYGON);
-    glVertex2f(1280, 0);
-    glVertex2f(1093, 245);
-    glVertex2f(1093, 419);
-    glVertex2f(1280, 245);
-    glEnd();
-
-    //FrontWall - lower
-    glBegin(GL_POLYGON);
-    glVertex2f(187, 245);
-    glVertex2f(187, 419);
-    glVertex2f(1093, 419);
-    glVertex2f(1093, 245);
-    glEnd();
-
-    //Ground
-    glBegin(GL_POLYGON);
-    glVertex2f(0, 0);
-    glVertex2f(187, 245);
-    glVertex2f(1093, 245);
-    glVertex2f(1280, 0);
-    glEnd();
-
-
-    //LeftWallOutline 
-    glColor3f(0, 0, 0);
-    glLineWidth(2);
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(0, 0);
-    glVertex2f(187, 250);
-    glVertex2f(187, 588);
-    glVertex2f(0, 720);
-    glEnd();
-
-    //RightWallOutline
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(1280, 0);
-    glVertex2f(1093, 250);
-    glVertex2f(1093, 588);
-    glVertex2f(1280, 720);
-    glEnd();
-
-    //UpperWallOutLine
-    glBegin(GL_LINES);
-    glVertex2f(187, 588);
-    glVertex2f(1093, 588);
-    glEnd();
-
-    //LowerWallOutLine
-    glBegin(GL_LINES);
-    glVertex2f(187, 250);
-    glVertex2f(1093, 250);
-    glEnd();
-
-    //SplitLine
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(0, 241);
-    glVertex2f(187, 419);
-    glVertex2f(1093, 419);
-    glVertex2f(1280, 243);
-    glEnd();
-
-    //DrawWindow
-
-    //Window Outline
-    glLineWidth(4);
-    glBegin(GL_LINE_LOOP);
-    glColor3f(0, 0, 0);
-    glVertex2f(50, 330);
-    glVertex2f(50, 430);
-    glVertex2f(110, 480);
-    glVertex2f(110, 380);
-    glEnd();
-
-    //Window Body
-    glBegin(GL_POLYGON);
-    glColor3f(1, 1, 1);
-    glVertex2f(50, 330);
-    glVertex2f(50, 430);
-    glVertex2f(110, 480);
-    glVertex2f(110, 380);
-    glEnd();
-
-    //WindowLine - Vertical
-    glLineWidth(2);
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    glVertex2f(80, 355);
-    glVertex2f(80, 455);
-    glEnd();
-
-    //WindowLine - Horizontal
-    glBegin(GL_LINES);
-    glVertex2f(50, 380);
-    glVertex2f(110, 430);
-    glEnd();
+    DrawRoomBG();
 
     //DrawClock
     //Outline
@@ -1025,12 +936,12 @@ void DrawTOBECONTINUED()
     string tobeContinued = "TO BE CONTINUED...... ";
     string in = "IN ";
     string Phase2 = "PHASE 2 ";
-    string saav = "Yenchina Saav Ya";
+   // string saav = "Yenchina Saav Ya";
 
     char buffer1[200] = "";
     char buffer2[200] = "";
     char buffer3[200] = "";
-    char buffer4[200] = "";
+   // char buffer4[200] = "";
 
     
     int i = 0;
@@ -1062,10 +973,12 @@ void DrawTOBECONTINUED()
         buffer3[i] = Phase2[i];
     }
 
+    /*
     for (int i = 0; i < saav.length(); i++)
     {
         buffer4[i] = saav[i];
     }
+    */
 
     glClear(GL_COLOR_BUFFER_BIT);
     DrawDescriptionText(buffer1, 400, 400);
@@ -1084,11 +997,13 @@ void DrawTOBECONTINUED()
     glEnd();
     glFlush();
 
+    /*
     Sleep(1000);
     DrawDescriptionText(buffer4, 1000, 20);
 
     glEnd();
     glFlush();
+    */
 
 }
 
@@ -1265,8 +1180,8 @@ void InitializeVariables()
     {"You" , "Wow.... my whole family can stay here. "},
     { "Andy" , "Ha ha ha... C'mon it isn't that big. But I have been wondering how did Dan get this mansion for such a low price. Something doesnt feel right. "},
     {"Chris" , "C'mon Andy.... why are you like this, overthinking about everything, we are here to relax... we dont get this opportunity everyday. "},
-    {"You" , "Yes Andy is right... we are here to release our stress so dont increase it by overthinking. "},
-    {"Andy" ,  "Yeah I think you guys are right.... if only I was a little more carefree like you guys. We are in this beautiful mansion in this peaceful place and we are going to make the best of it. Besides, what can go wrong? "},
+    {"You" , "Yes Chris is right... we are here to release our stress so dont increase it by overthinking. "},
+    {"Andy" ,  "Yeah I think you guys are right.... if only I was a little more carefree like you guys. We are in this beautiful        mansion in this peaceful place and we are going to make the best of it. Besides, what can go wrong? "},
     {"????" ,  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHH!!!!! (Sudden scream from the other room....) "},
     {"You" ,  "I think I just heard Angela screaming...... we must hurry up and check what happened!! "},
     {"Narrator" ,  "They rush towards the scream.... "}
