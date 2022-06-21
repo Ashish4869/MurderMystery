@@ -29,8 +29,9 @@ bool NewScene = true;
 
 //States
 enum Scenes { START, DESCRIPTION, SCENE1, SCENE2, TOBECONTINUED };
-
 Scenes Scene = START;
+
+
 vector<string> Description;
 vector<pair<string, string>> Scene1DialougesWithSpeakers;
 
@@ -207,18 +208,17 @@ void DrawDialougeBox()
     glEnd();
 }
 
-
 //----------------RENDERING TEXT ON SCREEN--------------//
 
 void DrawDialouge(char* string, int x, int y, int type)
 {
     if (type == 1)
     {
-        glColor3f(1, 1, 1);
+        glColor3f(1, 1, 1); //white
     }
     else if (type == 0)
     {
-        glColor3f(0, 0, 0);
+        glColor3f(0, 0, 0); // black
     }
     else
     {
@@ -236,6 +236,32 @@ void DrawDialouge(char* string, int x, int y, int type)
 }
 
 //----------------RENDERING TEXT ON SCREEN END--------------//
+
+//-------------Click to Continue Indicator-----------
+void DrawClickToContinue()
+{
+    char clicktoContinue[100] = "Continue";
+    DrawDialouge(clicktoContinue, 1060, 35, 1);
+    glColor3f(1, 1, 1);
+    glBegin(GL_POLYGON);
+    glVertex2f(1150, 30);
+    glVertex2f(1155, 30);
+    glVertex2f(1165, 40);
+    glVertex2f(1155, 50);
+    glVertex2f(1150, 50);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+    glVertex2f(1170, 30);
+    glVertex2f(1175, 30);
+    glVertex2f(1185, 40);
+    glVertex2f(1175, 50);
+    glVertex2f(1170, 50);
+    glEnd();
+}
+
+//-------------Click to Continue Indicator END-----------
+
 
 //Drawing a Generic Room
 void DrawRoomBG()
@@ -785,9 +811,12 @@ void AnimateNextDialouge(int button, int state, int x, int y)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
     {
+       
+
         switch (Scene)
         {
         case START:
+           
             Scene = DESCRIPTION;
             break;
 
@@ -1010,6 +1039,8 @@ void DrawTOBECONTINUED()
 //I just hardCoded this crap , i will try to find a better solution
 void AnimateDescription()
 {
+    
+
     string Line1 = Description[0];
     string Line2 = Description[1];
     string Line3 = Description[2];
@@ -1103,7 +1134,6 @@ void AnimateDescription()
         glEnd();
         glFlush();
     }
-
 }
 
 
@@ -1117,9 +1147,6 @@ void LoadMainScreen()
     glEnd();
     glFlush();
 }
-
-
-
 
 void init()
 {
@@ -1140,6 +1167,9 @@ void display() //display function is called repeatedly by the main function so k
     case DESCRIPTION:
         queue = createQueue(1000); //create a fresh queue
         AnimateDescription();
+        DrawClickToContinue();
+        
+
         break;
 
     case SCENE1:
@@ -1149,6 +1179,9 @@ void display() //display function is called repeatedly by the main function so k
         RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
         DrawCharacter(Scene1DialougesWithSpeakers[currentDialouge].first);
         AnimateText(Scene1DialougesWithSpeakers[currentDialouge].second);
+        DrawClickToContinue();
+        
+
         break;
 
     case TOBECONTINUED:
