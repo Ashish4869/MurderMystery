@@ -83,6 +83,29 @@ vector<vector<pair<int, int>>> GenericRoom =
     
 };
 
+vector<vector<pair<int, int>>> Chair = 
+{
+    { {200, 250},{260, 230},{320, 260}, {260, 280} },       //0.Chair sitting - glColor3f(1, 0.64, 0); (chair brown color) - Polygon
+    { {200, 252},{200, 350},{260, 370}, {260, 282} },       //1.Chair Top - glColor3f(1, 0.64, 0); (chair brown color) - Polygon
+    { {200, 251},{260, 281} },                              //2.Chair Joiner - glColor3f(1, 1, 1); Lines - glLineWidth(3);
+    { {200, 250},{200, 200} },                              //3.Chair Leg left - glColor3f(0, 0, 0); Lines - glLineWidth(2);
+    { {260, 230},{260, 180} },                              //4.Chair Leg middle - glColor3f(0, 0, 0); Lines - glLineWidth(2);
+    { {320, 260},{320, 210} },                              //5.Chair Leg right - glColor3f(0, 0, 0); Lines - glLineWidth(2);
+};
+
+
+vector<vector<pair<int, int>>> Cupboard =
+{
+     { {900, 150},{900, 430},{1094, 430}, {1094, 150} },    //0.CupBoardBody - Polygon - glColor3f(1, 0, 0);
+     { {900, 150},{900, 100},{920, 100}, {920, 150} },      //1.Cupboard left leg - Polygon - glColor3f(0, 0, 0);
+     { {1074, 150},{1074, 100},{1094, 100}, {1094, 150} },  //2.Cupboard right leg - Polygon - glColor3f(0, 0, 0);
+     { {997, 150},{997, 430} },                             //3.Cupboard Line - GL_LINES - glColor3f(0, 0, 0); - glLineWidth(3);
+     { {985, 290} },                                        //4.Cupboard Knob left - GL_POINTS - glColor3f(0, 0, 0); - glPointSize(5);
+     { {1005, 290} },                                       //5.Cupboard Knob left - GL_POINTS - glColor3f(0, 0, 0); - glPointSize(5);
+     { {900, 430},{920, 500},{1074, 500}, {1094, 430} },    //6.Cupboard Knob left - GL_LINE_STRIP - glColor3f(0, 0, 0); - glLineWidth(2);
+};
+
+
 int currentDialouge = 0;
 int j;
 int State = 1;
@@ -294,9 +317,67 @@ void DrawRoomBG()
 
 }
 
+void DrawChair()
+{
+    for (int i = 0; i < Chair.size(); i++)
+    {
+        //SortingColors
+        if (i < 2) { glColor3f(1, 0.64, 0); } //chair wood color
+        if (i == 2) { glColor3f(1, 1, 1); } //white color
+        if (i > 2) { glColor3f(0, 0, 0); } //black color
+
+        //LineWidth
+        if (i == 2) { glLineWidth(3); }
+        if (i > 2) { glLineWidth(2); }
+
+        //Shape
+        if (i < 2) { glBegin(GL_POLYGON); } 
+        if (i >= 2) { glBegin(GL_LINES); }
+
+        //Drawing Shape
+        for (int j = 0; j < Chair[i].size(); j++)
+        {
+            glVertex2f(Chair[i][j].first, Chair[i][j].second);
+        }
+
+        glEnd();
+    }
+}
+
+void DrawCupBoard()
+{
+    for (int i = 0; i < Cupboard.size(); i++)
+    {
+        //SortingColors
+        if (i == 0) { glColor3f(1, 0, 0); } //red
+        else { glColor3f(0, 0, 0); } //black
+
+        //LineWidth and PointSize
+        if (i == 3) { glLineWidth(3); }
+        if (i == 4 || i == 5) { glPointSize(5); }
+        if (i == 6) { glLineWidth(2); }
+
+        //Shape
+        if (i < 3) { glBegin(GL_POLYGON); }
+        if (i == 3) { glBegin(GL_LINES); }
+        if (i < 6) { glBegin(GL_POINTS); }
+        if (i == 6) { glBegin(GL_LINE_STRIP); }
+
+        //DrawingShape
+        for (int j = 0; j < Cupboard[i].size(); j++)
+        {
+            glVertex2f(Cupboard[i][j].first, Cupboard[i][j].second);
+        }
+
+        glEnd();
+    }
+}
+
 void DrawScene1BG()
 {
     DrawRoomBG();
+    DrawChair();
+    DrawCupBoard();
 
     //DrawClock
     //Outline
@@ -379,125 +460,9 @@ void DrawScene1BG()
     glVertex2f(699, 521);
     glEnd();
 
-    //--------CHAIR----------
-
-    //Chair Bottom
-    glColor3f(1, 0.64, 0); //Chair color
-    glBegin(GL_POLYGON);
-    glVertex2f(200, 250);
-    glVertex2f(260, 230);
-    glVertex2f(320, 260);
-    glVertex2f(260, 280);
-    glEnd();
-
-    //Chair Joiner
-    glLineWidth(3);
-    glColor3f(1, 1, 1);
-    glBegin(GL_LINES);
-    glVertex2f(200, 251);
-    glVertex2f(260, 281);
-    glEnd();
-
-    //Chair Top
-    glColor3f(1, 0.64, 0); //Chair color
-    glBegin(GL_POLYGON);
-    glVertex2f(200, 252);
-    glVertex2f(200, 350);
-    glVertex2f(260, 370);
-    glVertex2f(260, 282);
-    glEnd();
-
-
-    //Chair Legs
-
-    //Chair Leg left
-    glLineWidth(2);
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    glVertex2f(200, 250);
-    glVertex2f(200, 200);
-    glEnd();
-
-    //Chair Leg middle
-    glLineWidth(2);
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    glVertex2f(260, 230);
-    glVertex2f(260, 180);
-    glEnd();
-
-    //Chair Leg right
-    glLineWidth(2);
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    glVertex2f(320, 260);
-    glVertex2f(320, 210);
-    glEnd();
-
-    //------CUPBOARD-------
-
-    //CupBoardBody
-    glColor3f(1, 0, 0);
-    glBegin(GL_POLYGON);
-    glVertex2f(900, 150);
-    glVertex2f(900, 430);
-    glVertex2f(1094, 430);
-    glVertex2f(1094, 150);
-    glEnd();
-
-    //cupboardlegs
-
-    //cupboard left leg
-    glColor3f(0, 0, 0);
-    glBegin(GL_POLYGON);
-    glVertex2f(900, 150);
-    glVertex2f(900, 100);
-    glVertex2f(920, 100);
-    glVertex2f(920, 150);
-    glEnd();
-
-    //cupboard right leg
-    glColor3f(0, 0, 0);
-    glBegin(GL_POLYGON);
-    glVertex2f(1074, 150);
-    glVertex2f(1074, 100);
-    glVertex2f(1094, 100);
-    glVertex2f(1094, 150);
-    glEnd();
-
-    //Cupboard Line
-    glLineWidth(3);
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    glVertex2f(997, 150);
-    glVertex2f(997, 430);
-    glEnd();
-
-    //Cupboard Knob left
-    glPointSize(5);
-    glBegin(GL_POINTS);
-    glVertex2f(985, 290);
-    glEnd();
-
-    //Cupboard Knob right
-    glPointSize(5);
-    glBegin(GL_POINTS);
-    glVertex2f(1005, 290);
-    glEnd();
-
-    //Cupboard upper Design
-    glLineWidth(2);
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(900, 430);
-    glVertex2f(920, 500);
-    glVertex2f(1074, 500);
-    glVertex2f(1094, 430);
-    glEnd();
-
-
+   
     if (NewScene)
     {
-        cout << "hello";
         NewScene = false;
         glFlush();
         Sleep(1000);
