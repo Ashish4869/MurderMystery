@@ -35,6 +35,8 @@ Scenes Scene = START;
 vector<string> Description;
 vector<pair<string, string>> Scene1DialougesWithSpeakers;
 
+#pragma region CoordinateData
+
 vector<vector<pair<int, int>>> HouseAndWindows =
 {
     { {100,200},{100,500},{200,500}, {200,200} }, //Left Pillar
@@ -80,10 +82,10 @@ vector<vector<pair<int, int>>> GenericRoom =
     { {80, 355},{80, 455} },                                //15.  //WindowLine - Vertical  - GL_LINES
     { {50, 380},{110, 430} },                               //16.  //WindowLine - Horizontal  - GL_LINES
     { {50, 330},{50, 430} , {110, 480}, {110, 380} },       //17.  //Window Outline  - GL_LINE_LOOP width = 3
-    
+
 };
 
-vector<vector<pair<int, int>>> Chair = 
+vector<vector<pair<int, int>>> Chair =
 {
     { {200, 250},{260, 230},{320, 260}, {260, 280} },       //0.Chair sitting - glColor3f(1, 0.64, 0); (chair brown color) - Polygon
     { {200, 252},{200, 350},{260, 370}, {260, 282} },       //1.Chair Top - glColor3f(1, 0.64, 0); (chair brown color) - Polygon
@@ -105,11 +107,26 @@ vector<vector<pair<int, int>>> Cupboard =
      { {900, 430},{920, 500},{1074, 500}, {1094, 430} },    //6.Cupboard Knob left - GL_LINE_STRIP - glColor3f(0, 0, 0); - glLineWidth(2);
 };
 
+vector<vector<pair<int, int>>> ClockLines =
+{
+     { {655, 520},{675, 520} },                             //0.LeftMark
+     { {745, 520},{725, 520} },                             //1.RightMark
+     { {700, 565},{700, 545} },                             //2.TopMark
+     { {700, 475},{700, 495} },                             //3.Bottom Mark
+     { {700, 520},{680, 530} },                             //4.ClockHourhand
+     { {700, 520},{720, 550} },                             //5.ClockMinutehand
+     { {699, 521} },                                        //6.Clock Center - Point
+};
+
+#pragma endregion
+
+
 
 int currentDialouge = 0;
 int j;
 int State = 1;
 
+#pragma region Queue Implementation
 
 //------------------------QUEUE CLASS---------------//
 class QueueText {
@@ -194,7 +211,9 @@ int rear(QueueText* queueText)
 }
 
 //----------------QUEUE FUNCTIONS END--------------------//
+#pragma endregion
 
+#pragma region DialougeBoxRendering
 //-------------------DIALOUGE BOX-----------------------//
 
 void DrawDialougeBox()
@@ -231,22 +250,15 @@ void DrawDialougeBox()
     glEnd();
 }
 
+#pragma endregion
+
+#pragma region RenderTextOnScreen
 //----------------RENDERING TEXT ON SCREEN--------------//
 
 void DrawDialouge(char* string, int x, int y, int type)
 {
-    if (type == 1)
-    {
-        glColor3f(1, 1, 1); //white
-    }
-    else if (type == 0)
-    {
-        glColor3f(0, 0, 0); // black
-    }
-    else
-    {
-        //do nothing
-    }
+    if (type == 1) { glColor3f(1, 1, 1); } //white
+    else if (type == 0) { glColor3f(0, 0, 0); }  // black
 
     int len, i;
     glRasterPos2f(x, y);
@@ -259,7 +271,9 @@ void DrawDialouge(char* string, int x, int y, int type)
 }
 
 //----------------RENDERING TEXT ON SCREEN END--------------//
+#pragma endregion
 
+#pragma region ClickToContinue
 //-------------Click to Continue Indicator-----------
 void DrawClickToContinue()
 {
@@ -284,15 +298,16 @@ void DrawClickToContinue()
 }
 
 //-------------Click to Continue Indicator END-----------
+#pragma endregion
 
-
+#pragma region DrawGenericRoom
 //Drawing a Generic Room
 void DrawRoomBG()
 {
     for (int i = 0; i < GenericRoom.size(); i++)
     {
         //Sorting Colors
-        if (i < 4) {glColor3f(1, 0.99, 0.81); } // Cream Color
+        if (i < 4) { glColor3f(1, 0.99, 0.81); } // Cream Color
         else if (i < 8) { glColor3f(0.58, 0.43, 0.20); } // Wood Color
         else if (i == 8) { glColor3f(1, 1, 1); } // white color
         else if (i >= 9) { glColor3f(0, 0, 0); } // Black color
@@ -317,6 +332,9 @@ void DrawRoomBG()
 
 }
 
+#pragma endregion
+
+#pragma region DrawChair
 void DrawChair()
 {
     for (int i = 0; i < Chair.size(); i++)
@@ -331,7 +349,7 @@ void DrawChair()
         if (i > 2) { glLineWidth(2); }
 
         //Shape
-        if (i < 2) { glBegin(GL_POLYGON); } 
+        if (i < 2) { glBegin(GL_POLYGON); }
         if (i >= 2) { glBegin(GL_LINES); }
 
         //Drawing Shape
@@ -343,7 +361,9 @@ void DrawChair()
         glEnd();
     }
 }
+#pragma endregion
 
+#pragma region DrawCupboard
 void DrawCupBoard()
 {
     for (int i = 0; i < Cupboard.size(); i++)
@@ -373,94 +393,54 @@ void DrawCupBoard()
     }
 }
 
-void DrawScene1BG()
-{
-    DrawRoomBG();
-    DrawChair();
-    DrawCupBoard();
+#pragma endregion
 
+#pragma region DrawClock
+void DrawClock()
+{
     //DrawClock
-    //Outline
+   //Outline
     glBegin(GL_POLYGON);
     int x = 700, y = 520, r = 50;
 
-    glColor3f(0, 0, 0);
-
-    for (int i = 0; i < 360; i++)
-    {
-        float theta = i * 3.14 / 180;
-
-        glVertex2f(x + r * cos(theta), y + r * sin(theta));
-    }
-
+    glColor3f(0, 0, 0); // black
+    for (int i = 0; i < 360; i++) { float theta = i * 3.14 / 180;  glVertex2f(x + r * cos(theta), y + r * sin(theta)); } //drawCircle
     glEnd();
 
     //Face outline
     glBegin(GL_POLYGON);
     x = 700, y = 520, r = 45;
 
-    glColor3f(1, 1, 1);
+    glColor3f(1, 1, 1); //white
+    for (int i = 0; i < 360; i++) { float theta = i * 3.14 / 180;  glVertex2f(x + r * cos(theta), y + r * sin(theta)); }  //drawCircle
+    glEnd();
 
-    for (int i = 0; i < 360; i++)
+    glColor3f(0, 0, 0); //black
+    for (int i = 0; i < ClockLines.size(); i++)
     {
-        float theta = i * 3.14 / 180;
+        //Shape
+        if (i != 6) { glBegin(GL_LINES); }
+        if (i == 6) { glBegin(GL_POINTS); }
 
-        glVertex2f(x + r * cos(theta), y + r * sin(theta));
+        //DrawingShape
+        for (int j = 0; j < ClockLines[i].size(); j++)
+        {
+            glVertex2f(ClockLines[i][j].first, ClockLines[i][j].second);
+        }
+        glEnd();
     }
+}
 
-    glEnd();
+#pragma endregion
 
-    //Clock Marks
-    //LeftMark
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    glVertex2f(655, 520);
-    glVertex2f(675, 520);
-    glEnd();
+#pragma region DrawScene1
+void DrawScene1BG()
+{
+    DrawRoomBG();
+    DrawChair();
+    DrawCupBoard();
+    DrawClock();
 
-    //RightMark
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    glVertex2f(745, 520);
-    glVertex2f(725, 520);
-    glEnd();
-
-    //TopMark
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    glVertex2f(700, 565);
-    glVertex2f(700, 545);
-    glEnd();
-
-    //Bottom Mark
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    glVertex2f(700, 475);
-    glVertex2f(700, 495);
-    glEnd();
-
-    //ClockHourhand
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    glVertex2f(700, 520);
-    glVertex2f(680, 530);
-    glEnd();
-
-    //ClockMinutehand
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    glVertex2f(700, 520);
-    glVertex2f(720, 550);
-    glEnd();
-
-    //Clock Center
-    glPointSize(4);
-    glColor3f(0, 0, 0);
-    glBegin(GL_POINTS);
-    glVertex2f(699, 521);
-    glEnd();
-
-   
     if (NewScene)
     {
         NewScene = false;
@@ -468,7 +448,9 @@ void DrawScene1BG()
         Sleep(1000);
     }
 }
+#pragma endregion
 
+#pragma region FrameFunctions
 void ClearFrame()
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -481,9 +463,9 @@ void RecoverFrame()
     DrawScene1BG();
     DrawDialougeBox();
 }
+#pragma endregion
 
-
-
+#pragma region CharacterRendering
 void DrawCharacter(string Speaker)
 {
     string characterSprite;
@@ -610,9 +592,9 @@ void DrawCharacter(string Speaker)
     }
     else
     {
-    return;
- }
-    
+        return;
+    }
+
 
     glColor3f(0.58, 0.43, 0.20); //woodColor
     //Loading texture
@@ -627,7 +609,7 @@ void DrawCharacter(string Speaker)
     if (character != NULL)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, character);
-        cout << "Character loaded"<<endl;
+        cout << "Character loaded" << endl;
     }
     else
     {
@@ -654,8 +636,9 @@ void DrawCharacter(string Speaker)
 
     glDeleteTextures(1, &characterTexture);
 }
+#pragma endregion
 
-
+#pragma region DialougeSystem
 bool CheckOverFlow(string& dialouge, string& text)
 {
     if (dialouge.length() > 120)
@@ -771,17 +754,19 @@ void AnimateText(string dialouge)
     }
 }
 
+#pragma endregion
 
+#pragma region MouseCallback
 void AnimateNextDialouge(int button, int state, int x, int y)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
     {
-       
+
 
         switch (Scene)
         {
         case START:
-           
+
             Scene = DESCRIPTION;
             break;
 
@@ -806,6 +791,9 @@ void AnimateNextDialouge(int button, int state, int x, int y)
         }
     }
 }
+#pragma endregion
+
+#pragma region HomeScreen
 
 void  DrawStartBox()
 {
@@ -828,26 +816,12 @@ void DrawHouseAndWindow()
 {
     for (int i = 0; i < HouseAndWindows.size(); i++)
     {
-        if (i < 6)
-        {
-            glColor3f(0, 0.22, 0.39);
-        }
-        else
-        {
-            glColor3f(1, 1, 1);
-        }
+        if (i < 6) { glColor3f(0, 0.22, 0.39); }
+        else { glColor3f(1, 1, 1); }
 
-        if (i < 12)
-        {
-            glBegin(GL_POLYGON);
-        }
-        else
-        {
-            glColor3f(0, 0, 0);
-            glLineWidth(3);
-            glBegin(GL_LINES);
-        }
+        if (i < 12) { glBegin(GL_POLYGON); }
 
+        else { glColor3f(0, 0, 0);  glLineWidth(3);  glBegin(GL_LINES); }
 
         for (int j = 0; j < HouseAndWindows[i].size(); j++)
         {
@@ -910,7 +884,9 @@ void DrawGreenLine()
     glEnd();
     glFlush();
 }
+#pragma endregion
 
+#pragma region DescriptionScene
 void DrawDescriptionText(char* string, int x, int y)
 {
     int len, i;
@@ -924,87 +900,10 @@ void DrawDescriptionText(char* string, int x, int y)
     }
 }
 
-//------------------THROW AWAY CODE----------------
-void DrawTOBECONTINUED()
-{
-    string tobeContinued = "TO BE CONTINUED...... ";
-    string in = "IN ";
-    string Phase2 = "PHASE 2 ";
-   // string saav = "Yenchina Saav Ya";
-
-    char buffer1[200] = "";
-    char buffer2[200] = "";
-    char buffer3[200] = "";
-   // char buffer4[200] = "";
-
-    
-    int i = 0;
-
-    FillQueue(tobeContinued);
-
-    while (!isEmpty(queue))
-    {
-        buffer1[i] = Dequeue(queue);
-        DrawDescriptionText(buffer1, 400, 400);
-        Sleep(100);
-        i++;
-        glEnd();
-        glFlush();
-    }
-
-    for (int i = 0; i < tobeContinued.length(); i++)
-    {
-        buffer1[i] = tobeContinued[i];
-    }
-
-    for (int i = 0; i < in.length(); i++)
-    {
-        buffer2[i] = in[i];
-    }
-
-    for (int i = 0; i < Phase2.length(); i++)
-    {
-        buffer3[i] = Phase2[i];
-    }
-
-    /*
-    for (int i = 0; i < saav.length(); i++)
-    {
-        buffer4[i] = saav[i];
-    }
-    */
-
-    glClear(GL_COLOR_BUFFER_BIT);
-    DrawDescriptionText(buffer1, 400, 400);
-    glEnd();
-    glFlush();
-
-    Sleep(500);
-
-    DrawDescriptionText(buffer2, 500, 350);
-    glEnd();
-    glFlush();
-    Sleep(500);
-
-    DrawDescriptionText(buffer3, 480, 300);
-
-    glEnd();
-    glFlush();
-
-    /*
-    Sleep(1000);
-    DrawDescriptionText(buffer4, 1000, 20);
-
-    glEnd();
-    glFlush();
-    */
-
-}
-
 //I just hardCoded this crap , i will try to find a better solution
 void AnimateDescription()
 {
-    
+
 
     string Line1 = Description[0];
     string Line2 = Description[1];
@@ -1100,6 +999,87 @@ void AnimateDescription()
         glFlush();
     }
 }
+
+#pragma endregion
+
+
+//------------------THROW AWAY CODE----------------
+void DrawTOBECONTINUED()
+{
+    string tobeContinued = "TO BE CONTINUED...... ";
+    string in = "IN ";
+    string Phase2 = "PHASE 2 ";
+   // string saav = "Yenchina Saav Ya";
+
+    char buffer1[200] = "";
+    char buffer2[200] = "";
+    char buffer3[200] = "";
+   // char buffer4[200] = "";
+
+    
+    int i = 0;
+
+    FillQueue(tobeContinued);
+
+    while (!isEmpty(queue))
+    {
+        buffer1[i] = Dequeue(queue);
+        DrawDescriptionText(buffer1, 400, 400);
+        Sleep(100);
+        i++;
+        glEnd();
+        glFlush();
+    }
+
+    for (int i = 0; i < tobeContinued.length(); i++)
+    {
+        buffer1[i] = tobeContinued[i];
+    }
+
+    for (int i = 0; i < in.length(); i++)
+    {
+        buffer2[i] = in[i];
+    }
+
+    for (int i = 0; i < Phase2.length(); i++)
+    {
+        buffer3[i] = Phase2[i];
+    }
+
+    /*
+    for (int i = 0; i < saav.length(); i++)
+    {
+        buffer4[i] = saav[i];
+    }
+    */
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    DrawDescriptionText(buffer1, 400, 400);
+    glEnd();
+    glFlush();
+
+    Sleep(500);
+
+    DrawDescriptionText(buffer2, 500, 350);
+    glEnd();
+    glFlush();
+    Sleep(500);
+
+    DrawDescriptionText(buffer3, 480, 300);
+
+    glEnd();
+    glFlush();
+
+    /*
+    Sleep(1000);
+    DrawDescriptionText(buffer4, 1000, 20);
+
+    glEnd();
+    glFlush();
+    */
+
+}
+
 
 
 void LoadMainScreen()
