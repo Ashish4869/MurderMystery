@@ -4,6 +4,7 @@
 #include<iostream>
 #include<string>
 #include<ctype.h>
+#include <map>
 #include<vector>
 #include<math.h>
 #define STB_IMAGE_IMPLEMENTATION    
@@ -34,6 +35,12 @@ Scenes Scene = START;
 
 vector<string> Description;
 vector<pair<string, string>> Scene1DialougesWithSpeakers;
+
+map <string, vector<pair<int, int>> > scene1CharacterPos =
+{
+    {"Chris", { {450, 172}, {450, 410}, {700, 410}, {700, 172} } },
+    {"Andy",  { {700, 172}, {700, 418}, {900, 418}, {900, 172} } },
+};
 
 #pragma region CoordinateData
 
@@ -466,138 +473,13 @@ void RecoverFrame()
 #pragma endregion
 
 #pragma region CharacterRendering
-void DrawCharacter(string Speaker)
+void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string characterImageName, int color)
 {
-    string characterSprite;
-
+    glColor3f(0.58, 0.43, 0.20);
     char characterS[100] = "";
-    vector<pair<int, int>> position;
+    for (int i = 0; i < characterImageName.length(); i++) { characterS[i] = characterImageName[i]; }
+    strcat_s(characterS, ".png");
 
-    if (Speaker == "Chris")
-    {
-        characterSprite = "Chris.png";
-
-        for (int i = 0; i < characterSprite.length(); i++)
-        {
-            characterS[i] = characterSprite[i];
-        }
-
-        position =
-        {
-            {450, 172},
-            {450, 410},
-            {700, 410},
-            {700, 172}
-        };
-    }
-    else if (Speaker == "Andy")
-    {
-        characterSprite = "Andy.png";
-
-        for (int i = 0; i < characterSprite.length(); i++)
-        {
-            characterS[i] = characterSprite[i];
-        }
-
-        position =
-        {
-            {700, 172},
-            {700, 418},
-            {900, 418},
-            {900, 172}
-        };
-    }
-    else  if (Speaker == "You")  //showing all characters
-    {
-        //later i have to clean this saav
-
-        glColor3f(0.58, 0.43, 0.20); //woodColor
-         //Loading texture
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-        glGenTextures(1, &characterTexture);
-        stbi_set_flip_vertically_on_load(true);
-        int width, height, nrChannels;
-        unsigned char* character = stbi_load("Chris.png", &width, &height, &nrChannels, 0);
-        glBindTexture(GL_TEXTURE_2D, characterTexture);
-
-        if (character != NULL)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, character);
-            cout << "Character loaded" << endl;
-        }
-        else
-        {
-            cout << "Failed to load character" << endl;
-        }
-        stbi_image_free(character);
-
-        //displaying
-
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-        glEnable(GL_TEXTURE_2D);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, characterTexture);
-
-        glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 0.0f);   glVertex2f(450, 172);
-        glTexCoord2f(0.0f, 1.0f);   glVertex2f(450, 410);
-        glTexCoord2f(1.0f, 1.0f);   glVertex2f(700, 410);
-        glTexCoord2f(1.0f, 0.0f);   glVertex2f(700, 172);
-        glEnd();
-
-
-        glColor3f(0.58, 0.43, 0.20); //woodColor
-   //Loading texture
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-        glGenTextures(1, &characterTexture);
-        stbi_set_flip_vertically_on_load(true);
-        width, height, nrChannels;
-        unsigned char* character2 = stbi_load("Andy.png", &width, &height, &nrChannels, 0);
-        glBindTexture(GL_TEXTURE_2D, characterTexture);
-
-        if (character2 != NULL)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, character2);
-            cout << "Character loaded" << endl;
-        }
-        else
-        {
-            cout << "Failed to load character" << endl;
-        }
-        stbi_image_free(character2);
-
-        //displaying
-
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-        glEnable(GL_TEXTURE_2D);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, characterTexture);
-
-        glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 0.0f);   glVertex2f(700, 172);
-        glTexCoord2f(0.0f, 1.0f);   glVertex2f(700, 418);
-        glTexCoord2f(1.0f, 1.0f);   glVertex2f(900, 418);
-        glTexCoord2f(1.0f, 0.0f);   glVertex2f(900, 172);
-        glEnd();
-        glDeleteTextures(1, &characterTexture);
-        return;
-    }
-    else
-    {
-        return;
-    }
-
-
-    glColor3f(0.58, 0.43, 0.20); //woodColor
-    //Loading texture
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glGenTextures(1, &characterTexture);
@@ -628,13 +510,46 @@ void DrawCharacter(string Speaker)
     glBindTexture(GL_TEXTURE_2D, characterTexture);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f);   glVertex2f(position[0].first, position[0].second);
-    glTexCoord2f(0.0f, 1.0f);   glVertex2f(position[1].first, position[1].second);
-    glTexCoord2f(1.0f, 1.0f);   glVertex2f(position[2].first, position[2].second);
-    glTexCoord2f(1.0f, 0.0f);   glVertex2f(position[3].first, position[3].second);
+    glTexCoord2f(0.0f, 0.0f);   glVertex2f(characterImageCoordinates[0].first, characterImageCoordinates[0].second);
+    glTexCoord2f(0.0f, 1.0f);   glVertex2f(characterImageCoordinates[1].first, characterImageCoordinates[1].second);
+    glTexCoord2f(1.0f, 1.0f);   glVertex2f(characterImageCoordinates[2].first, characterImageCoordinates[2].second);
+    glTexCoord2f(1.0f, 0.0f);   glVertex2f(characterImageCoordinates[3].first, characterImageCoordinates[3].second);
     glEnd();
 
     glDeleteTextures(1, &characterTexture);
+}
+
+
+void LoadAllCharacters(map <string, vector<pair<int, int>> > Characters , int color)
+{
+    glColor3f(0.58, 0.43, 0.20); // wood color
+
+    for (int i = 0; i < Characters.size(); i++)
+    {
+        char characterS[100] = "";
+        for (const auto& character : Characters) {
+            LoadCharacter(character.second, character.first, color);
+        }
+    }
+}
+
+void DrawCharacter(string Speaker)
+{
+    if (Speaker == "Narrator" || Speaker == "????") { return; }
+
+    if (Scene == SCENE1)
+    {
+        glColor3f(0.58, 0.43, 0.20);
+    }
+
+    if (Speaker == "You")
+    {
+        LoadAllCharacters(scene1CharacterPos, 0);
+    }
+    else
+    {
+        LoadCharacter(scene1CharacterPos[Speaker], Speaker, 0);
+    }  
 }
 #pragma endregion
 
@@ -1003,6 +918,10 @@ void AnimateDescription()
 #pragma endregion
 
 
+
+
+
+
 //------------------THROW AWAY CODE----------------
 void DrawTOBECONTINUED()
 {
@@ -1164,6 +1083,7 @@ void InitializeVariables()
     {"You" ,  "I think I just heard Angela screaming...... we must hurry up and check what happened!! "},
     {"Narrator" ,  "They rush towards the scream.... "}
     };
+   
 }
 
 
