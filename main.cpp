@@ -29,12 +29,14 @@ GLuint characterTexture2;
 bool NewScene = true;
 
 //States
-enum Scenes { START, DESCRIPTION, SCENE1, SCENE2, TOBECONTINUED };
-Scenes Scene = START;
+enum Scenes { START, DESCRIPTION, SCENE1, SCENE1_A , SCENE1_B , SCENE2, TOBECONTINUED , CHOOSING };
+Scenes Scene = SCENE1;
 
 
 vector<string> Description;
 vector<pair<string, string>> Scene1DialougesWithSpeakers;
+vector<pair<string, string>> Scene1_A_DialougesWithSpeakers;
+vector<pair<string, string>> Scene1_B_DialougesWithSpeakers;
 
 map <string, vector<pair<int, int>> > scene1CharacterPos =
 {
@@ -671,40 +673,110 @@ void AnimateText(string dialouge)
 
 #pragma endregion
 
+void RenderOptions()
+{
+    char FirstChoice[200] = "Choice 1";
+    char SecondChoice[200] = "Choice 2";
+
+    //DrawingOptionsbox1
+    glColor3f(0, 0, 0);
+    glBegin(GL_POLYGON);
+    glVertex2f(400, 500);
+    glVertex2f(400, 700);
+    glVertex2f(1000, 700);
+    glVertex2f(1000, 500);
+    glEnd();
+    DrawDialouge(FirstChoice, 420, 600 , 1);
+
+    glColor3f(0, 0, 0);
+    glBegin(GL_POLYGON);
+    glVertex2f(400, 200);
+    glVertex2f(400, 400);
+    glVertex2f(1000, 400);
+    glVertex2f(1000, 200);
+    glEnd();
+    DrawDialouge(SecondChoice, 420, 300, 1);
+
+    glFlush();
+
+}
+
 #pragma region MouseCallback
 void AnimateNextDialouge(int button, int state, int x, int y)
 {
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
-    {
-
-
-        switch (Scene)
+    
+        if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
         {
-        case START:
 
-            Scene = DESCRIPTION;
-            break;
-
-        case DESCRIPTION:
-            Scene = SCENE1;
-            break;
-
-        case SCENE1:
-            if (currentDialouge == Scene1DialougesWithSpeakers.size() - 1)
+            switch (Scene)
             {
-                currentDialouge = 0;
-                Scene = TOBECONTINUED;
-                //NewScene = true;
-            }
-            else
-            {
-                currentDialouge++;
-            }
+            case START:
 
-        default:
-            break;
+                Scene = DESCRIPTION;
+                break;
+
+            case DESCRIPTION:
+                Scene = SCENE1;
+                break;
+
+            case SCENE1:
+                if (currentDialouge == Scene1DialougesWithSpeakers.size() - 1)
+                {
+                    Scene = CHOOSING;
+                    //currentDialouge = 0;
+                    //Scene = TOBECONTINUED;
+                    //NewScene = true;
+                }
+                else
+                {
+                    currentDialouge++;
+                }
+                break;
+
+            case SCENE1_A:
+                if (currentDialouge == Scene1_A_DialougesWithSpeakers.size() - 1)
+                {
+                    
+                    currentDialouge = 0;
+                    Scene = TOBECONTINUED;
+                    //NewScene = true;
+                }
+                else
+                {
+                    currentDialouge++;
+                }
+                break;
+
+
+            case SCENE1_B:
+                if (currentDialouge == Scene1_B_DialougesWithSpeakers.size() - 1)
+                {
+
+                    currentDialouge = 0;
+                    Scene = TOBECONTINUED;
+                    //NewScene = true;
+                }
+                else
+                {
+                    currentDialouge++;
+                }
+                break;
+
+
+            case CHOOSING:
+                
+                if (x > 400 && x < 1000 && y > 40 && y < 220) { Scene = SCENE1_A; currentDialouge = 0;
+                };
+                
+                if (x > 400 && x < 1000 && y > 320 && y < 510) { Scene = SCENE1_B; currentDialouge = 0;
+                }
+                break;
+
+            default:
+                break;
+            }
         }
-    }
+    
 }
 #pragma endregion
 
@@ -1021,7 +1093,8 @@ void init()
 void display() //display function is called repeatedly by the main function so keep all rendering functions here
 {
     glClear(GL_COLOR_BUFFER_BIT);
-
+    char Buffer[400] = "";
+    string dialuoge;
     switch (Scene)
     {
     case START:
@@ -1044,8 +1117,40 @@ void display() //display function is called repeatedly by the main function so k
         DrawCharacter(Scene1DialougesWithSpeakers[currentDialouge].first);
         AnimateText(Scene1DialougesWithSpeakers[currentDialouge].second);
         DrawClickToContinue();
-        
+        break;
 
+    case CHOOSING:
+        queue = createQueue(1000);//create a fresh queue
+        DrawScene1BG();
+        RecoverFrame();
+        RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
+        DrawCharacter(Scene1DialougesWithSpeakers[currentDialouge].first);
+        RenderOptions();
+        
+        dialuoge = Scene1DialougesWithSpeakers[currentDialouge].second;
+        for (int i = 0; i < dialuoge.length(); i++)
+        {
+            Buffer[i] = dialuoge[i];
+        }
+        DrawDialouge(Buffer, DialougeXOffset, FirstLineY, 1);
+        break;
+
+    case SCENE1_A:
+        DrawScene1BG();
+        RecoverFrame();
+        RenderSpeaker(Scene1_A_DialougesWithSpeakers[currentDialouge].first);
+        DrawCharacter(Scene1_A_DialougesWithSpeakers[currentDialouge].first);
+        AnimateText(Scene1_A_DialougesWithSpeakers[currentDialouge].second);
+        DrawClickToContinue();
+        break;
+
+    case SCENE1_B:
+        DrawScene1BG();
+        RecoverFrame();
+        RenderSpeaker(Scene1_B_DialougesWithSpeakers[currentDialouge].first);
+        DrawCharacter(Scene1_B_DialougesWithSpeakers[currentDialouge].first);
+        AnimateText(Scene1_B_DialougesWithSpeakers[currentDialouge].second);
+        DrawClickToContinue();
         break;
 
     case TOBECONTINUED:
@@ -1082,6 +1187,18 @@ void InitializeVariables()
     {"????" ,  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHH!!!!! (Sudden scream from the other room....) "},
     {"You" ,  "I think I just heard Angela screaming...... we must hurry up and check what happened!! "},
     {"Narrator" ,  "They rush towards the scream.... "}
+    };
+
+    Scene1_A_DialougesWithSpeakers = {
+        {"You" , "This is dialouge chosen from first option "},
+        {"Andy" , "Any Option could have been chosen but you choose this one , any specific reason ? "},
+        {"You" , "No Just felt like it lol.... "}
+    };
+
+    Scene1_B_DialougesWithSpeakers = {
+       {"You" , "This is dialouge chosen from second option. "},
+       {"Chris" , "Why didnt you choose the first option , obio it was the right one! "},
+       {"You" , "I wanted to see what happends if you choose this path brooo!!!! "}
     };
    
 }
