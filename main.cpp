@@ -25,14 +25,19 @@ const int SpeakerYPos = 165;
 string PlayerName;
 GLuint characterTexture;
 GLuint characterTexture2;
-int currentScene = 1;
 
 bool NewScene = true;
 
 //States
-enum Scenes { START, DESCRIPTION, SCENE1, SCENE1_A , SCENE1_B , SCENE2, TOBECONTINUED , CHOOSING };
-Scenes Scene = SCENE2;
+enum Scenes { START, DESCRIPTION, SCENE, TOBECONTINUED , CHOOSING , SCENEA , SCENEB};
+Scenes Scene = START;
+//SceneVairables
+int currentScene = 0;
 
+int currentDialouge = 0;
+int j;
+
+#pragma region CharacterData
 
 vector<string> Description;
 vector<pair<string, string>> Scene1DialougesWithSpeakers;
@@ -40,6 +45,16 @@ vector<pair<string, string>> Scene2DialougesWithSpeakers;
 vector<pair<string, string>> Scene1_A_DialougesWithSpeakers;
 vector<pair<string, string>> Scene1_B_DialougesWithSpeakers;
 
+
+
+vector<vector<pair<string, string>>> SceneDialouges =
+{
+    Scene1DialougesWithSpeakers,
+    Scene2DialougesWithSpeakers
+};
+
+
+//Characters and their position on each scene
 map <string, vector<pair<int, int>> > scene1CharacterPos =
 {
     {"Chris", { {450, 172}, {450, 410}, {700, 410}, {700, 172} } },
@@ -52,6 +67,14 @@ map <string, vector<pair<int, int>> > scene2CharacterPos =
     {"Andy",    { {600, 172}, {600, 418}, {800, 418}, {800, 172} } },
     {"Angella", { {800, 172}, {800, 400}, {1000, 400}, {1000, 172} } },
 };
+
+vector<map <string, vector<pair<int, int>> >> SceneCharacterPos
+{
+    scene1CharacterPos,
+    scene2CharacterPos
+};
+
+#pragma endregion
 
 #pragma region CoordinateData
 
@@ -112,10 +135,13 @@ vector<vector<pair<int, int>>> GenericRoomScene2 =
     { {187, 419},{187, 588},{1093, 588}, {1093, 419} },     //3. //FrontWall - Upper - Polygon 
     { {0,0}, {0, 240},{187, 419},{1093, 419}, {1280, 240} ,{1280,0}},        //4.  //Ground - Polygon
     { {50, 430},{50, 530},{110, 580}, {110, 480} },         //5.  //Window Body - Polygon glColor3f(1, 1, 1) // white
-    { {0, 241},{187, 419},{1093, 419}, {1280, 240} },       //6. //SplitLine  - GL_LINE_STRIP
-    { {80, 455},{80, 555} },                                //7.  //WindowLine - Vertical  - GL_LINES
-    { {50, 480},{110, 530} },                               //8.  //WindowLine - Horizontal  - GL_LINES
-    { {50, 430},{50, 530} , {110, 580}, {110, 480} },       //9.  //Window Outline  - GL_LINE_LOOP width = 3
+    { {80, 455},{80, 555} },                                //6.  //WindowLine - Vertical  - GL_LINES
+    { {50, 480},{110, 530} },                               //7.  //WindowLine - Horizontal  - GL_LINES
+    { {187, 588},{1093, 588} },                            //8. //UpperWallOutLine  - GL_LINES
+    { {0, 241},{187, 419},{1093, 419}, {1280, 240} },     //9. //SplitLine  - GL_LINE_STRIP
+    { {0, 241},{187, 419},{187, 588}, {0, 720} },             //10. //LeftWallOutline  - GL_LINE_STRIP glColor3f(0, 0, 0) // black; width = 2
+    { {1280, 241},{1093, 419},{1093, 588}, {1280, 720} },     //11. //RightWallOutline  - GL_LINE_STRIP
+    { {50, 430},{50, 530} , {110, 580}, {110, 480} },       //12.  //Window Outline  - GL_LINE_LOOP width = 3
 
 };
 
@@ -131,12 +157,12 @@ vector<vector<pair<int, int>>> Chair =
 
 vector<vector<pair<int, int>>> Sofa =
 {
-    { {100, 200},{100, 380},{300, 390}, {300, 210} },      //0.sofa back rest - polygon - glcolor3f(0.05,0.32,0.59)
+    { {100, 200},{100, 380},{300, 390}, {300, 210} },       //0.sofa back rest - polygon - glcolor3f(0.05,0.32,0.59)
     { {100, 200},{100, 290},{150, 260}, {150, 175} },       //1.sofa leftsize rest - polygon - glcolor3f(0,0,1)
     { {300, 270},{300, 320},{350, 300}, {350, 225} },       //2.sofa rightsize rest - polygon - glcolor3f(0,0,1)
     { {150, 260},{300, 270},{350, 235}, {150, 215} },       //3.sofa sitting  - polygon - glcolor3f(0,0,1),
     { {150, 215},{350, 235},{350, 200}, {150, 175} },       //4.sofa bottom  - polygon - glcolor3f(0.05,0.32,0.59)
-    { {150, 195},{350, 217} }       //5.LineDivider  - Line 
+    { {150, 195},{350, 217} }                           //5.LineDivider  - Line 
                              
 };
 
@@ -164,10 +190,6 @@ vector<vector<pair<int, int>>> ClockLines =
 };
 
 #pragma endregion
-
-int currentDialouge = 0;
-int j;
-int State = 1;
 
 #pragma region Queue Implementation
 
@@ -381,19 +403,19 @@ void DrawRoom2BG()
     {
         //Sorting Colors
         if (i < 4) { glColor3f(0.34, 0.33, 0.33); } // grey
-        else if (i == 4) { glColor3f(1,0,0); } // red Color
+        else if (i == 4) { glColor3f(0.83,0.01,0.16); } // red Color
         else if (i == 5) { glColor3f(1, 1, 1); } // white color
         else if (i >= 5) { glColor3f(0, 0, 0); } // Black color
 
         //LineWidth
-        if (i >= 6 && i < 8) { glLineWidth(2); }
-        if (i == 9) { glLineWidth(3); }
+        if (i >= 6 && i < 12) { glLineWidth(2); }
+        if (i == 12) { glLineWidth(3); }
 
         //Shape
         if (i <= 5) { glBegin(GL_POLYGON); }
-        if (i == 6) { glBegin(GL_LINE_STRIP); }
-        if (i >= 7 && i <= 8) { glBegin(GL_LINES); }
-        if (i == 9) { glBegin(GL_LINE_LOOP); }
+        if (i >= 6 && i <= 8) { glBegin(GL_LINES); }
+        if (i >= 9 && i <= 11) { glBegin(GL_LINE_STRIP); }
+        if (i == 12) { glBegin(GL_LINE_LOOP); }
 
 
         for (int j = 0; j < GenericRoomScene2[i].size(); j++)
@@ -444,7 +466,7 @@ void DrawCupBoard(int bodyColor)
         //SortingColors
         if (i == 0)
         {
-            if (bodyColor == 1) 
+            if (bodyColor == 0) 
             { 
                 glColor3f(1, 0, 0); //red
             } 
@@ -469,15 +491,14 @@ void DrawCupBoard(int bodyColor)
         //DrawingShape
         for (int j = 0; j < Cupboard[i].size(); j++)
         {
-            if (bodyColor == 1)
+            if (bodyColor == 0)
             {
                 glVertex2f(Cupboard[i][j].first, Cupboard[i][j].second);
             }
             else
             {
-                glVertex2f(Cupboard[i][j].first + 50, Cupboard[i][j].second + 100);
+                glVertex2f(Cupboard[i][j].first + 100, Cupboard[i][j].second + 100);
             }
-            
         }
 
         glEnd();
@@ -493,14 +514,7 @@ void DrawClock(int scene)
    //Outline
     int x = 700, y = 520, r = 50;
     glBegin(GL_POLYGON);
-    if (scene == 1)
-    {
-        y = 520;
-    }
-    else
-    {
-        y = 620;
-    }
+   
 
     glColor3f(0, 0, 0); // black
     for (int i = 0; i < 360; i++) { float theta = i * 3.14 / 180;  glVertex2f(x + r * cos(theta), y + r * sin(theta)); } //drawCircle
@@ -509,15 +523,6 @@ void DrawClock(int scene)
     //Face outline
     glBegin(GL_POLYGON);
     x = 700, y = 520, r = 45;
-
-    if (scene == 1)
-    {
-        y = 520;
-    }
-    else
-    {
-        y = 620;
-    }
 
     glColor3f(1, 1, 1); //white
     for (int i = 0; i < 360; i++) { float theta = i * 3.14 / 180;  glVertex2f(x + r * cos(theta), y + r * sin(theta)); }  //drawCircle
@@ -533,14 +538,9 @@ void DrawClock(int scene)
         //DrawingShape
         for (int j = 0; j < ClockLines[i].size(); j++)
         {
-            if (scene == 2)
-            {
-                glVertex2f(ClockLines[i][j].first, ClockLines[i][j].second+100);
-            }
-            else
-            {
-                glVertex2f(ClockLines[i][j].first, ClockLines[i][j].second);
-            }
+           
+           glVertex2f(ClockLines[i][j].first, ClockLines[i][j].second);
+            
             
         }
         glEnd();
@@ -572,7 +572,7 @@ void DrawSofa()
 
         for (int j = 0; j < Sofa[i].size(); j++)
         {
-            glVertex2f(Sofa[i][j].first, Sofa[i][j].second);
+            glVertex2f(Sofa[i][j].first-50, Sofa[i][j].second);
         }
 
         glEnd();
@@ -581,15 +581,25 @@ void DrawSofa()
 }
 #pragma endregion
 
-
 #pragma region DrawScenes
-
+void DrawCharacterBG(int scene)
+{
+    switch (scene)
+    {
+    case 0:
+        glColor3f(0.58, 0.43, 0.20);
+        break;
+    case 1:
+        glColor3f(0.83, 0.01, 0.16);
+        break;
+    }
+}
 void DrawScene1BG()
 {
     DrawRoomBG();
     DrawChair();
-    DrawCupBoard(1);
-    DrawClock(1);
+    DrawCupBoard(currentScene);
+    DrawClock(currentScene);
 
     if (NewScene)
     {
@@ -602,9 +612,9 @@ void DrawScene1BG()
 void DrawScene2BG()
 {
     DrawRoom2BG();
-    DrawCupBoard(2);
+    DrawCupBoard(currentScene);
     DrawSofa();
-    DrawClock(2);
+    DrawClock(currentScene);
 
     if (NewScene)
     {
@@ -618,11 +628,11 @@ void DrawCurrentSceneBG(int scene)
 {
     switch (scene)
     {
-    case 1:
+    case 0:
         DrawScene1BG();
         break;
 
-    case 2:
+    case 1:
         DrawScene2BG();
         break;
     }
@@ -640,17 +650,14 @@ void ClearFrame()
 
 void RecoverFrame()
 {
-    DrawScene1BG();
-    DrawCurrentSceneBG(2);
-    DrawDialougeBox();
+    DrawCurrentSceneBG(currentScene); 
 }
 #pragma endregion
 
 #pragma region CharacterRendering
 void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string characterImageName, int color)
 {
-
-    glColor4f(0.58, 0.43, 0.20 , 0.5);
+    DrawCharacterBG(currentScene); //making sure the bg of the characters matches with that of the bg of the scene
     char characterS[100] = "";
     for (int i = 0; i < characterImageName.length(); i++) { characterS[i] = characterImageName[i]; }
     strcat_s(characterS, ".png");
@@ -697,7 +704,7 @@ void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string char
 
 void LoadAllCharacters(map <string, vector<pair<int, int>> > Characters , int color)
 {
-    glColor3f(0.58, 0.43, 0.20); // wood color
+    DrawCharacterBG(currentScene);
 
     for (int i = 0; i < Characters.size(); i++)
     {
@@ -712,18 +719,15 @@ void DrawCharacter(string Speaker)
 {
     if (Speaker == "Narrator" || Speaker == "????") { return; }
 
-    if (Scene == SCENE1)
-    {
-        glColor3f(0.58, 0.43, 0.20);
-    }
+    DrawCharacterBG(currentScene);
 
     if (Speaker == "You")
     {
-        LoadAllCharacters(scene1CharacterPos, 0);
+        LoadAllCharacters(SceneCharacterPos[currentScene], 0);
     }
     else
     {
-        LoadCharacter(scene2CharacterPos[Speaker], Speaker, 0);
+        LoadCharacter(SceneCharacterPos[currentScene][Speaker], Speaker, 0);
     }  
 }
 #pragma endregion
@@ -734,7 +738,7 @@ bool CheckOverFlow(string& dialouge, string& text)
     if (dialouge.length() > 120)
     {
         text = dialouge.substr(0, 120);
-        dialouge.erase(0, 120); //erases first 100 characters
+        dialouge.erase(0, 120); //erases first 120 characters
         return true;
     }
     else
@@ -879,54 +883,23 @@ void AnimateNextDialouge(int button, int state, int x, int y)
 {
         if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
         {
-
             switch (Scene)
             {
             case START:
-
                 Scene = DESCRIPTION;
                 break;
 
             case DESCRIPTION:
-                Scene = SCENE1;
+                Scene = SCENE;
                 break;
 
-                //need to make this generlized
-            case SCENE1:
-                if (currentDialouge == Scene1DialougesWithSpeakers.size() - 1)
+            case SCENE:
+                if (currentDialouge == SceneDialouges[currentScene].size() - 1)
                 {
-                    Scene = CHOOSING;
-                    //currentDialouge = 0;
-                    //Scene = TOBECONTINUED;
-                    //NewScene = true;
-                }
-                else
-                {
-                    currentDialouge++;
-                }
-                break;
-
-            case SCENE2:
-                if (currentDialouge == Scene2DialougesWithSpeakers.size() - 1)
-                {
-                    Scene = CHOOSING;
-                    //currentDialouge = 0;
-                    //Scene = TOBECONTINUED;
-                    //NewScene = true;
-                }
-                else
-                {
-                    currentDialouge++;
-                }
-                break;
-
-            case SCENE1_A:
-                if (currentDialouge == Scene1_A_DialougesWithSpeakers.size() - 1)
-                {
-                    
+                    currentScene++;
                     currentDialouge = 0;
-                    Scene = TOBECONTINUED;
-                    //NewScene = true;
+                    NewScene = true;
+                    //Scene = TOBECONTINUED;
                 }
                 else
                 {
@@ -934,36 +907,15 @@ void AnimateNextDialouge(int button, int state, int x, int y)
                 }
                 break;
 
-
-            case SCENE1_B:
-                if (currentDialouge == Scene1_B_DialougesWithSpeakers.size() - 1)
-                {
-
-                    currentDialouge = 0;
-                    Scene = TOBECONTINUED;
-                    //NewScene = true;
-                }
-                else
-                {
-                    currentDialouge++;
-                }
-                break;
-
-
-            case CHOOSING:
-                
-                if (x > 400 && x < 1000 && y > 40 && y < 220) { Scene = SCENE1_A; currentDialouge = 0;
-                };
-                
-                if (x > 400 && x < 1000 && y > 320 && y < 510) { Scene = SCENE1_B; currentDialouge = 0;
-                }
+            case CHOOSING:  
+                if (x > 400 && x < 1000 && y > 40 && y < 220) { Scene = SCENEA; currentDialouge = 0;}
+                if (x > 400 && x < 1000 && y > 320 && y < 510) { Scene = SCENEB; currentDialouge = 0;}
                 break;
 
             default:
                 break;
             }
         }
-    
 }
 #pragma endregion
 
@@ -983,7 +935,6 @@ void  DrawStartBox()
 
     DrawDialouge(Start, 600, 25, 0);
     glFlush();
-
 }
 
 void DrawHouseAndWindow()
@@ -1077,8 +1028,6 @@ void DrawDescriptionText(char* string, int x, int y)
 //I just hardCoded this crap , i will try to find a better solution
 void AnimateDescription()
 {
-
-
     string Line1 = Description[0];
     string Line2 = Description[1];
     string Line3 = Description[2];
@@ -1175,10 +1124,6 @@ void AnimateDescription()
 }
 
 #pragma endregion
-
-
-
-
 
 
 //------------------THROW AWAY CODE----------------
@@ -1292,17 +1237,16 @@ void display() //display function is called repeatedly by the main function so k
         queue = createQueue(1000); //create a fresh queue
         AnimateDescription();
         DrawClickToContinue();
-        
-
         break;
 
-    case SCENE1:
+    case SCENE:
         queue = createQueue(1000);//create a fresh queue
-        DrawScene1BG();
+        DrawCurrentSceneBG(currentScene);
         RecoverFrame();
-        RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
-        DrawCharacter(Scene1DialougesWithSpeakers[currentDialouge].first);
-        AnimateText(Scene1DialougesWithSpeakers[currentDialouge].second);
+        DrawCharacter(SceneDialouges[currentScene][currentDialouge].first);
+        DrawDialougeBox();
+        RenderSpeaker(SceneDialouges[currentScene][currentDialouge].first);
+        AnimateText(SceneDialouges[currentScene][currentDialouge].second);
         DrawClickToContinue();
         break;
 
@@ -1310,8 +1254,10 @@ void display() //display function is called repeatedly by the main function so k
         queue = createQueue(1000);//create a fresh queue
         DrawScene1BG();
         RecoverFrame();
-        RenderSpeaker(Scene1DialougesWithSpeakers[currentDialouge].first);
-        DrawCharacter(Scene1DialougesWithSpeakers[currentDialouge].first);
+        RenderSpeaker(SceneDialouges[currentScene][currentDialouge].first);
+        DrawCharacter(SceneDialouges[currentScene][currentDialouge].first);
+        DrawDialougeBox();
+        RenderSpeaker(SceneDialouges[currentScene][currentDialouge].first);
         RenderOptions();
         
         dialuoge = Scene1DialougesWithSpeakers[currentDialouge].second;
@@ -1322,7 +1268,8 @@ void display() //display function is called repeatedly by the main function so k
         DrawDialouge(Buffer, DialougeXOffset, FirstLineY, 1);
         break;
 
-    case SCENE1_A:
+        //see above and rewrite dialouges
+    case SCENEA:
         DrawScene1BG();
         RecoverFrame();
         RenderSpeaker(Scene1_A_DialougesWithSpeakers[currentDialouge].first);
@@ -1331,21 +1278,12 @@ void display() //display function is called repeatedly by the main function so k
         DrawClickToContinue();
         break;
 
-    case SCENE1_B:
+    case SCENEB:
         DrawScene1BG();
         RecoverFrame();
         RenderSpeaker(Scene1_B_DialougesWithSpeakers[currentDialouge].first);
         DrawCharacter(Scene1_B_DialougesWithSpeakers[currentDialouge].first);
         AnimateText(Scene1_B_DialougesWithSpeakers[currentDialouge].second);
-        DrawClickToContinue();
-        break;
-
-    case SCENE2:
-        DrawScene2BG();
-        RecoverFrame();
-        RenderSpeaker(Scene2DialougesWithSpeakers[currentDialouge].first);
-        DrawCharacter(Scene2DialougesWithSpeakers[currentDialouge].first);
-        AnimateText(Scene2DialougesWithSpeakers[currentDialouge].second);
         DrawClickToContinue();
         break;
 
@@ -1372,7 +1310,7 @@ void InitializeVariables()
     "and were very excited. They began their journey 3 days from then in John's car and reached there the next night.  ",
     };
 
-    Scene1DialougesWithSpeakers = {
+    SceneDialouges[0] = {
     {"Narrator" , "As they entered , they were awestruck looking at the magnificent mansion and start exploring it and checked out the rooms they were going to stay in and started unpacking their luggages. "},
     {"Chris" , "Hey "+ PlayerName + " , Andy come check this room out..... its even bigger than my living room!! "},
     {"You" , "Wow.... my whole family can stay here. "},
@@ -1385,13 +1323,13 @@ void InitializeVariables()
     {"Narrator" ,  "They rush towards the scream.... "}
     };
 
-    Scene2DialougesWithSpeakers = {
+    SceneDialouges[1] = {
    {"Narrator" , "Scene 2 , They have reached the source of the scream. "},
-   {"You" , "ANGELA!! What happened why did you scream....are you alright?!! "},
-   {"Angella" , "I just saw a huge cockroach over there....aaaahhh so scary :'-( "},
-   { "Chris" , "Are you serious?? We got so scared... Angela, why you such a coward? "},
-   {"Angella" , "Im so sorry you guys.. I just got shocked seeing it all of a sudden.. lets go to bed, we have to go out tomorrow. "},
-   {"Narrator" , "They head to their respective room to rest up for tomorrow"}
+   {"You" , "ANGELLA!!! What happened why did you scream??? Are you alright?!! "},
+   {"Angella" , "I just saw a huge cockroach over there.... aaaahhh so scary  :'-( "},
+   { "Chris" , "Are you serious?? We got so scared... Angela, why are you such a coward? "},
+   {"Angella" , "Im so sorry you guys.. I just got shocked seeing it all of a sudden.. let's go to bed, we have to go out tomorrow. "},
+   {"Narrator" , "They head to their respective room to rest up for tomorrow. "}
     };
 
     Scene1_A_DialougesWithSpeakers = {
