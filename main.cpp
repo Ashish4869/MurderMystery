@@ -30,9 +30,9 @@ bool NewScene = true;
 
 //States
 enum Scenes { START, DESCRIPTION, SCENE, TOBECONTINUED , CHOOSING , SCENEA , SCENEB};
-Scenes Scene = START;
+Scenes Scene = SCENE;
 //SceneVairables
-int currentScene = 0;
+int currentScene = 1;
 
 int currentDialouge = 0;
 int j;
@@ -162,7 +162,12 @@ vector<vector<pair<int, int>>> Sofa =
     { {300, 270},{300, 320},{350, 300}, {350, 225} },       //2.sofa rightsize rest - polygon - glcolor3f(0,0,1)
     { {150, 260},{300, 270},{350, 235}, {150, 215} },       //3.sofa sitting  - polygon - glcolor3f(0,0,1),
     { {150, 215},{350, 235},{350, 200}, {150, 175} },       //4.sofa bottom  - polygon - glcolor3f(0.05,0.32,0.59)
-    { {150, 195},{350, 217} }                           //5.LineDivider  - Line 
+    { {150, 195},{350, 217} },                              //5.LineDivider  - Line 
+    { {100, 200},{100, 380}, {300, 390}, {300, 270} },       //6.UpperOutline  - LineStrip
+    { {150, 260},{300, 270},{350, 235}, {150, 215} ,{150, 260}  } ,      //7.SofaSittingOutline  - LineStrip
+    { {100, 200},{100, 290},{150, 260}, {150, 175}, {100, 200}  },       //8.SofaLeftOutline  - LineStrip
+    { {300, 270},{300, 320},{350, 300}, {350, 225}},       //9.SofaRightOutline  - LineStrip
+    { {150, 215},{350, 235},{350, 200}, {150, 175}},       //10.SofaBottomOutline  - LineStrip
                              
 };
 
@@ -367,13 +372,36 @@ void DrawClickToContinue()
 
 #pragma region DrawGenericRooms
 //Drawing a Generic Room
-void DrawRoomBG()
+void DrawRoomBG(int scene)
 {
     for (int i = 0; i < GenericRoom.size(); i++)
     {
         //Sorting Colors
-        if (i < 4) { glColor3f(1, 0.99, 0.81); } // Cream Color
-        else if (i < 8) { glColor3f(0.58, 0.43, 0.20); } // Wood Color
+        if (i < 4) 
+        {
+            if (scene == 0)
+            {
+                glColor3f(1, 0.99, 0.81); // cream color
+            }
+            else
+            {
+                glColor3f(0.34, 0.33, 0.33); // cream
+            }
+           
+        } // Cream Color
+        else if (i < 8)
+        {
+            if (scene == 0)
+            {
+                glColor3f(0.58, 0.43, 0.20); // wood
+            }
+            else
+            {
+                glColor3f(0.83, 0.01, 0.16); // red tint
+            }
+            
+        } // Wood Color
+
         else if (i == 8) { glColor3f(1, 1, 1); } // white color
         else if (i >= 9) { glColor3f(0, 0, 0); } // Black color
 
@@ -397,7 +425,7 @@ void DrawRoomBG()
 
 }
 
-void DrawRoom2BG()
+void DrawAttic()
 {
     for (int i = 0; i < GenericRoomScene2.size(); i++)
     {
@@ -497,7 +525,7 @@ void DrawCupBoard(int bodyColor)
             }
             else
             {
-                glVertex2f(Cupboard[i][j].first + 100, Cupboard[i][j].second + 100);
+                glVertex2f(Cupboard[i][j].first + 100, Cupboard[i][j].second);
             }
         }
 
@@ -565,6 +593,11 @@ void DrawSofa()
             glColor3f(0, 0, 0);
             glBegin(GL_LINES);
         }
+        if (i >= 6 && i <= 10)
+        {
+            glColor3f(0, 0, 0);
+            glBegin(GL_LINE_STRIP);
+        }
         else
         {
             glBegin(GL_POLYGON);
@@ -572,7 +605,7 @@ void DrawSofa()
 
         for (int j = 0; j < Sofa[i].size(); j++)
         {
-            glVertex2f(Sofa[i][j].first-50, Sofa[i][j].second);
+            glVertex2f(Sofa[i][j].first-10, Sofa[i][j].second-80);
         }
 
         glEnd();
@@ -587,16 +620,16 @@ void DrawCharacterBG(int scene)
     switch (scene)
     {
     case 0:
-        glColor3f(0.58, 0.43, 0.20);
+        glColor3f(0.58, 0.43, 0.20); // cream color
         break;
     case 1:
-        glColor3f(0.83, 0.01, 0.16);
+        glColor3f(0.83, 0.01, 0.16); // red tint
         break;
     }
 }
 void DrawScene1BG()
 {
-    DrawRoomBG();
+    DrawRoomBG(currentScene);
     DrawChair();
     DrawCupBoard(currentScene);
     DrawClock(currentScene);
@@ -611,7 +644,7 @@ void DrawScene1BG()
 
 void DrawScene2BG()
 {
-    DrawRoom2BG();
+    DrawRoomBG(currentScene);
     DrawCupBoard(currentScene);
     DrawSofa();
     DrawClock(currentScene);
