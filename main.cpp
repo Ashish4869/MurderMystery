@@ -30,7 +30,7 @@ bool NewScene = true;
 
 //States
 enum Scenes { START, DESCRIPTION, SCENE, TOBECONTINUED , CHOOSING , SCENEA , SCENEB};
-Scenes Scene = SCENE;
+Scenes Scene = START;
 //SceneVairables
 int currentScene = 1;
 
@@ -42,15 +42,15 @@ int j;
 vector<string> Description;
 vector<pair<string, string>> Scene1DialougesWithSpeakers;
 vector<pair<string, string>> Scene2DialougesWithSpeakers;
+vector<pair<string, string>> Scene3DialougesWithSpeakers;
 vector<pair<string, string>> Scene1_A_DialougesWithSpeakers;
 vector<pair<string, string>> Scene1_B_DialougesWithSpeakers;
-
-
 
 vector<vector<pair<string, string>>> SceneDialouges =
 {
     Scene1DialougesWithSpeakers,
-    Scene2DialougesWithSpeakers
+    Scene2DialougesWithSpeakers,
+    Scene3DialougesWithSpeakers
 };
 
 
@@ -63,6 +63,15 @@ map <string, vector<pair<int, int>> > scene1CharacterPos =
 
 map <string, vector<pair<int, int>> > scene2CharacterPos =
 {
+    {"Chris",   { {270, 172}, {270, 410}, {520, 410}, {520, 172} } },
+    {"Andy",    { {520, 172}, {520, 418}, {720, 418}, {720, 172} } },
+    {"Angella", { {720, 172}, {720, 390}, {920, 390}, {920, 172} } },
+    {"Emily" ,  { {910, 172}, {910, 400}, {1100, 400}, {1100, 172} } },
+    {"roach" ,  { {70, 500}, {70, 550}, {120, 550}, {120, 500} } },
+};
+
+map <string, vector<pair<int, int>> > scene3CharacterPos =
+{
     {"Chris",   { {350, 172}, {350, 410}, {600, 410}, {600, 172} } },
     {"Andy",    { {600, 172}, {600, 418}, {800, 418}, {800, 172} } },
     {"Angella", { {800, 172}, {800, 400}, {1000, 400}, {1000, 172} } },
@@ -71,7 +80,8 @@ map <string, vector<pair<int, int>> > scene2CharacterPos =
 vector<map <string, vector<pair<int, int>> >> SceneCharacterPos
 {
     scene1CharacterPos,
-    scene2CharacterPos
+    scene2CharacterPos,
+    scene3CharacterPos
 };
 
 #pragma endregion
@@ -145,6 +155,42 @@ vector<vector<pair<int, int>>> GenericRoomScene2 =
 
 };
 
+vector<vector<pair<int, int>>> HallRoom =
+{
+    //RoomOutline
+    { {0,200} ,{179, 350} ,{1100, 350}, {1280, 200} },  //0.SplitLine - GL LINESTRIP - linewidth(2)
+    { {179, 350} ,{179, 720} },                         //1.LeftVerticalLine - GL LINES - linewidth(2)
+    { {1100, 350} ,{1100, 720} },                       //2.RightVerticalLine - GL LINES - linewidth(2)
+    { {179 , 610} , {580 , 610}},                       //3.TopRailing Left - GL LINES - line width(2)
+    { {179 ,560} , {580, 560}},                         //4.Bottom Railing Left - GL LINES - line width(2)
+    { {1100 ,560} , {700 , 560} },                      //5.Top Railing right - GL LINES - line width(2)
+    { {1100 ,610} , {700 , 610} },                      //6.Bottom Railing left - GL LINES - line width(2) 
+};
+
+vector<vector<pair<int, int>>> ColumnDesign =
+{
+    //ColumnDesign
+    { {200 ,610} , {200 , 598} },                     //7.LineTop - GL LINES - LineWidht(2)
+    { {200 ,598} , {188 , 585} },                     //8.LineLeftdiagTop - GL LINES - LineWidht(2)
+    { {200 ,598} , {212 , 585} },                     //9.LineRightdiagTOp - GL LINES - LineWidht(2)
+    { {188, 585} , {200 , 572} },                     //10.LineRightdiagDown - GL LINES - LineWidht(2)
+    { {212, 585} , {200 , 572} },                     //11.LineleftdiagDown - GL LINES - LineWidht(2)
+    { {200, 572} , {200 , 560} },                     //12.Middle LineDown - GL LINES - LineWidht(2)
+    { {188 , 585} , {212 , 585} }                     //12.Middle Line Bisecting- GL LINES - LineWidht(2)
+};
+
+
+vector<vector<pair<int, int>>> UnderColumnDesign =
+{
+    //UnderColumnDesign
+    { {179 ,500} , {321 , 500} },                     //0.MidLineRight - GL LINES - LineWidht(2)
+    { {580 ,500} , {438 , 500} },                     //1.MidLineLeft - GL LINES - LineWidht(2)
+    { {321 , 500} , {379 , 550} , {438 , 500}, {379 , 450} },                     //2.InnerSquare - GL LINELOOP - LineWidht(2)
+    { {276 , 500} , {379 , 600} , {483 , 500}, {379 , 390} },                     //3.OutterSquare - GL LINELOOP - LineWidht(2)
+    
+};
+
+
 vector<vector<pair<int, int>>> Chair =
 {
     { {200, 250},{260, 230},{320, 260}, {260, 280} },       //0.Chair sitting - glColor3f(1, 0.64, 0); (chair brown color) - Polygon
@@ -153,6 +199,8 @@ vector<vector<pair<int, int>>> Chair =
     { {200, 250},{200, 200} },                              //3.Chair Leg left - glColor3f(0, 0, 0); Lines - glLineWidth(2);
     { {260, 230},{260, 180} },                              //4.Chair Leg middle - glColor3f(0, 0, 0); Lines - glLineWidth(2);
     { {320, 260},{320, 210} },                              //5.Chair Leg right - glColor3f(0, 0, 0); Lines - glLineWidth(2);
+    { {200, 250},{260, 230},{320, 260}, {260, 280},{200, 250} },       //6.Chair sitting outline - GLline strip
+    { {200, 252},{200, 350},{260, 370}, {260, 282},  {200, 252} },       //7.Chair top outline - GLline strip
 };
 
 vector<vector<pair<int, int>>> Sofa =
@@ -180,7 +228,8 @@ vector<vector<pair<int, int>>> Cupboard =
      { {997, 150},{997, 430} },                             //3.Cupboard Line - GL_LINES - glColor3f(0, 0, 0); - glLineWidth(3);
      { {985, 290} },                                        //4.Cupboard Knob left - GL_POINTS - glColor3f(0, 0, 0); - glPointSize(5);
      { {1005, 290} },                                       //5.Cupboard Knob left - GL_POINTS - glColor3f(0, 0, 0); - glPointSize(5);
-     { {900, 430},{920, 500},{1074, 500}, {1094, 430} },    //6.Cupboard Knob left - GL_LINE_STRIP - glColor3f(0, 0, 0); - glLineWidth(2);
+     { {900, 430},{920, 500},{1074, 500}, {1094, 430} },    //6.Top design - GL_LINE_STRIP - glColor3f(0, 0, 0); - glLineWidth(2);
+     { {900, 150},{900, 430},{1094, 430}, {1094, 150} , {900, 150}},    //7.CupboardBody outline - GL_LINE_STRIP - glColor3f(0, 0, 0); - glLineWidth(2);
 };
 
 vector<vector<pair<int, int>>> ClockLines =
@@ -370,6 +419,7 @@ void DrawClickToContinue()
 //-------------Click to Continue Indicator END-----------
 #pragma endregion
 
+
 #pragma region DrawGenericRooms
 //Drawing a Generic Room
 void DrawRoomBG(int scene)
@@ -385,7 +435,7 @@ void DrawRoomBG(int scene)
             }
             else
             {
-                glColor3f(0.34, 0.33, 0.33); // cream
+                glColor3f(0.34, 0.33, 0.33); // grey
             }
            
         } // Cream Color
@@ -431,7 +481,7 @@ void DrawAttic()
     {
         //Sorting Colors
         if (i < 4) { glColor3f(0.34, 0.33, 0.33); } // grey
-        else if (i == 4) { glColor3f(0.83,0.01,0.16); } // red Color
+        else if (i == 4) { glColor3f(0.83, 0.01, 0.16); } // red Color
         else if (i == 5) { glColor3f(1, 1, 1); } // white color
         else if (i >= 5) { glColor3f(0, 0, 0); } // Black color
 
@@ -452,7 +502,126 @@ void DrawAttic()
         }
         glEnd();
     }
+}
 
+void DrawHall()
+{
+    for (int i = 0; i < HallRoom.size(); i++)
+    {
+        glLineWidth(2);
+        if (i == 0)
+        {
+            glBegin(GL_LINE_STRIP);
+        }
+        else
+        {
+            glBegin(GL_LINES);
+        }
+        
+
+
+        for (int j = 0; j < HallRoom[i].size(); j++)
+        {
+            glVertex2f(HallRoom[i][j].first, HallRoom[i][j].second+60);
+        }
+        glEnd();
+    }
+}
+
+void DrawColumnDesign()
+{
+    int increment = 0;
+
+    //Left Columns
+    for (int i = 0; i < 4; i++)
+    {
+        for (int i = 0; i < ColumnDesign.size(); i++)
+        {
+            glLineWidth(3);
+            glColor3f(1, 1, 1);
+            glBegin(GL_LINES);
+
+            for (int j = 0; j < ColumnDesign[i].size(); j++)
+            {
+                glVertex2f(ColumnDesign[i][j].first+increment, ColumnDesign[i][j].second + 60);
+            }
+            glEnd();
+        }
+        increment += 100;
+    }
+
+    //Right Columns
+    increment = 570;
+    for (int i = 0; i < 4; i++)
+    {
+        for (int i = 0; i < ColumnDesign.size(); i++)
+        {
+            glLineWidth(3);
+            glColor3f(1, 1, 1);
+            glBegin(GL_LINES);
+
+            for (int j = 0; j < ColumnDesign[i].size(); j++)
+            {
+                glVertex2f(ColumnDesign[i][j].first + increment, ColumnDesign[i][j].second + 60);
+            }
+            glEnd();
+        }
+        increment += 100;
+    }
+}
+
+
+void DrawUnderColumnDesign()
+{
+    
+
+    //Left Columns
+    for (int i = 0; i < UnderColumnDesign.size(); i++)
+    {
+        glColor3f(1, 1, 1);
+
+        if (i < 2)
+        {
+            glLineWidth(2);
+            glBegin(GL_LINES);
+        }
+        else
+        {
+            glLineWidth(2);
+            glBegin(GL_LINE_LOOP);
+        }
+
+        for (int j = 0; j < UnderColumnDesign[i].size(); j++)
+        {
+            glVertex2f(UnderColumnDesign[i][j].first, UnderColumnDesign[i][j].second + 20);
+        }
+        glEnd();
+    }
+   
+
+    
+    //Right Columns
+    for (int i = 0; i < UnderColumnDesign.size(); i++)
+    {
+        glColor3f(1, 1, 1);
+
+        if (i < 2)
+        {
+            glBegin(GL_LINES);
+        }
+        else
+        {
+            glBegin(GL_LINE_LOOP);
+        }
+
+        for (int j = 0; j < UnderColumnDesign[i].size(); j++)
+        {
+            glVertex2f(UnderColumnDesign[i][j].first+520, UnderColumnDesign[i][j].second + 20);
+        }
+        glEnd();
+    }
+   
+    
 }
 
 #pragma endregion
@@ -473,7 +642,8 @@ void DrawChair()
 
         //Shape
         if (i < 2) { glBegin(GL_POLYGON); }
-        if (i >= 2) { glBegin(GL_LINES); }
+        if (i >= 2 && i <=5) { glBegin(GL_LINES); }
+        if (i >= 5 && i <= 7) { glBegin(GL_LINE_STRIP); }
 
         //Drawing Shape
         for (int j = 0; j < Chair[i].size(); j++)
@@ -514,7 +684,7 @@ void DrawCupBoard(int bodyColor)
         if (i < 3) { glBegin(GL_POLYGON); }
         if (i == 3) { glBegin(GL_LINES); }
         if (i < 6) { glBegin(GL_POINTS); }
-        if (i == 6) { glBegin(GL_LINE_STRIP); }
+        if (i >= 6) { glBegin(GL_LINE_STRIP); }
 
         //DrawingShape
         for (int j = 0; j < Cupboard[i].size(); j++)
@@ -605,7 +775,7 @@ void DrawSofa()
 
         for (int j = 0; j < Sofa[i].size(); j++)
         {
-            glVertex2f(Sofa[i][j].first-10, Sofa[i][j].second-80);
+            glVertex2f(Sofa[i][j].first-35, Sofa[i][j].second-80);
         }
 
         glEnd();
@@ -614,7 +784,6 @@ void DrawSofa()
 }
 #pragma endregion
 
-#pragma region DrawScenes
 void DrawCharacterBG(int scene)
 {
     switch (scene)
@@ -627,70 +796,21 @@ void DrawCharacterBG(int scene)
         break;
     }
 }
-void DrawScene1BG()
-{
-    DrawRoomBG(currentScene);
-    DrawChair();
-    DrawCupBoard(currentScene);
-    DrawClock(currentScene);
 
-    if (NewScene)
-    {
-        NewScene = false;
-        glFlush();
-        Sleep(1000);
-    }
-}
 
-void DrawScene2BG()
-{
-    DrawRoomBG(currentScene);
-    DrawCupBoard(currentScene);
-    DrawSofa();
-    DrawClock(currentScene);
-
-    if (NewScene)
-    {
-        NewScene = false;
-        glFlush();
-        Sleep(1000);
-    }
-}
-
-void DrawCurrentSceneBG(int scene)
-{
-    switch (scene)
-    {
-    case 0:
-        DrawScene1BG();
-        break;
-
-    case 1:
-        DrawScene2BG();
-        break;
-    }
-}
-
-#pragma endregion
-
-#pragma region FrameFunctions
-void ClearFrame()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-    glEnd();
-    glFlush();
-}
-
-void RecoverFrame()
-{
-    DrawCurrentSceneBG(currentScene); 
-}
-#pragma endregion
 
 #pragma region CharacterRendering
 void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string characterImageName, int color)
 {
-    DrawCharacterBG(currentScene); //making sure the bg of the characters matches with that of the bg of the scene
+    if (color == 0)
+    {
+        DrawCharacterBG(currentScene);
+    }
+    else
+    {
+        glColor3f(0.34, 0.33, 0.33);//grey color
+    }
+    //making sure the bg of the characters matches with that of the bg of the scene
     char characterS[100] = "";
     for (int i = 0; i < characterImageName.length(); i++) { characterS[i] = characterImageName[i]; }
     strcat_s(characterS, ".png");
@@ -735,7 +855,7 @@ void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string char
 }
 
 
-void LoadAllCharacters(map <string, vector<pair<int, int>> > Characters , int color)
+void LoadAllCharacters(map <string, vector<pair<int, int>> > Characters, int color)
 {
     DrawCharacterBG(currentScene);
 
@@ -743,7 +863,15 @@ void LoadAllCharacters(map <string, vector<pair<int, int>> > Characters , int co
     {
         char characterS[100] = "";
         for (const auto& character : Characters) {
-            LoadCharacter(character.second, character.first, color);
+            if (character.first == "roach")
+            {
+                LoadCharacter(character.second, character.first, 1);
+            }
+            else
+            {
+                LoadCharacter(character.second, character.first, color);
+            }
+            
         }
     }
 }
@@ -761,7 +889,91 @@ void DrawCharacter(string Speaker)
     else
     {
         LoadCharacter(SceneCharacterPos[currentScene][Speaker], Speaker, 0);
-    }  
+    }
+}
+#pragma endregion
+
+#pragma region DrawScenes
+
+void DrawScene1BG()
+{
+    DrawRoomBG(currentScene);
+    DrawChair();
+    DrawCupBoard(currentScene);
+    DrawClock(currentScene);
+
+    if (NewScene)
+    {
+        NewScene = false;
+        glFlush();
+        Sleep(1000);
+    }
+}
+
+void DrawScene2BG()
+{
+    DrawRoomBG(currentScene);
+    //DrawSofa();
+    DrawClock(currentScene);
+
+    if (currentDialouge < 3)
+    {
+        LoadCharacter(scene2CharacterPos["roach"], "roach", 1);
+    }
+
+
+    if (NewScene)
+    {
+        NewScene = false;
+        glFlush();
+        Sleep(1000);
+    }
+}
+
+void DrawScene3BG()
+{
+    DrawHall();
+    DrawColumnDesign();
+    DrawUnderColumnDesign();
+
+    if (NewScene)
+    {
+        NewScene = false;
+        glFlush();
+        Sleep(1000);
+    }
+}
+
+void DrawCurrentSceneBG(int scene)
+{
+    switch (scene)
+    {
+    case 0:
+        DrawScene1BG();
+        break;
+
+    case 1:
+        DrawScene2BG();
+        break;
+    case 2:
+        DrawScene3BG();
+        break;
+    }
+}
+
+#pragma endregion
+
+#pragma region FrameFunctions
+void ClearFrame()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glEnd();
+    glFlush();
+}
+
+void RecoverFrame()
+{
+    DrawCurrentSceneBG(currentScene); 
 }
 #pragma endregion
 
@@ -1237,7 +1449,6 @@ void DrawTOBECONTINUED()
 }
 
 
-
 void LoadMainScreen()
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -1287,7 +1498,6 @@ void display() //display function is called repeatedly by the main function so k
         queue = createQueue(1000);//create a fresh queue
         DrawScene1BG();
         RecoverFrame();
-        RenderSpeaker(SceneDialouges[currentScene][currentDialouge].first);
         DrawCharacter(SceneDialouges[currentScene][currentDialouge].first);
         DrawDialougeBox();
         RenderSpeaker(SceneDialouges[currentScene][currentDialouge].first);
@@ -1357,10 +1567,23 @@ void InitializeVariables()
     };
 
     SceneDialouges[1] = {
+    {"Narrator" , "Scene 2 , They have reached the source of the scream. "},
+   {"You" , "ANGELLA!!! What happened why did you scream??? Are you alright?!! "},
+   {"Angella" , "I just saw a huge cockroach over there.... aaaahhh so scary  :'-( "},
+   { "Chris" , "Are you serious?? We got so scared... Angela, why are you such a coward? "},
+   { "Andy" , "Angela... you are so silly. By the way where is Emily ? ?  (^o^) "},
+   { "Emily" , "Im here, i ran and hid in the washroom after i saw the cockroach  :'-( "},
+   {"Angella" , "Im so sorry you guys.. I just got shocked seeing it all of a sudden.. let's go to bed, we have to go out tomorrow. "},
+   {"Narrator" , "They head to their respective room to rest up for tomorrow. "}
+    };
+
+    SceneDialouges[2] = {
    {"Narrator" , "Scene 2 , They have reached the source of the scream. "},
    {"You" , "ANGELLA!!! What happened why did you scream??? Are you alright?!! "},
    {"Angella" , "I just saw a huge cockroach over there.... aaaahhh so scary  :'-( "},
    { "Chris" , "Are you serious?? We got so scared... Angela, why are you such a coward? "},
+   { "Andy" , "Angela... you are so silly. By the way where is Emily ? ?  (^o^) "},
+   { "Emily" , "Im here, i ran and hid in the washroom after i saw the cockroach  :'-( "},
    {"Angella" , "Im so sorry you guys.. I just got shocked seeing it all of a sudden.. let's go to bed, we have to go out tomorrow. "},
    {"Narrator" , "They head to their respective room to rest up for tomorrow. "}
     };
