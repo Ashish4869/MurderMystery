@@ -13,7 +13,7 @@
 using namespace std;
 
 //CONSTANTS
-const int TypingSpeed = 2; //20
+const int TypingSpeed = 20; //20
 const int LineCharacterLimit = 120;
 const int DialougeXOffset = 150;
 const int FirstLineY = 110;
@@ -30,10 +30,10 @@ bool NewScene = true;
 
 //States
 enum Scenes { START, DESCRIPTION, SCENE, TOBECONTINUED , CHOOSING , SCENEA , SCENEB};
-Scenes Scene = SCENE;
+Scenes Scene = START;
 //SceneVairables
 int currentScene = 0;
-
+int branchCounter = 0;
 int currentDialouge = 0;
 int j;
 
@@ -43,21 +43,42 @@ vector<string> Description;
 vector<pair<string, string>> Scene1DialougesWithSpeakers;
 vector<pair<string, string>> Scene2DialougesWithSpeakers;
 vector<pair<string, string>> Scene3DialougesWithSpeakers;
-vector<pair<string, string>> Scene1_A_DialougesWithSpeakers;
-vector<pair<string, string>> Scene1_B_DialougesWithSpeakers;
+vector<pair<string, string>> Scene4DialougesWithSpeakers;
+vector<pair<string, string>> Scene5DialougesWithSpeakers;
+vector<pair<string, string>> Scene6DialougesWithSpeakers;
+vector<pair<string, string>> Scene7DialougesWithSpeakers;
+vector<pair<string, string>> Scene8DialougesWithSpeakers;
+
+vector<pair<string, string>> Branch1ADialougesWithSpeakers;
+vector<pair<string, string>> Branch1BDialougesWithSpeakers;
 
 vector<vector<pair<string, string>>> SceneDialouges =
 {
     Scene1DialougesWithSpeakers,
     Scene2DialougesWithSpeakers,
-    Scene3DialougesWithSpeakers
+    Scene3DialougesWithSpeakers,
+    Scene4DialougesWithSpeakers,
+    Scene5DialougesWithSpeakers,
+    Scene6DialougesWithSpeakers,
+    Scene7DialougesWithSpeakers,
+    Scene8DialougesWithSpeakers
+};
+
+vector<vector<pair<string, string>>> BranchADialouges =
+{
+    Branch1ADialougesWithSpeakers,
+};
+
+vector<vector<pair<string, string>>> BranchBDialouges =
+{
+    Branch1BDialougesWithSpeakers,
 };
 
 
 //Characters and their position on each scene
 map <string, vector<pair<int, int>> > scene1CharacterPos =
 {
-    {"Chris", { {450, 172}, {450,  390}, {700, 390}, {700, 172} } },
+    {"Chris", { {450, 172}, {450,  400}, {700, 400}, {700, 172} } },
     {"Andy",  { {700, 172}, {700, 418}, {900, 418}, {900, 172} } },
 };
 
@@ -71,15 +92,36 @@ map <string, vector<pair<int, int>> > scene2CharacterPos =
 
 map <string, vector<pair<int, int>> > scene3CharacterPos =
 {
-    {"Chris",   { {350, 172}, {350, 410}, {600, 410}, {600, 172} } },
-    {"Andy",    { {600, 172}, {600, 418}, {800, 418}, {800, 172} } },
-    {"Angella", { {800, 172}, {800, 400}, {1000, 400}, {1000, 172} } },
+    {"Chris",   { {160, 172}, {160, 400}, {410, 400}, {410, 172} } },
+    {"Andy",    { {400, 172}, {400, 400}, {600, 400}, {600, 172} } },
+    {"John",    { {600, 172}, {600, 400}, {790, 400}, {790, 172} } },
+    {"Emily",   { {800, 172}, {800, 400}, {940, 400}, {940, 172} } },
+    {"Dan",     { {930, 172}, {930, 400}, {1115, 400}, {1115, 172} } },
+};
+
+map <string, vector<pair<int, int>> > scene4CharacterPos =
+{
+    {"Chris",   { {160, 172}, {160, 400}, {410, 400}, {410, 172} } },
+    {"Andy",    { {400, 172}, {400, 400}, {600, 400}, {600, 172} } },
+    {"John",    { {600, 172}, {600, 400}, {790, 400}, {790, 172} } },
+    {"Emily",   { {800, 172}, {800, 400}, {940, 400}, {940, 172} } },
+    {"Dan",     { {930, 172}, {930, 400}, {1115, 400}, {1115, 172} } },
+};
+
+map <string, vector<pair<int, int>> > scene6CharacterPos =
+{
+    {"Dan",     { {530, 172}, {530, 400}, {715, 400}, {715, 172} } },
 };
 
 vector<map <string, vector<pair<int, int>> >> SceneCharacterPos
 {
     scene1CharacterPos,
     scene2CharacterPos,
+    scene3CharacterPos,
+    scene3CharacterPos,
+    scene3CharacterPos,
+    scene6CharacterPos,
+    scene3CharacterPos,
     scene3CharacterPos
 };
 
@@ -974,6 +1016,15 @@ void DrawCharacterBG(int scene)
     case 1:
         glColor3f(0.83, 0.01, 0.16); // red tint
         break;
+    case 2:
+    case 4:
+    case 6:
+    case 7:
+        glColor3f(0.28, 0.25, 0.23); //dark chocolate
+        break;
+    case 5:
+        glColor3f(0, 0, 0); //Black
+        break;
     }
 }
 
@@ -1125,8 +1176,18 @@ void DrawScene3BG()
     }
 }
 
+void DrawScene4BG()
+{
+    //do nothing
+}
+
 void DrawCurrentSceneBG(int scene)
 {
+    if (scene > 3)
+    {
+        NewScene = false;
+    }
+
     switch (scene)
     {
     case 0:
@@ -1137,7 +1198,15 @@ void DrawCurrentSceneBG(int scene)
         DrawScene2BG();
         break;
     case 2:
+    case 4:
+    case 6:
+    case 7:
         DrawScene3BG();
+        break;
+
+    case 3:
+    case 5:
+        DrawScene4BG();
         break;
     }
 }
@@ -1276,13 +1345,29 @@ void AnimateText(string dialouge)
 
 #pragma endregion
 
+#pragma region BranchingLogic
+
 void RenderOptions()
 {
-    char FirstChoice[200] = "Choice 1";
-    char SecondChoice[200] = "Choice 2";
+    string fc = BranchADialouges[branchCounter][0].second;
+    string sc = BranchBDialouges[branchCounter][0].second;
+    char FirstChoice[200] ="";
+    char SecondChoice[200] = "";
+
+    for (int i = 0; i < fc.length(); i++)
+    {
+        FirstChoice[i] = fc[i];
+    }
+
+    for (int i = 0; i < sc.length(); i++)
+    {
+        SecondChoice[i] = sc[i];
+    }
 
     //DrawingOptionsbox1
-    glColor3f(0, 0, 0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(0, 0, 0 , 0.75);
     glBegin(GL_POLYGON);
     glVertex2f(400, 500);
     glVertex2f(400, 700);
@@ -1291,7 +1376,7 @@ void RenderOptions()
     glEnd();
     DrawDialouge(FirstChoice, 420, 600 , 1);
 
-    glColor3f(0, 0, 0);
+    glColor4f(0, 0, 0 , 0.75);
     glBegin(GL_POLYGON);
     glVertex2f(400, 200);
     glVertex2f(400, 400);
@@ -1299,10 +1384,24 @@ void RenderOptions()
     glVertex2f(1000, 200);
     glEnd();
     DrawDialouge(SecondChoice, 420, 300, 1);
+    glDisable(GL_BLEND);
 
     glFlush();
 
 }
+
+bool CheckIfBranching()
+{
+    switch (currentScene)
+    {
+    case 6:
+        return true;
+
+    default:
+        return false;
+    }
+}
+#pragma endregion
 
 #pragma region MouseCallback
 void AnimateNextDialouge(int button, int state, int x, int y)
@@ -1322,9 +1421,48 @@ void AnimateNextDialouge(int button, int state, int x, int y)
             case SCENE:
                 if (currentDialouge == SceneDialouges[currentScene].size() - 1)
                 {
+                    if (CheckIfBranching())
+                    {
+                        Scene = CHOOSING;
+                    }
+                    else
+                    {
+                        currentScene++;
+                        currentDialouge = 0;
+                        NewScene = true;
+                        
+                        //Scene = TOBECONTINUED;
+                    }
+                    
+                }
+                else
+                {
+                    currentDialouge++;
+                }
+                break;
+
+            case SCENEA:
+                if (currentDialouge == BranchADialouges[branchCounter].size() - 1)
+                {
+                        currentScene++;
+                        branchCounter++;
+                        Scene = SCENE;
+                        currentDialouge = 0;
+                        //Scene = TOBECONTINUED;
+                }
+                else
+                {
+                    currentDialouge++;
+                }
+                break;
+
+            case SCENEB:
+                if (currentDialouge == BranchBDialouges[branchCounter].size() - 1)
+                {
                     currentScene++;
+                    branchCounter++;
+                    Scene = SCENE;
                     currentDialouge = 0;
-                    NewScene = true;
                     //Scene = TOBECONTINUED;
                 }
                 else
@@ -1334,8 +1472,8 @@ void AnimateNextDialouge(int button, int state, int x, int y)
                 break;
 
             case CHOOSING:  
-                if (x > 400 && x < 1000 && y > 40 && y < 220) { Scene = SCENEA; currentDialouge = 0;}
-                if (x > 400 && x < 1000 && y > 320 && y < 510) { Scene = SCENEB; currentDialouge = 0;}
+                if (x > 400 && x < 1000 && y > 40 && y < 220) { Scene = SCENEA; currentDialouge = 1;}
+                if (x > 400 && x < 1000 && y > 320 && y < 510) { Scene = SCENEB; currentDialouge = 1;}
                 break;
 
             default:
@@ -1684,7 +1822,7 @@ void display() //display function is called repeatedly by the main function so k
         RenderSpeaker(SceneDialouges[currentScene][currentDialouge].first);
         RenderOptions();
         
-        dialuoge = Scene1DialougesWithSpeakers[currentDialouge].second;
+        dialuoge = SceneDialouges[currentScene][currentDialouge].second;
         for (int i = 0; i < dialuoge.length(); i++)
         {
             Buffer[i] = dialuoge[i];
@@ -1694,20 +1832,24 @@ void display() //display function is called repeatedly by the main function so k
 
         //see above and rewrite dialouges
     case SCENEA:
-        DrawScene1BG();
+        queue = createQueue(1000); //create a fresh queue
+        DrawCurrentSceneBG(currentScene);
         RecoverFrame();
-        RenderSpeaker(Scene1_A_DialougesWithSpeakers[currentDialouge].first);
-        DrawCharacter(Scene1_A_DialougesWithSpeakers[currentDialouge].first);
-        AnimateText(Scene1_A_DialougesWithSpeakers[currentDialouge].second);
+        DrawCharacter(BranchADialouges[branchCounter][currentDialouge].first);
+        DrawDialougeBox();
+        RenderSpeaker(BranchADialouges[branchCounter][currentDialouge].first);
+        AnimateText(BranchADialouges[branchCounter][currentDialouge].second);
         DrawClickToContinue();
         break;
 
     case SCENEB:
-        DrawScene1BG();
+        queue = createQueue(1000); //create a fresh queue
+        DrawCurrentSceneBG(currentScene);
         RecoverFrame();
-        RenderSpeaker(Scene1_B_DialougesWithSpeakers[currentDialouge].first);
-        DrawCharacter(Scene1_B_DialougesWithSpeakers[currentDialouge].first);
-        AnimateText(Scene1_B_DialougesWithSpeakers[currentDialouge].second);
+        DrawCharacter(BranchBDialouges[branchCounter][currentDialouge].first);
+        DrawDialougeBox();
+        RenderSpeaker(BranchBDialouges[branchCounter][currentDialouge].first);
+        AnimateText(BranchBDialouges[branchCounter][currentDialouge].second);
         DrawClickToContinue();
         break;
 
@@ -1735,11 +1877,11 @@ void InitializeVariables()
     };
 
     SceneDialouges[0] = {
-    {"Narrator" , "As they entered , they were awestruck looking at the magnificent mansion and start exploring it and checked out the rooms they were going to stay in and started unpacking their luggages. "},
+    {"Narrator" , "As they entered , they were awestruck looking at the magnificent mansion and start exploring it and checked out the    rooms they were going to stay in and started unpacking their luggages. "},
     {"Chris" , "Hey "+ PlayerName + " , Andy come check this room out..... its even bigger than my living room!! "},
     {"You" , "Wow.... my whole family can stay here. "},
-    { "Andy" , "Ha ha ha... C'mon it isn't that big. But I have been wondering how did Dan get this mansion for such a low price. Something doesnt feel right. "},
-    {"Chris" , "C'mon Andy.... why are you like this, overthinking about everything, we are here to relax... we dont get this opportunity everyday. "},
+    { "Andy" , "Ha ha ha... C'mon it isn't that big. But I have been wondering how did Dan get this mansion for such a low price.       Something doesnt feel right. "},
+    {"Chris" , "C'mon Andy.... why are you like this, overthinking about everything, we are here to relax... we dont get this           opportunity everyday. "},
     {"You" , "Yes Chris is right... we are here to release our stress so dont increase it by overthinking. "},
     {"Andy" ,  "Yeah I think you guys are right.... if only I was a little more carefree like you guys. We are in this beautiful        mansion in this peaceful place and we are going to make the best of it. Besides, what can go wrong? "},
     {"????" ,  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHH!!!!! (Sudden scream from the other room....) "},
@@ -1758,26 +1900,75 @@ void InitializeVariables()
     };
 
     SceneDialouges[2] = {
-   {"Narrator" , "Scene 2 , They have reached the source of the scream. "},
-   {"You" , "ANGELLA!!! What happened why did you scream??? Are you alright?!! "},
-   {"Angella" , "I just saw a huge cockroach over there.... aaaahhh so scary  :'-( "},
-   { "Chris" , "Are you serious?? We got so scared... Angela, why are you such a coward? "},
-   { "Andy" , "Angela... you are so silly. By the way where is Emily ? ?  (^o^) "},
-   { "Emily" , "Im here, i ran and hid in the washroom after i saw the cockroach  :'-( "},
-   {"Angella" , "Im so sorry you guys.. I just got shocked seeing it all of a sudden.. let's go to bed, we have to go out tomorrow. "},
-   {"Narrator" , "They head to their respective room to rest up for tomorrow. "}
+   {"Emily" , "Good Morning everyone...what a lovely morning. "},
+   {"Andy" , "Yeah weather is really good outside..i hope nothing goes wrong "},
+   {"Dan" , "Ohh wow Andy go ahead and jinx the day...today is a good day don’t decimate it for us. "},
+   { "Emily" , "Stop Dan why are you always after his life...don’t mind him Andy he doesn’t mean any harm. "},
+   { "John" , "Don’t worry you guys everything is planned out nothing will go wrong. "},
+   { "You" , "I knew we can trust you John....so Andy there is nothing to worry about if John has planned then you know its going to be perfect...By the way where is Angela?? "},
+   {"Emily" , "I tried waking her up in the morning but she didn’t respond...she was very tired yesterday so i thought i will let her sleep  a little more longer and after that i got ready and came here. "},
+   {"Andy" , "Ohh is that so... i will just go and wake her up. "},
+   {"Dan" , "AAGHHH...this means we will be late..i hope that girl won’t take time. "},
+   {"Andy" , "AAAANNNNGEEELLLAAAAAAAAAAAAA!!!!!!!!!!!!! "},
     };
 
-    Scene1_A_DialougesWithSpeakers = {
-        {"You" , "This is dialouge chosen from first option "},
-        {"Andy" , "Any Option could have been chosen but you choose this one , any specific reason ? "},
-        {"You" , "No Just felt like it lol.... "}
+    SceneDialouges[3] = {
+  {"Narrator" , "Everyone rushes into Angela’s room...... "},
+  {"Narrator" , "And they tear up as they discover that angela is no more......... "},
+  {"Narrator" , "Everyone is in utter disbelief and don’t understand what to do................... "},
+  { "Narrator" , "John being quick on his feet calls for an ambulance, but they get to know that they won’t be able to come on time as   the roads were blocked due to landslide. "},
+  { "Narrator" , "John informs the cops as well but the nearest police station is in the city and since the roads are blocked, they won’t be able to come that quickly. "},
+  { "Narrator" , "A few hours later.... "},
     };
 
-    Scene1_B_DialougesWithSpeakers = {
-       {"You" , "This is dialouge chosen from second option. "},
-       {"Chris" , "Why didnt you choose the first option , obio it was the right one! "},
-       {"You" , "I wanted to see what happends if you choose this path brooo!!!! "}
+    SceneDialouges[4] = {
+  {"Andy" , "OMG, poor angela, how can this happen.... "},
+  {"Dan" , "yeah it is really shocking but we need to calm down and collect our thoughts "},
+  {"Andy" , "Dan you don't have a heart...it looks like you don't even care that angela died. "},
+  { "Emily" , "Andy is right you don't seem to be affected by Angela's death at all.. "},
+  { "Andy" , "What I'm trying to say is that MAYBE YOU ARE THE ONE WHO KILLED ANGELA ....we all know you never liked her. "},
+  { "Dan" , " WHAT THE HELL???...Are you being serious right now....how dare you accuse me of such heinous crime. "},
+  { "Andy" , "We all know what kind of a person you are... i know you killed her. "+ PlayerName +" why don’t you speak up. "},
+    };
+
+    SceneDialouges[5] = {
+ {"You" , "Did...Did Dan really do this????? "},
+ {"You" , " I know him very well no matter how tough he acts in front of us he has a good heart. "},
+ {"You" , "I can never forget the time when my parents died in a car accident 5 years ago... "},
+ { "You" , "Only Dan was there to support me.... "},
+ { "You" , "He was there for me whenever I needed him, he helped me overcome my depression... "},
+  };
+
+    SceneDialouges[6] = {
+        {"Andy" ,  PlayerName + " Stop dreaming and speak up..I asked what do you think of this ? ? "},
+    };
+
+    SceneDialouges[7] = {
+        {"Andy" ,  "I don't think its safe to be around him right now. We should lock him in some room. "},
+        {"Emily" ,  "Yeah Andy is right we should lock this psycho. "},
+        {"Dan" ,  "You are just blabbering about what could be the reason to kill her..but you are not bringing any proof on the table. "},
+        {"You" ,  "You are right Dan but right now we have to lock you in otherwise things can get heated up and worsen everything. "},
+        {"John" ,  "Yes Dan we have to calm things down right now, I dont believe that any of us killed her.It can be someone from outside. "},
+        {"Dan" ,  "You are right John but the fact that Andy straight up blamed me for her death without any proof seems very odd to me... i need you to find who did.. i dont want the stigma of a killer on me. "},
+        {"You" ,  "Dont worry Dan we will do something but for now you stay in this room. "},
+    };
+
+
+    //BRANCH A DIALOUGES
+    BranchADialouges[0] = {
+        {"You" , "I think we should not hurry up to the conclusions.. "},
+        {"You" , "I think we should not hurry up to the conclusions and give Dan some chance to explain. "},
+        {"John" , "I think " + PlayerName + " is right we should not point  fingers at each other without any solid proof. "},
+        {"Dan" , "Thanks guys at least some people have brains unlike others. "}
+    };
+
+
+    //BRANCH B DIALOUGES
+    BranchBDialouges[0] = {
+       {"You" , "Yes Dan you have been hating on her from so long... "},
+       {"You" , "Yes Dan you have been hating on her from so long...and we all know how you act when you get angry. "},
+       {"John" , PlayerName +" is right, Dan you have had a lot of history with her and you do have a reason to kill her. "},
+       {"Dan" , "Those things were in the past...we haven't fought in years. Everything was fine between us. "}
     };
    
 }
