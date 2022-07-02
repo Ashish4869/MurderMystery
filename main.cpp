@@ -22,24 +22,28 @@ const int ThirdLineY = 50;
 const int SpeakerXPos = 200;
 const int SpeakerYPos = 165;
 
-string PlayerName;
+string PlayerName; //name of the player inputed at the start
 GLuint characterTexture;
 GLuint characterTexture2;
 
-bool NewScene = true;
+bool NewScene = true; //bool to give a pause when a new scene is loaded
 
 //States
 enum Scenes { START, DESCRIPTION, SCENE, TOBECONTINUED , CHOOSING , SCENEA , SCENEB};
 Scenes Scene = START;
+
 //SceneVairables
-int currentScene = 0;
-int branchCounter = 0;
+int currentScene = 0; //Stores the scene number 
+int branchCounter = 0; //Stores the no branches encountered
 int currentDialouge = 0;
 int j;
 
-#pragma region CharacterData
-
+// The Dialouge arrays for main branch , Branch A and Branch B are defined here
+#pragma region SceneData
+//An Array of dialouges and speakers for each scene present in the game
 vector<string> Description;
+
+//MAIN BRANCH
 vector<pair<string, string>> Scene1DialougesWithSpeakers;
 vector<pair<string, string>> Scene2DialougesWithSpeakers;
 vector<pair<string, string>> Scene3DialougesWithSpeakers;
@@ -49,9 +53,13 @@ vector<pair<string, string>> Scene6DialougesWithSpeakers;
 vector<pair<string, string>> Scene7DialougesWithSpeakers;
 vector<pair<string, string>> Scene8DialougesWithSpeakers;
 
+//BRANCH A
 vector<pair<string, string>> Branch1ADialougesWithSpeakers;
+
+//BRANCH B
 vector<pair<string, string>> Branch1BDialougesWithSpeakers;
 
+//Initialising the dialouges in a vector 
 vector<vector<pair<string, string>>> SceneDialouges =
 {
     Scene1DialougesWithSpeakers,
@@ -64,16 +72,23 @@ vector<vector<pair<string, string>>> SceneDialouges =
     Scene8DialougesWithSpeakers
 };
 
+//Same as Scene Dialouges but for Branch A
 vector<vector<pair<string, string>>> BranchADialouges =
 {
     Branch1ADialougesWithSpeakers,
 };
 
+//Same as Scene Dialouges but for Branch B
 vector<vector<pair<string, string>>> BranchBDialouges =
 {
     Branch1BDialougesWithSpeakers,
 };
 
+
+#pragma endregion
+
+// The Coordinates of the position of each character in each scene is specified below
+#pragma region CharacterData
 
 //Characters and their position on each scene
 map <string, vector<pair<int, int>> > scene1CharacterPos =
@@ -113,6 +128,7 @@ map <string, vector<pair<int, int>> > scene6CharacterPos =
     {"Dan",     { {530, 172}, {530, 400}, {715, 400}, {715, 172} } },
 };
 
+//Array of characters and their postion in the scene
 vector<map <string, vector<pair<int, int>> >> SceneCharacterPos
 {
     scene1CharacterPos,
@@ -127,7 +143,9 @@ vector<map <string, vector<pair<int, int>> >> SceneCharacterPos
 
 #pragma endregion
 
+// The Coordinates of each and every point to draw the object are stored in a 2D Matrix with each element being a pair
 #pragma region CoordinateData
+
 
 vector<vector<pair<int, int>>> HouseAndWindows =
 {
@@ -143,16 +161,16 @@ vector<vector<pair<int, int>>> HouseAndWindows =
     { {530,250},{530,325},{560,325}, {560,250} }, //Window Right Bottom
     { {325,410},{325,485},{375,485}, {375,410} }, //Window Middle
     { {330,190},{330,300},{370,300}, {370,190} }, //Door
-    { {145,375},{145,450} }, //WindowRails - left Top vertical
-    { {130,425},{160,425} }, //WindowRails -  left Top horizontal
-    { {145,250},{145,325} }, //WindowRails -  left Bottom vertical
-    { {130,300},{160,300} }, //WindowRails - left Bottom horizontal
-    { {545,375},{545,450} }, //WindowRails - Right Top vertical
-    { {530,425},{560,425} }, //WindowRails - Right Top horizontal
-    { {545,250},{545,325} }, //WindowRails - Right Bottom vertical
-    { {530,300},{560,300} }, //WindowRails - Right Bottom horizontal
-    { {325,460},{375,460} }, //WindowRails - Middle Horizontal
-    { {350,410},{350,485} }, //WindowRails - Middle Vertical
+    { {145,375},{145,450} },                      //WindowRails - left Top vertical
+    { {130,425},{160,425} },                      //WindowRails -  left Top horizontal
+    { {145,250},{145,325} },                      //WindowRails -  left Bottom vertical
+    { {130,300},{160,300} },                      //WindowRails - left Bottom horizontal
+    { {545,375},{545,450} },                      //WindowRails - Right Top vertical
+    { {530,425},{560,425} },                      //WindowRails - Right Top horizontal
+    { {545,250},{545,325} },                      //WindowRails - Right Bottom vertical
+    { {530,300},{560,300} },                      //WindowRails - Right Bottom horizontal
+    { {325,460},{375,460} },                      //WindowRails - Middle Horizontal
+    { {350,410},{350,485} },                      //WindowRails - Middle Vertical
 };
 
 vector<vector<pair<int, int>>> GenericRoom =
@@ -276,12 +294,6 @@ vector<vector<pair<int, int>>> Stairs =
     { {600, 610} , {530, 410} }, //15. left railing
     { {680, 610} , {750, 410} }, //16. right railing
 
-    
-
-
-    
-
-
 };
 
 vector<vector<pair<int, int>>> Chair =
@@ -319,7 +331,6 @@ vector<vector<pair<int, int>>> Sofa =
                              
 };
 
-
 vector<vector<pair<int, int>>> Cupboard =
 {
      { {900, 150},{900, 430},{1094, 430}, {1094, 150} },    //0.CupBoardBody - Polygon - glColor3f(1, 0, 0);
@@ -345,9 +356,176 @@ vector<vector<pair<int, int>>> ClockLines =
 
 #pragma endregion
 
+// Objects are draw on to the frame with value present in COORDINATE DATA region
+//The way this is done is , by iterating the 2D matrix values for the respective object present in the COORDINATE DATA.
+//The outer for loop iterates through each shape (line , polygon , etc) and sets its colors depending on the index values
+//The inner for loop iterates through each coordinate in the shape and draw the shape
+//This is done for as many shapes that constitute the Object
+#pragma region DrawObjects
+
+#pragma region DrawChair
+void DrawChair()
+{
+    for (int i = 0; i < Chair.size(); i++)
+    {
+        //SortingColors
+        if (i < 2) { glColor3f(1, 0.64, 0); } //chair wood color
+        if (i == 2) { glColor3f(1, 1, 1); } //white color
+        if (i > 2) { glColor3f(0, 0, 0); } //black color
+
+        //LineWidth
+        if (i == 2) { glLineWidth(3); }
+        if (i > 2) { glLineWidth(2); }
+
+        //Shape
+        if (i < 2) { glBegin(GL_POLYGON); }
+        if (i >= 2 && i <= 5) { glBegin(GL_LINES); }
+        if (i >= 5 && i <= 7) { glBegin(GL_LINE_STRIP); }
+
+        //Drawing Shape
+        for (int j = 0; j < Chair[i].size(); j++)
+        {
+            glVertex2f(Chair[i][j].first, Chair[i][j].second);
+        }
+
+        glEnd();
+    }
+}
+#pragma endregion
+
+#pragma region DrawCupboard
+void DrawCupBoard()
+{
+    for (int i = 0; i < Cupboard.size(); i++)
+    {
+        //SortingColors
+        if (i == 0)
+        {
+           glColor3f(1, 0, 0); //red  
+        }
+        else { glColor3f(0, 0, 0); } //black
+
+        //LineWidth and PointSize
+        if (i == 3) { glLineWidth(3); }
+        if (i == 4 || i == 5) { glPointSize(5); }
+        if (i == 6) { glLineWidth(2); }
+
+        //Shape
+        if (i < 3) { glBegin(GL_POLYGON); }
+        if (i == 3) { glBegin(GL_LINES); }
+        if (i < 6) { glBegin(GL_POINTS); }
+        if (i >= 6) { glBegin(GL_LINE_STRIP); }
+
+        //DrawingShape
+        for (int j = 0; j < Cupboard[i].size(); j++)
+        {
+            glVertex2f(Cupboard[i][j].first, Cupboard[i][j].second);
+        }
+
+        glEnd();
+    }
+}
+
+#pragma endregion
+
+#pragma region DrawClock
+void DrawClock()
+{
+    //DrawClock
+    //Outline
+    int x = 700, y = 520, r = 50;
+    glBegin(GL_POLYGON);
+
+    glColor3f(0, 0, 0); // black
+    for (int i = 0; i < 360; i++) { float theta = i * 3.14 / 180;  glVertex2f(x + r * cos(theta), y + r * sin(theta)); } //drawCircle
+    glEnd();
+
+    //Face outline
+    glBegin(GL_POLYGON);
+    x = 700, y = 520, r = 45;
+
+    glColor3f(1, 1, 1); //white
+    for (int i = 0; i < 360; i++) { float theta = i * 3.14 / 180;  glVertex2f(x + r * cos(theta), y + r * sin(theta)); }  //drawCircle
+    glEnd();
+
+    glColor3f(0, 0, 0); //black
+    for (int i = 0; i < ClockLines.size(); i++)
+    {
+        //Shape
+        if (i != 6) { glBegin(GL_LINES); }
+        if (i == 6) { glBegin(GL_POINTS); }
+
+        //DrawingShape
+        for (int j = 0; j < ClockLines[i].size(); j++)
+        {
+            glVertex2f(ClockLines[i][j].first, ClockLines[i][j].second);
+        }
+        glEnd();
+    }
+}
+
+#pragma endregion
+
+#pragma region DrawSofa
+void DrawSofa()
+{
+    for (int i = 0; i < Sofa.size(); i++)
+    {
+        //Sorting Colors
+        if (i == 0 || i == 4) { glColor3f(0.20, 0.23, 0.30); }
+        else{ glColor3f(1, 0.64, 0); }
+
+        //Sorting shapes and colors
+        if (i == 5)
+        {
+            glColor3f(0, 0, 0);
+            glBegin(GL_LINES);
+        }
+        if (i >= 6 && i <= 10)
+        {
+            glColor3f(0, 0, 0);
+            glBegin(GL_LINE_STRIP);
+        }
+        else { glBegin(GL_POLYGON); }
+
+        //Drawing part of the object
+        for (int j = 0; j < Sofa[i].size(); j++)
+        {
+            glVertex2f(Sofa[i][j].first + 60, Sofa[i][j].second + 10);
+        }
+
+        glEnd();
+    }
+}
+#pragma endregion
+
+#pragma region DrawLamp
+void DrawLamp()
+{
+    for (int i = 0; i < Lamp.size(); i++)
+    {
+        //Sorting colors
+        if (i == 2){ glColor3f(1, 1, 0); }
+        else{ glColor3f(0, 0, 0); }
+
+        glBegin(GL_POLYGON);
+
+        for (int j = 0; j < Lamp[i].size(); j++)
+        {
+            glVertex2f(Lamp[i][j].first, Lamp[i][j].second);
+        }
+
+        glEnd();
+    }
+}
+#pragma endregion
+
+#pragma endregion
+
 #pragma region Queue Implementation
 
 //------------------------QUEUE CLASS---------------//
+//Class that holds blueprint for the queue
 class QueueText {
 public:
     int front, rear, size;
@@ -359,6 +537,7 @@ public:
 //----------------QUEUE FUNCTIONS--------------------//
 QueueText* queue;
 
+//Creates fresh queue with all values initialized to zero
 QueueText* createQueue(unsigned capacity)
 {
     QueueText* queueText = new QueueText();
@@ -371,17 +550,19 @@ QueueText* createQueue(unsigned capacity)
 }
 
 
-
+//Checks if the queue is full
 bool isFull(QueueText* queueText)
 {
     return (queueText->size == queueText->capacity);
 }
 
+//Checks if the queue is empty
 bool isEmpty(QueueText* queueText)
 {
     return (queueText->size == 0);
 }
 
+//Adds a character into the queue
 void Enqueue(QueueText* queueText, char s)
 {
     if (isFull(queueText))
@@ -394,6 +575,7 @@ void Enqueue(QueueText* queueText, char s)
     queueText->size++;
 }
 
+//Removes an element from queue
 char Dequeue(QueueText* queueText)
 {
     if (isEmpty(queueText))
@@ -409,6 +591,7 @@ char Dequeue(QueueText* queueText)
     return s;
 }
 
+//Retrivies the element present at the front of the queue
 int front(QueueText* queueText)
 {
     if (isEmpty(queueText))
@@ -419,6 +602,7 @@ int front(QueueText* queueText)
     return queueText->array[queueText->front];
 }
 
+//Retrivies the element present at the rear of the queue
 int rear(QueueText* queueText)
 {
     if (isEmpty(queueText))
@@ -432,6 +616,7 @@ int rear(QueueText* queueText)
 //----------------QUEUE FUNCTIONS END--------------------//
 #pragma endregion
 
+//Draws the dialouge Box
 #pragma region DialougeBoxRendering
 //-------------------DIALOUGE BOX-----------------------//
 
@@ -471,18 +656,23 @@ void DrawDialougeBox()
 
 #pragma endregion
 
+//renders the text with a smooth animation
 #pragma region RenderTextOnScreen
 //----------------RENDERING TEXT ON SCREEN--------------//
 
-void DrawDialouge(char* string, int x, int y, int type)
+//Draws text on screen using the glutBitmapCharacter function
+//it takes character arry , x position , y poisition and color for rending text on screen
+void DrawDialouge(char* string, int x, int y, int color)
 {
-    if (type == 1) { glColor3f(1, 1, 1); } //white
-    else if (type == 0) { glColor3f(0, 0, 0); }  // black
+    //sorting colors
+    if (color == 1) { glColor3f(1, 1, 1); } //white
+    else if (color == 0) { glColor3f(0, 0, 0); }  // black
 
     int len, i;
     glRasterPos2f(x, y);
     len = (int)strlen(string);
 
+    //Drawing text
     for (i = 0; i < len; i++)
     {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, string[i]);
@@ -492,6 +682,7 @@ void DrawDialouge(char* string, int x, int y, int type)
 //----------------RENDERING TEXT ON SCREEN END--------------//
 #pragma endregion
 
+//Draw a simple Click to Continue text and 2 polygons as arrows
 #pragma region ClickToContinue
 //-------------Click to Continue Indicator-----------
 void DrawClickToContinue()
@@ -519,8 +710,10 @@ void DrawClickToContinue()
 //-------------Click to Continue Indicator END-----------
 #pragma endregion
 
-#pragma region DrawGenericRooms
-//Drawing a Generic Room
+//Draws backgroung for the scenes
+#pragma region DrawScenes
+//Draws the basic room
+//takes scene as input cause we have 2 room but diff colors
 void DrawRoomBG(int scene)
 {
     for (int i = 0; i < GenericRoom.size(); i++)
@@ -572,35 +765,6 @@ void DrawRoomBG(int scene)
         glEnd();
     }
 
-}
-
-void DrawAttic()
-{
-    for (int i = 0; i < GenericRoomScene2.size(); i++)
-    {
-        //Sorting Colors
-        if (i < 4) { glColor3f(0.34, 0.33, 0.33); } // grey
-        else if (i == 4) { glColor3f(0.83, 0.01, 0.16); } // red Color
-        else if (i == 5) { glColor3f(1, 1, 1); } // white color
-        else if (i >= 5) { glColor3f(0, 0, 0); } // Black color
-
-        //LineWidth
-        if (i >= 6 && i < 12) { glLineWidth(2); }
-        if (i == 12) { glLineWidth(3); }
-
-        //Shape
-        if (i <= 5) { glBegin(GL_POLYGON); }
-        if (i >= 6 && i <= 8) { glBegin(GL_LINES); }
-        if (i >= 9 && i <= 11) { glBegin(GL_LINE_STRIP); }
-        if (i == 12) { glBegin(GL_LINE_LOOP); }
-
-
-        for (int j = 0; j < GenericRoomScene2[i].size(); j++)
-        {
-            glVertex2f(GenericRoomScene2[i][j].first, GenericRoomScene2[i][j].second);
-        }
-        glEnd();
-    }
 }
 
 void DrawHall()
@@ -821,191 +985,7 @@ void DrawStairs()
 
 #pragma endregion
 
-#pragma region DrawChair
-void DrawChair()
-{
-    for (int i = 0; i < Chair.size(); i++)
-    {
-        //SortingColors
-        if (i < 2) { glColor3f(1, 0.64, 0); } //chair wood color
-        if (i == 2) { glColor3f(1, 1, 1); } //white color
-        if (i > 2) { glColor3f(0, 0, 0); } //black color
-
-        //LineWidth
-        if (i == 2) { glLineWidth(3); }
-        if (i > 2) { glLineWidth(2); }
-
-        //Shape
-        if (i < 2) { glBegin(GL_POLYGON); }
-        if (i >= 2 && i <=5) { glBegin(GL_LINES); }
-        if (i >= 5 && i <= 7) { glBegin(GL_LINE_STRIP); }
-
-        //Drawing Shape
-        for (int j = 0; j < Chair[i].size(); j++)
-        {
-            glVertex2f(Chair[i][j].first, Chair[i][j].second);
-        }
-
-        glEnd();
-    }
-}
-#pragma endregion
-
-#pragma region DrawCupboard
-void DrawCupBoard(int bodyColor)
-{
-    for (int i = 0; i < Cupboard.size(); i++)
-    {
-        //SortingColors
-        if (i == 0)
-        {
-            if (bodyColor == 0) 
-            { 
-                glColor3f(1, 0, 0); //red
-            } 
-            else
-            {
-                glColor3f(0.58, 0.33, 0.48); //purple
-            }
-        } 
-        else { glColor3f(0, 0, 0); } //black
-
-        //LineWidth and PointSize
-        if (i == 3) { glLineWidth(3); }
-        if (i == 4 || i == 5) { glPointSize(5); }
-        if (i == 6) { glLineWidth(2); }
-
-        //Shape
-        if (i < 3) { glBegin(GL_POLYGON); }
-        if (i == 3) { glBegin(GL_LINES); }
-        if (i < 6) { glBegin(GL_POINTS); }
-        if (i >= 6) { glBegin(GL_LINE_STRIP); }
-
-        //DrawingShape
-        for (int j = 0; j < Cupboard[i].size(); j++)
-        {
-            if (bodyColor == 0)
-            {
-                glVertex2f(Cupboard[i][j].first, Cupboard[i][j].second);
-            }
-            else
-            {
-                glVertex2f(Cupboard[i][j].first + 100, Cupboard[i][j].second);
-            }
-        }
-
-        glEnd();
-    }
-}
-
-#pragma endregion
-
-#pragma region DrawClock
-void DrawClock(int scene)
-{
-    //DrawClock
-   //Outline
-    int x = 700, y = 520, r = 50;
-    glBegin(GL_POLYGON);
-   
-
-    glColor3f(0, 0, 0); // black
-    for (int i = 0; i < 360; i++) { float theta = i * 3.14 / 180;  glVertex2f(x + r * cos(theta), y + r * sin(theta)); } //drawCircle
-    glEnd();
-
-    //Face outline
-    glBegin(GL_POLYGON);
-    x = 700, y = 520, r = 45;
-
-    glColor3f(1, 1, 1); //white
-    for (int i = 0; i < 360; i++) { float theta = i * 3.14 / 180;  glVertex2f(x + r * cos(theta), y + r * sin(theta)); }  //drawCircle
-    glEnd();
-
-    glColor3f(0, 0, 0); //black
-    for (int i = 0; i < ClockLines.size(); i++)
-    {
-        //Shape
-        if (i != 6) { glBegin(GL_LINES); }
-        if (i == 6) { glBegin(GL_POINTS); }
-
-        //DrawingShape
-        for (int j = 0; j < ClockLines[i].size(); j++)
-        {
-           
-           glVertex2f(ClockLines[i][j].first, ClockLines[i][j].second);
-            
-            
-        }
-        glEnd();
-    }
-}
-
-#pragma endregion
-
-#pragma region DrawSofa
-void DrawSofa()
-{
-    for (int i = 0; i < Sofa.size(); i++)
-    {
-        if (i == 0 || i == 4 ) { glColor3f(0.20, 0.23, 0.30); }
-        else
-        {
-            glColor3f(1, 0.64, 0);
-        }
-        
-        if (i == 5)
-        {
-            glColor3f(0, 0, 0);
-            glBegin(GL_LINES);
-        }
-        if (i >= 6 && i <= 10)
-        {
-            glColor3f(0, 0, 0);
-            glBegin(GL_LINE_STRIP);
-        }
-        else
-        {
-            glBegin(GL_POLYGON);
-        }
-
-        for (int j = 0; j < Sofa[i].size(); j++)
-        {
-            glVertex2f(Sofa[i][j].first+60, Sofa[i][j].second + 10);
-        }
-
-        glEnd();
-
-    }
-}
-#pragma endregion
-
-#pragma region DrawLamp
-void DrawLamp()
-{
-    for (int i = 0; i < Lamp.size(); i++)
-    {
-        if (i == 2)
-        {
-            glColor3f(1, 1, 0);
-        }
-        else
-        {
-            glColor3f(0, 0, 0);
-        }
-        
-        glBegin(GL_POLYGON);
-        
-        for (int j = 0; j < Lamp[i].size(); j++)
-        {
-            glVertex2f(Lamp[i][j].first, Lamp[i][j].second);
-        }
-
-        glEnd();
-    }
-}
-#pragma endregion
-
-
+//We set the color for the character BG so that it matches with the scene BG
 void DrawCharacterBG(int scene)
 {
     switch (scene)
@@ -1029,8 +1009,11 @@ void DrawCharacterBG(int scene)
 }
 
 #pragma region CharacterRendering
+//We load the character in to the scene
+//We take 3 parameters here - The coordinates where the image should be drawn , The character who image we are rendering and optional color 
 void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string characterImageName, int color)
 {
+    //if no color set , draw the color as that of scene
     if (color == 0)
     {
         DrawCharacterBG(currentScene);
@@ -1039,21 +1022,30 @@ void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string char
     {
         glColor3f(0.34, 0.33, 0.33);//grey color
     }
-    //making sure the bg of the characters matches with that of the bg of the scene
+
+    //Storing the name of the character in char array
     char characterS[100] = "";
     for (int i = 0; i < characterImageName.length(); i++) { characterS[i] = characterImageName[i]; }
-    strcat_s(characterS, ".png");
+    strcat_s(characterS, ".png"); //appending .png so that we get the name of the image file to load
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    glGenTextures(1, &characterTexture);
-    stbi_set_flip_vertically_on_load(true);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //Clears the pixel image data so that we can draw new images
+
+    glGenTextures(1, &characterTexture); //Returns a texture , we pass 1 , cause we want only 1 texture and pointer to the reference variable
+    stbi_set_flip_vertically_on_load(true); //PNG images on loading are upside down for some reason so we flip it
     int width, height, nrChannels;
-    unsigned char* character = stbi_load(characterS, &width, &height, &nrChannels, 0);
-    glBindTexture(GL_TEXTURE_2D, characterTexture);
+
+    //the stbi_load function is used to convert image dat into a contiguous array of char blocks , which can be mapped to the texture and draw as a image
+    //It takes 4 parameters - char array which holds the path of the file with respect to the main cpp file , the width of the image , the height of the image
+    // and the number of color channels and the number of components per image
+    unsigned char* character = stbi_load(characterS, &width, &height, &nrChannels, 0); 
+
+    glBindTexture(GL_TEXTURE_2D, characterTexture); //It binds a texture to second variable passed
 
     if (character != NULL)
     {
+        //this function maps the texture image with the given char array block
+        //We set GL_RGBA because we are working with PNG files
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, character);
         cout << "Character loaded" << endl;
     }
@@ -1061,18 +1053,25 @@ void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string char
     {
         cout << "Failed to load character" << endl;
     }
+    //freeing the image data in ram
     stbi_image_free(character);
 
     //displaying
 
+    //Setting the texture environment parameters
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-    glEnable(GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, characterTexture);
 
+    //Enabling the texture
+    glEnable(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); //we set the texture to repeat on x
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); //we set the texture to repeat on y
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //we set the filter on GL_LINEAR so that when we scale down the image, it does it by blurring some parts
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); //we set the filter on GL_LINEAR so that when we scale up the image, it does it by blurring some parts
+    glBindTexture(GL_TEXTURE_2D, characterTexture); //It binds a texture to second variable passed
+
+    //Drawing the shape on which the texture should be mapped on
+    //We draw a quad and the texture is mapped on that quad
+    //The glTexCoord2f specfies if the texture should repeated or streached , by giving the points to 1 we are doing none
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);   glVertex2f(characterImageCoordinates[0].first, characterImageCoordinates[0].second);
     glTexCoord2f(0.0f, 1.0f);   glVertex2f(characterImageCoordinates[1].first, characterImageCoordinates[1].second);
@@ -1080,18 +1079,18 @@ void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string char
     glTexCoord2f(1.0f, 0.0f);   glVertex2f(characterImageCoordinates[3].first, characterImageCoordinates[3].second);
     glEnd();
 
-    glDeleteTextures(1, &characterTexture);
+    glDeleteTextures(1, &characterTexture); // we delete the texture for the reference variables so that we can draw new ones
 }
 
-
+//Loading all the character if the player is speaking
+//it takes the following parameters - Character and optional color
 void LoadAllCharacters(map <string, vector<pair<int, int>> > Characters, int color)
 {
-    DrawCharacterBG(currentScene);
-
+    //Loop through all characters in the array and display then one by one
     for (int i = 0; i < Characters.size(); i++)
     {
         char characterS[100] = "";
-        for (const auto& character : Characters) {
+        for (const auto& character : Characters) { //foreach loop to loop through each element , we use const auto& so that map is not modified
             if (character.first == "roach")
             {
                 LoadCharacter(character.second, character.first, 1);
@@ -1100,16 +1099,14 @@ void LoadAllCharacters(map <string, vector<pair<int, int>> > Characters, int col
             {
                 LoadCharacter(character.second, character.first, color);
             }
-            
         }
     }
 }
 
+//Draws the character based on who is speaking
 void DrawCharacter(string Speaker)
 {
     if (Speaker == "Narrator" || Speaker == "????") { return; }
-
-    DrawCharacterBG(currentScene);
 
     if (Speaker == "You")
     {
@@ -1128,8 +1125,8 @@ void DrawScene1BG()
 {
     DrawRoomBG(currentScene);
     DrawSofa();
-    DrawCupBoard(currentScene);
-    DrawClock(currentScene);
+    DrawCupBoard();
+    DrawClock();
 
     if (NewScene)
     {
@@ -1144,7 +1141,7 @@ void DrawScene2BG()
     DrawRoomBG(currentScene);
     DrawChair();
     DrawLamp();
-    DrawClock(currentScene);
+    DrawClock();
 
     if (currentDialouge < 3)
     {
