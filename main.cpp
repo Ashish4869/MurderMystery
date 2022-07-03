@@ -1119,6 +1119,7 @@ void DrawCharacter(string Speaker)
 }
 #pragma endregion
 
+//Draw the BG for each scene
 #pragma region DrawScenes
 
 void DrawScene1BG()
