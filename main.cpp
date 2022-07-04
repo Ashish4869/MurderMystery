@@ -294,6 +294,12 @@ vector<vector<pair<int, int>>> Stairs =
     { {600, 610} , {530, 410} }, //15. left railing
     { {680, 610} , {750, 410} }, //16. right railing
 
+    
+
+
+    
+
+
 };
 
 vector<vector<pair<int, int>>> Chair =
@@ -1119,7 +1125,7 @@ void DrawCharacter(string Speaker)
 }
 #pragma endregion
 
-//Draw the BG for each scene
+//Draws the background for each scene
 #pragma region DrawScenes
 
 void DrawScene1BG()
@@ -1129,7 +1135,7 @@ void DrawScene1BG()
     DrawCupBoard();
     DrawClock();
 
-    if (NewScene)
+    if (NewScene) //We give a 1 second pause when we see a first for the first time so players can see the room without characters
     {
         NewScene = false;
         glFlush();
@@ -1144,13 +1150,13 @@ void DrawScene2BG()
     DrawLamp();
     DrawClock();
 
-    if (currentDialouge < 3)
+    if (currentDialouge < 3) //the roach is present only for the first 3 dialouges
     {
         LoadCharacter(scene2CharacterPos["roach"], "roach", 1);
     }
 
 
-    if (NewScene)
+    if (NewScene) //We give a 1 second pause when we see a first for the first time so players can see the room without characters
     {
         NewScene = false;
         glFlush();
@@ -1166,7 +1172,7 @@ void DrawScene3BG()
     DrawUnderColumnDesign();
     DrawStairs();
 
-    if (NewScene)
+    if (NewScene)  //We give a 1 second pause when we see a first for the first time so players can see the room without characters
     {
         NewScene = false;
         glFlush();
@@ -1176,9 +1182,10 @@ void DrawScene3BG()
 
 void DrawScene4BG()
 {
-    //do nothing
+    //do nothing , this scene is for flash backs
 }
 
+//Here we draw BG's based on the scene at we are in
 void DrawCurrentSceneBG(int scene)
 {
     if (scene > 3)
