@@ -13,7 +13,7 @@
 using namespace std;
 
 //CONSTANTS
-const int TypingSpeed = 20; //20
+const int TypingSpeed = 0; //20
 const int LineCharacterLimit = 120;
 const int DialougeXOffset = 150;
 const int FirstLineY = 110;
@@ -1188,29 +1188,29 @@ void DrawScene4BG()
 //Here we draw BG's based on the scene at we are in
 void DrawCurrentSceneBG(int scene)
 {
-    if (scene > 3)
+    if (scene > 3) //once we reach this scene we have seen all the scenes and dont want the 1sec gaps
     {
         NewScene = false;
     }
 
     switch (scene)
     {
-    case 0:
+    case 0: //Pilot Scene
         DrawScene1BG();
         break;
 
-    case 1:
+    case 1: //Intro to Angella Scene
         DrawScene2BG();
         break;
-    case 2:
-    case 4:
-    case 6:
-    case 7:
+    case 2: //Angella's Death Scene - Before
+    case 4: //Angella's Death Scene - After Death
+    case 6: //Andy's Question (This is where we get make our first choice)
+    case 7: //Locking Dan
         DrawScene3BG();
         break;
 
-    case 3:
-    case 5:
+    case 3: //Angella's Death Scene - Narration
+    case 5: //FlashBack of Dan
         DrawScene4BG();
         break;
     }
@@ -1219,6 +1219,7 @@ void DrawCurrentSceneBG(int scene)
 #pragma endregion
 
 #pragma region FrameFunctions
+//Clears the frame so that we can redraw a new Frame
 void ClearFrame()
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -1226,28 +1227,34 @@ void ClearFrame()
     glFlush();
 }
 
+//Recovers the BG of the frame that we lost from the prev clear frame
 void RecoverFrame()
 {
     DrawCurrentSceneBG(currentScene); 
 }
 #pragma endregion
 
+//This is deals with the animation of the dialouges
 #pragma region DialougeSystem
+//checking if the length of the text goes beyond that of the dialouge box
+//Takes 2 parameters , the actual dialouge and the text in which we will store either the part of the dialouge or the whole dialouge
 bool CheckOverFlow(string& dialouge, string& text)
 {
     if (dialouge.length() > 120)
     {
-        text = dialouge.substr(0, 120);
+        text = dialouge.substr(0, 120); //create a substring of length 120 characters
         dialouge.erase(0, 120); //erases first 120 characters
         return true;
     }
-    else
+    else  //The length of the dialouge was below 120 characters so no need to split
     {
         text = dialouge;
         return false;
     }
 }
 
+//Filling the queue with characters that we need for animating the dialouges
+//Takes 1 parameter which is the text to fill the queue with
 void FillQueue(string text)
 {
     for (auto x : text)
@@ -1256,6 +1263,8 @@ void FillQueue(string text)
     }
 }
 
+//Drawing text of the speaker name on the red hexagon
+//Takes one parameter, which is the name of the speaker to render
 void RenderSpeaker(string speaker)
 {
     char speakerinChar[100] = "";
@@ -1268,6 +1277,8 @@ void RenderSpeaker(string speaker)
     DrawDialouge(speakerinChar, SpeakerXPos, SpeakerYPos, 0);
 }
 
+//Animating the text for the given dialouge
+//Takes one paramter , the dialouge to animate
 void AnimateText(string dialouge)
 {
     char name[400] = "";
@@ -1286,7 +1297,8 @@ void AnimateText(string dialouge)
 
     FillQueue(text);
 
-    while (!isEmpty(queue))
+    //While the queue is not exahausted of the dialouge we dequeue an element draw it on screen , wait for few milliseconds and repeat the process while the condition is true
+    while (!isEmpty(queue)) 
     {
         //glClear(GL_COLOR_BUFFER_BIT);
         FirstLine[i] = Dequeue(queue);
@@ -1297,7 +1309,7 @@ void AnimateText(string dialouge)
         glFlush();
     }
 
-    if (OverflowFirstLine)
+    if (OverflowFirstLine) //if the dialouge is larger then one line then we draw the text on the second line , the first line data is obtained from the above while loop
     {
         i = 0;
 
@@ -1322,10 +1334,9 @@ void AnimateText(string dialouge)
 
         }
 
-        if (OverflowSecondLine)
+        if (OverflowSecondLine) //if the dialouge is larger then two lines then we draw the text on the third line , the first and second line data is obtained from the above while loops
         {
             i = 0;
-
             text = dialouge;
 
             FillQueue(text);
@@ -1350,8 +1361,10 @@ void AnimateText(string dialouge)
 
 #pragma endregion
 
+//Deals with logic of branching the game flow with the option chosen
 #pragma region BranchingLogic
-
+//Drawing the UI for the options that can be selected
+//we have hardcoded to have only 2 options
 void RenderOptions()
 {
     string fc = BranchADialouges[branchCounter][0].second;
@@ -1370,6 +1383,7 @@ void RenderOptions()
     }
 
     //DrawingOptionsbox1
+    //the GL_BLEND is used to create a transparent effect
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(0, 0, 0 , 0.75);
@@ -1392,14 +1406,14 @@ void RenderOptions()
     glDisable(GL_BLEND);
 
     glFlush();
-
 }
 
+//Here we check which all scenes have a branching at the end
 bool CheckIfBranching()
 {
     switch (currentScene)
     {
-    case 6:
+    case 6: //Andy's Question (This is where we get make our first choice)
         return true;
 
     default:
@@ -1408,30 +1422,35 @@ bool CheckIfBranching()
 }
 #pragma endregion
 
+//MouseCallBacks responsible for the advancement of the game
 #pragma region MouseCallback
+//Advances the game story on click
 void AnimateNextDialouge(int button, int state, int x, int y)
 {
-        if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+    //Here we transtion to the different state depending on the state that we are currently in
+        if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) //When the left mouse button is clicked
         {
             switch (Scene)
             {
-            case START:
-                Scene = DESCRIPTION;
+            case START: 
+                Scene = DESCRIPTION; //if we are in Start start transition to description start
                 break;
 
             case DESCRIPTION:
-                Scene = SCENE;
+                Scene = SCENE;  //if we are in description start transition to SCENE start
                 break;
 
             case SCENE:
-                if (currentDialouge == SceneDialouges[currentScene].size() - 1)
+                if (currentDialouge == SceneDialouges[currentScene].size() - 1) //we check if the current dialouge number we are viewing is equal to the size of the dialouges for that scene
                 {
-                    if (CheckIfBranching())
+                    if (CheckIfBranching()) //Check if branching exist for that scene
                     {
+                        //If yes go to CHOOSING state
                         Scene = CHOOSING;
                     }
-                    else
+                    else //if No go to the next scene
                     {
+                        ClearFrame();
                         currentScene++;
                         currentDialouge = 0;
                         NewScene = true;
@@ -1440,14 +1459,14 @@ void AnimateNextDialouge(int button, int state, int x, int y)
                     }
                     
                 }
-                else
+                else //If we are not at the last dialouge for the scene , just increment the currentdialouge
                 {
                     currentDialouge++;
                 }
                 break;
 
-            case SCENEA:
-                if (currentDialouge == BranchADialouges[branchCounter].size() - 1)
+            case SCENEA: //Branch A of the option
+                if (currentDialouge == BranchADialouges[branchCounter].size() - 1) //if we are reached the end of dialouges , we reset the values and go back to the main scene
                 {
                         currentScene++;
                         branchCounter++;
@@ -1461,8 +1480,8 @@ void AnimateNextDialouge(int button, int state, int x, int y)
                 }
                 break;
 
-            case SCENEB:
-                if (currentDialouge == BranchBDialouges[branchCounter].size() - 1)
+            case SCENEB: //Branch A of the option
+                if (currentDialouge == BranchBDialouges[branchCounter].size() - 1) //if we are reached the end of dialouges , we reset the values and go back to the main scene
                 {
                     currentScene++;
                     branchCounter++;
@@ -1477,8 +1496,8 @@ void AnimateNextDialouge(int button, int state, int x, int y)
                 break;
 
             case CHOOSING:  
-                if (x > 400 && x < 1000 && y > 40 && y < 220) { Scene = SCENEA; currentDialouge = 1;}
-                if (x > 400 && x < 1000 && y > 320 && y < 510) { Scene = SCENEB; currentDialouge = 1;}
+                if (x > 400 && x < 1000 && y > 40 && y < 220) { Scene = SCENEA; currentDialouge = 1;} //if the mouse coordinates lies within boundary of the first option , branch to Branch A
+                if (x > 400 && x < 1000 && y > 320 && y < 510) { Scene = SCENEB; currentDialouge = 1;}//if the mouse coordinates lies within boundary of the second option , branch to Branch B
                 break;
 
             default:
@@ -1488,8 +1507,8 @@ void AnimateNextDialouge(int button, int state, int x, int y)
 }
 #pragma endregion
 
+//Draw Home Screen
 #pragma region HomeScreen
-
 void  DrawStartBox()
 {
     char Start[20] = "Start";
@@ -1531,8 +1550,6 @@ void DrawHouseAndWindow()
     glBegin(GL_POINTS);
     glVertex2f(360, 250);
     glEnd();
-
-
 }
 
 
@@ -1772,7 +1789,7 @@ void DrawTOBECONTINUED()
 
 }
 
-
+//Loads the main screen
 void LoadMainScreen()
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -1784,14 +1801,25 @@ void LoadMainScreen()
     glFlush();
 }
 
+//initializes screen values
 void init()
 {
     glClearColor(0, 0, 0, 1);
     gluOrtho2D(0.0, 1280.0, 0.0, 720.0);
 }
 
+//Displays the requried content based on the state of the game
 void display() //display function is called repeatedly by the main function so keep all rendering functions here
 {
+    //We draw Objects in the following order
+    //1.Backgrounds
+    //2.Objects
+    //3.Characters
+    //4.Dialougebox
+    //5.Speaker name
+    //6.Dialouge
+    //7.Click to conitnue indicator or Branching Options
+
     glClear(GL_COLOR_BUFFER_BIT);
     char Buffer[400] = "";
     string dialuoge;
@@ -1809,7 +1837,6 @@ void display() //display function is called repeatedly by the main function so k
 
     case SCENE:
         queue = createQueue(1000);//create a fresh queue
-        DrawCurrentSceneBG(currentScene);
         RecoverFrame();
         DrawCharacter(SceneDialouges[currentScene][currentDialouge].first);
         DrawDialougeBox();
@@ -1820,7 +1847,6 @@ void display() //display function is called repeatedly by the main function so k
 
     case CHOOSING:
         queue = createQueue(1000);//create a fresh queue
-        DrawScene1BG();
         RecoverFrame();
         DrawCharacter(SceneDialouges[currentScene][currentDialouge].first);
         DrawDialougeBox();
@@ -1839,7 +1865,6 @@ void display() //display function is called repeatedly by the main function so k
     case SCENEA:
         queue = createQueue(1000); //create a fresh queue
         DrawCurrentSceneBG(currentScene);
-        RecoverFrame();
         DrawCharacter(BranchADialouges[branchCounter][currentDialouge].first);
         DrawDialougeBox();
         RenderSpeaker(BranchADialouges[branchCounter][currentDialouge].first);
@@ -1849,7 +1874,6 @@ void display() //display function is called repeatedly by the main function so k
 
     case SCENEB:
         queue = createQueue(1000); //create a fresh queue
-        DrawCurrentSceneBG(currentScene);
         RecoverFrame();
         DrawCharacter(BranchBDialouges[branchCounter][currentDialouge].first);
         DrawDialougeBox();
@@ -1871,6 +1895,7 @@ void display() //display function is called repeatedly by the main function so k
     glFlush();
 }
 
+//Initialize all the varialbles for the story
 void InitializeVariables()
 {
     Description = {
@@ -1881,7 +1906,7 @@ void InitializeVariables()
     "and were very excited. They began their journey 3 days from then in John's car and reached there the next night.  ",
     };
 
-    SceneDialouges[0] = {
+    SceneDialouges[0] = { // Pilot 
     {"Narrator" , "As they entered , they were awestruck looking at the magnificent mansion and start exploring it and checked out the    rooms they were going to stay in and started unpacking their luggages. "},
     {"Chris" , "Hey "+ PlayerName + " , Andy come check this room out..... its even bigger than my living room!! "},
     {"You" , "Wow.... my whole family can stay here. "},
@@ -1894,7 +1919,7 @@ void InitializeVariables()
     {"Narrator" ,  "They rush towards the scream.... "}
     };
 
-    SceneDialouges[1] = {
+    SceneDialouges[1] = { //Intro to Angella
     {"Narrator" , "Scene 2 , They have reached the source of the scream. "},
    {"You" , "ANGELLA!!! What happened why did you scream??? Are you alright?!! "},
    {"Angella" , "I just saw a huge cockroach over there.... aaaahhh so scary  :'-( "},
@@ -1904,7 +1929,7 @@ void InitializeVariables()
    {"Narrator" , "They head to their respective room to rest up for tomorrow. "}
     };
 
-    SceneDialouges[2] = {
+    SceneDialouges[2] = { //Angella's Death Scene - Before
    {"Emily" , "Good Morning everyone...what a lovely morning. "},
    {"Andy" , "Yeah weather is really good outside..i hope nothing goes wrong "},
    {"Dan" , "Ohh wow Andy go ahead and jinx the day...today is a good day don’t decimate it for us. "},
@@ -1917,7 +1942,7 @@ void InitializeVariables()
    {"Andy" , "AAAANNNNGEEELLLAAAAAAAAAAAAA!!!!!!!!!!!!! "},
     };
 
-    SceneDialouges[3] = {
+    SceneDialouges[3] = { //Angella's Death Scene - Narration
   {"Narrator" , "Everyone rushes into Angela’s room...... "},
   {"Narrator" , "And they tear up as they discover that angela is no more......... "},
   {"Narrator" , "Everyone is in utter disbelief and don’t understand what to do................... "},
@@ -1926,7 +1951,7 @@ void InitializeVariables()
   { "Narrator" , "A few hours later.... "},
     };
 
-    SceneDialouges[4] = {
+    SceneDialouges[4] = { //Angella's Death Scene - After
   {"Andy" , "OMG, poor angela, how can this happen.... "},
   {"Dan" , "yeah it is really shocking but we need to calm down and collect our thoughts "},
   {"Andy" , "Dan you don't have a heart...it looks like you don't even care that angela died. "},
@@ -1936,7 +1961,7 @@ void InitializeVariables()
   { "Andy" , "We all know what kind of a person you are... i know you killed her. "+ PlayerName +" why don’t you speak up. "},
     };
 
-    SceneDialouges[5] = {
+    SceneDialouges[5] = { //FlashBack to Dan
  {"You" , "Did...Did Dan really do this????? "},
  {"You" , " I know him very well no matter how tough he acts in front of us he has a good heart. "},
  {"You" , "I can never forget the time when my parents died in a car accident 5 years ago... "},
@@ -1944,11 +1969,11 @@ void InitializeVariables()
  { "You" , "He was there for me whenever I needed him, he helped me overcome my depression... "},
   };
 
-    SceneDialouges[6] = {
+    SceneDialouges[6] = { //Andy's Question
         {"Andy" ,  PlayerName + " Stop dreaming and speak up..I asked what do you think of this ? ? "},
     };
 
-    SceneDialouges[7] = {
+    SceneDialouges[7] = { //Locking Dan
         {"Andy" ,  "I don't think its safe to be around him right now. We should lock him in some room. "},
         {"Emily" ,  "Yeah Andy is right we should lock this psycho. "},
         {"Dan" ,  "You are just blabbering about what could be the reason to kill her..but you are not bringing any proof on the table. "},
@@ -1960,7 +1985,7 @@ void InitializeVariables()
 
 
     //BRANCH A DIALOUGES
-    BranchADialouges[0] = {
+    BranchADialouges[0] = { //Suporting Dan
         {"You" , "I think we should not hurry up to the conclusions.. "},
         {"You" , "I think we should not hurry up to the conclusions and give Dan some chance to explain. "},
         {"John" , "I think " + PlayerName + " is right we should not point  fingers at each other without any solid proof. "},
@@ -1969,7 +1994,7 @@ void InitializeVariables()
 
 
     //BRANCH B DIALOUGES
-    BranchBDialouges[0] = {
+    BranchBDialouges[0] = { //Against Dan
        {"You" , "Yes Dan you have been hating on her from so long... "},
        {"You" , "Yes Dan you have been hating on her from so long...and we all know how you act when you get angry. "},
        {"John" , PlayerName +" is right, Dan you have had a lot of history with her and you do have a reason to kill her. "},
