@@ -1032,7 +1032,10 @@ void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string char
     //Storing the name of the character in char array
     char characterS[100] = "";
     for (int i = 0; i < characterImageName.length(); i++) { characterS[i] = characterImageName[i]; }
-    strcat_s(characterS, ".png"); //appending .png so that we get the name of the image file to load
+    char path[30] = "Assets\\";
+    strcat_s(path, characterS); //Storing the path of the folder where the character assets lie
+    strcat_s(path, ".png"); //appending .png so that we get the name of the image file to load
+    cout << path;
 
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //Clears the pixel image data so that we can draw new images
@@ -1044,7 +1047,7 @@ void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string char
     //the stbi_load function is used to convert image dat into a contiguous array of char blocks , which can be mapped to the texture and draw as a image
     //It takes 4 parameters - char array which holds the path of the file with respect to the main cpp file , the width of the image , the height of the image
     // and the number of color channels and the number of components per image
-    unsigned char* character = stbi_load(characterS, &width, &height, &nrChannels, 0); 
+    unsigned char* character = stbi_load(path, &width, &height, &nrChannels, 0);
 
     glBindTexture(GL_TEXTURE_2D, characterTexture); //It binds a texture to second variable passed
 
