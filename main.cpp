@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<iostream>
+#include <fstream>
 #include<string>
 #include<ctype.h>
 #include <map>
@@ -29,11 +30,11 @@ GLuint characterTexture2;
 bool NewScene = true; //bool to give a pause when a new scene is loaded
 
 //States
-enum Scenes { START, DESCRIPTION, SCENE, TOBECONTINUED , CHOOSING , SCENEA , SCENEB};
-Scenes Scene = START;
+enum Scenes { START, DESCRIPTION, SCENE, TOBECONTINUED , CHOOSING , SCENEA , SCENEB , THEEND, CREDITS , POSTCREDITS};
+Scenes Scene = SCENE;
 
 //SceneVairables
-int currentScene = 0; //Stores the scene number 
+int currentScene = 7; //Stores the scene number 
 int branchCounter = 0; //Stores the no branches encountered
 int currentDialouge = 0;
 int j;
@@ -82,6 +83,13 @@ vector<vector<pair<string, string>>> BranchADialouges =
 vector<vector<pair<string, string>>> BranchBDialouges =
 {
     Branch1BDialougesWithSpeakers,
+};
+
+//PostCredits Scene
+vector<pair<string, string>> PostCreditDialouge;
+vector<vector<pair<string, string>>> PostCreditDialouges =
+{
+    PostCreditDialouge
 };
 
 
@@ -1035,7 +1043,6 @@ void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string char
     char path[30] = "Assets\\";
     strcat_s(path, characterS); //Storing the path of the folder where the character assets lie
     strcat_s(path, ".png"); //appending .png so that we get the name of the image file to load
-    cout << path;
 
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //Clears the pixel image data so that we can draw new images
@@ -1056,11 +1063,10 @@ void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string char
         //this function maps the texture image with the given char array block
         //We set GL_RGBA because we are working with PNG files
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, character);
-        cout << "Character loaded" << endl;
     }
     else
     {
-        cout << "Failed to load character" << endl;
+              //Failed to load character
     }
     //freeing the image data in ram
     stbi_image_free(character);
@@ -1425,6 +1431,23 @@ bool CheckIfBranching()
 }
 #pragma endregion
 
+void MakeFile()
+{
+    fstream file;
+    file.open("Thanks.txt", ios::out);
+
+    file << "Hey!!" 
+        << endl << "If you have this file generated , that means you sat through the entire game and the little message we dropped the end.... "
+        << endl << "Thank you so much for playing the game , we worked so hard on , it actually means a lot!!! "
+        << endl << "As promised in the post credits scene the game is gonna be REMADE to be much more better "
+        << endl << "The game will be soon published on ITCH.io and Playstore and will be available on your phones too!!! "
+        << endl << "If you wanna be updated when the game launches , let the developers of the game know, and we will send a email when the game is published! "
+        << endl << "Once again thanks for playing the game and reading this message"
+        << endl << "And of course please suppport the release of the upcoming game by sharing this current game with your friends!!"
+        << endl << "See you there , in the REMAKE of murderMystery";
+    file.close();
+}
+
 //MouseCallBacks responsible for the advancement of the game
 #pragma region MouseCallback
 //Advances the game story on click
@@ -1433,6 +1456,8 @@ void AnimateNextDialouge(int button, int state, int x, int y)
     //Here we transtion to the different state depending on the state that we are currently in
         if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) //When the left mouse button is clicked
         {
+           
+
             switch (Scene)
             {
             case START: 
@@ -1456,8 +1481,16 @@ void AnimateNextDialouge(int button, int state, int x, int y)
                         ClearFrame();
                         currentScene++;
                         currentDialouge = 0;
-                        NewScene = true;
+                        if (currentScene == SceneDialouges.size())
+                        {
+                            Scene = THEEND; // we go to credits scene once all dialouges are exhausted
+                            return;
+                        }
+
                         
+                        NewScene = true;
+                        cout << currentScene<<endl;
+                        cout << SceneDialouges.size()<<endl;
                         //Scene = TOBECONTINUED;
                     }
                     
@@ -1502,6 +1535,27 @@ void AnimateNextDialouge(int button, int state, int x, int y)
                 if (x > 400 && x < 1000 && y > 40 && y < 220) { Scene = SCENEA; currentDialouge = 1;} //if the mouse coordinates lies within boundary of the first option , branch to Branch A
                 if (x > 400 && x < 1000 && y > 320 && y < 510) { Scene = SCENEB; currentDialouge = 1;}//if the mouse coordinates lies within boundary of the second option , branch to Branch B
                 break;
+
+            case THEEND:
+                Scene = CREDITS;
+                break;
+
+            case CREDITS:
+                Scene = POSTCREDITS;
+                break;
+
+            case POSTCREDITS:
+                if (currentDialouge == PostCreditDialouges[0].size() - 1)
+                {
+                    MakeFile();
+                    exit(0);
+                }
+                else
+                {
+                    currentDialouge++;
+                }
+                break;
+                
 
             default:
                 break;
@@ -1718,78 +1772,56 @@ void AnimateDescription()
 //------------------THROW AWAY CODE----------------
 void DrawTOBECONTINUED()
 {
-    string tobeContinued = "TO BE CONTINUED...... ";
-    string in = "IN ";
-    string Phase2 = "PHASE 2 ";
+    string theend = "THE END....";
    // string saav = "Yenchina Saav Ya";
 
     char buffer1[200] = "";
-    char buffer2[200] = "";
-    char buffer3[200] = "";
    // char buffer4[200] = "";
 
-    
     int i = 0;
 
-    FillQueue(tobeContinued);
+    FillQueue(theend);
 
     while (!isEmpty(queue))
     {
         buffer1[i] = Dequeue(queue);
-        DrawDescriptionText(buffer1, 400, 400);
+        DrawDescriptionText(buffer1, 600, 400);
         Sleep(100);
         i++;
         glEnd();
         glFlush();
     }
 
-    for (int i = 0; i < tobeContinued.length(); i++)
+    for (int i = 0; i < theend.length(); i++)
     {
-        buffer1[i] = tobeContinued[i];
+        buffer1[i] = theend[i];
     }
-
-    for (int i = 0; i < in.length(); i++)
-    {
-        buffer2[i] = in[i];
-    }
-
-    for (int i = 0; i < Phase2.length(); i++)
-    {
-        buffer3[i] = Phase2[i];
-    }
-
-    /*
-    for (int i = 0; i < saav.length(); i++)
-    {
-        buffer4[i] = saav[i];
-    }
-    */
+    
 
     glClear(GL_COLOR_BUFFER_BIT);
-    DrawDescriptionText(buffer1, 400, 400);
+    DrawDescriptionText(buffer1, 600, 400);
     glEnd();
     glFlush();
 
-    Sleep(500);
+}
 
-    DrawDescriptionText(buffer2, 500, 350);
+void DrawCredits()
+{
+    char CreditsHeading[100] = "CREDITS";
+    char BinseWork[100] = "Story , Dialouges , Background Design";
+    char Binse[100] = "Binse Varghese";
+
+    char AshishWork[100] = "Game Development and Deployment";
+    char Ashish[100] = "Ashish Kishore Kumar";
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    DrawDescriptionText(CreditsHeading, 600, 550);
+    DrawDescriptionText(BinseWork, 500, 450);
+    DrawDescriptionText(Binse, 575, 400);
+    DrawDescriptionText(AshishWork, 500, 250);
+    DrawDescriptionText(Ashish, 550, 200);
     glEnd();
     glFlush();
-    Sleep(500);
-
-    DrawDescriptionText(buffer3, 480, 300);
-
-    glEnd();
-    glFlush();
-
-    /*
-    Sleep(1000);
-    DrawDescriptionText(buffer4, 1000, 20);
-
-    glEnd();
-    glFlush();
-    */
-
 }
 
 //Loads the main screen
@@ -1885,8 +1917,20 @@ void display() //display function is called repeatedly by the main function so k
         DrawClickToContinue();
         break;
 
-    case TOBECONTINUED:
+    case THEEND:
         DrawTOBECONTINUED();
+        break;
+
+    case CREDITS:
+        DrawCredits();
+        break;
+
+    case POSTCREDITS:
+        queue = createQueue(1000);//create a fresh queue
+        DrawDialougeBox();
+        RenderSpeaker(PostCreditDialouges[0][currentDialouge].first);
+        AnimateText(PostCreditDialouges[0][currentDialouge].second);
+        DrawClickToContinue();
         break;
 
     default:
@@ -2002,6 +2046,27 @@ void InitializeVariables()
        {"You" , "Yes Dan you have been hating on her from so long...and we all know how you act when you get angry. "},
        {"John" , PlayerName +" is right, Dan you have had a lot of history with her and you do have a reason to kill her. "},
        {"Dan" , "Those things were in the past...we haven't fought in years. Everything was fine between us. "}
+    };
+
+    PostCreditDialouges[0] = { //Post Credit scene
+        {"Game" , "WAAAI-WWAAIITTTTTT!!!!!"},
+        {"Game" , "Dont turn off the game yettt..."},
+        {"Game" , "Damn that was close... if your are reading this , that means you are willing to listen what I have to say "},
+        {"Game" , "I have a small message that the developers left for those who played the game till the very end... "},
+        {"Game" , "The message is goes as such....."},
+        {"Game" , "Hey!! " + PlayerName + " if your are reading this , you must have sat through the entire game , and lets be honest.... without any animation or music or some post processing it must have been a littttle bit dull and boring... "},
+        {"Game" , "I understand , when we were making the game , we felt the same..... "},
+        {"Game" , "The game doesn't really sell without the music and all "},
+        {"Game" , "But there wasn't much we could do , this being a mini project for our computer graphics subject , we have been limited to very primitive tools... "},
+        {"Game" , "GLUT being a very old API and upon that for our story we couldnt really go all out , cause you know , we have to demo this to our examiners during exam , cant have them swears and dark scenes in our game.... "},
+        {"Game" , "So being kinda unsatisfied with the limitations imposed on us................. "},
+        {"Game" , "We have decided to REMAKE this game in a game engine , UNITY , and go loose on the story making it R rated!!! "},
+        {"Game" , "We gonna add all the good stuff , like music , animation , post processsing , sound effects and all that!! "},
+        {"Game" , "So be ready, for the REMAKE of Murder Mystery , coming soon this  MOONSOON!! "},
+        {"Game" , "I know its monsoon already , but its coming in monsoon lol. "},
+        {"Game" , "See you then!! "},
+        {"Game" , "......ok That was the message the developer had to say. "},
+        {"Game" , "I have done my job , Click once more and the game shall close on its own. Dont click on that top left X unless you wanna miss something nice.. "},
     };
    
 }
