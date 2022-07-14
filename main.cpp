@@ -30,7 +30,7 @@ GLuint characterTexture2;
 bool NewScene = true; //bool to give a pause when a new scene is loaded
 
 //States
-enum Scenes { START, DESCRIPTION, SCENE, TOBECONTINUED , CHOOSING , SCENEA , SCENEB , THEEND, CREDITS , POSTCREDITS};
+enum Scenes { START, DESCRIPTION, SCENE, TOBECONTINUED, CHOOSING, SCENEA, SCENEB, THEEND, CREDITS, POSTCREDITS };
 Scenes Scene = SCENE;
 
 //SceneVairables
@@ -264,7 +264,7 @@ vector<vector<pair<int, int>>> UnderColumnDesign =
     { {580 ,500} , {438 , 500} },                     //1.MidLineLeft - GL LINES - LineWidht(2)
     { {321 , 500} , {379 , 550} , {438 , 500}, {379 , 450} },                     //2.InnerSquare - GL LINELOOP - LineWidht(2)
     { {276 , 500} , {379 , 595} , {483 , 500}, {379 , 395} },                     //3.OutterSquare - GL LINELOOP - LineWidht(2)
-    
+
 };
 
 vector<vector<pair<int, int>>> Stairs =
@@ -302,10 +302,10 @@ vector<vector<pair<int, int>>> Stairs =
     { {600, 610} , {530, 410} }, //15. left railing
     { {680, 610} , {750, 410} }, //16. right railing
 
-    
 
 
-    
+
+
 
 
 };
@@ -342,7 +342,7 @@ vector<vector<pair<int, int>>> Sofa =
     { {100, 200},{100, 290},{150, 260}, {150, 175}, {100, 200}  },       //8.SofaLeftOutline  - LineStrip
     { {300, 270},{300, 320},{350, 300}, {350, 225}},       //9.SofaRightOutline  - LineStrip
     { {150, 215},{350, 235},{350, 200}, {150, 175}},       //10.SofaBottomOutline  - LineStrip
-                             
+
 };
 
 vector<vector<pair<int, int>>> Cupboard =
@@ -415,7 +415,7 @@ void DrawCupBoard()
         //SortingColors
         if (i == 0)
         {
-           glColor3f(1, 0, 0); //red  
+            glColor3f(1, 0, 0); //red  
         }
         else { glColor3f(0, 0, 0); } //black
 
@@ -487,7 +487,7 @@ void DrawSofa()
     {
         //Sorting Colors
         if (i == 0 || i == 4) { glColor3f(0.20, 0.23, 0.30); }
-        else{ glColor3f(1, 0.64, 0); }
+        else { glColor3f(1, 0.64, 0); }
 
         //Sorting shapes and colors
         if (i == 5)
@@ -519,8 +519,8 @@ void DrawLamp()
     for (int i = 0; i < Lamp.size(); i++)
     {
         //Sorting colors
-        if (i == 2){ glColor3f(1, 1, 0); }
-        else{ glColor3f(0, 0, 0); }
+        if (i == 2) { glColor3f(1, 1, 0); }
+        else { glColor3f(0, 0, 0); }
 
         glBegin(GL_POLYGON);
 
@@ -733,7 +733,7 @@ void DrawRoomBG(int scene)
     for (int i = 0; i < GenericRoom.size(); i++)
     {
         //Sorting Colors
-        if (i < 4) 
+        if (i < 4)
         {
             if (scene == 0)
             {
@@ -743,7 +743,7 @@ void DrawRoomBG(int scene)
             {
                 glColor3f(0.34, 0.33, 0.33); // grey
             }
-           
+
         } // Cream Color
         else if (i < 8)
         {
@@ -755,7 +755,7 @@ void DrawRoomBG(int scene)
             {
                 glColor3f(0.83, 0.01, 0.16); // red tint
             }
-            
+
         } // Wood Color
 
         else if (i == 8) { glColor3f(1, 1, 1); } // white color
@@ -789,17 +789,17 @@ void DrawHall()
         {
             glColor3f(0.28, 0.25, 0.23); //Dark Chocolate
         }
-        else if( i >= 0)
+        else if (i >= 0)
         {
             glColor3f(0.96, 0.96, 0.86);
         }
 
-      
+
         if (i <= 3)
         {
             glBegin(GL_POLYGON);
         }
-        else if(i >= 4)
+        else if (i >= 4)
         {
             glLineWidth(4);
             glColor3f(0, 0, 0);
@@ -811,11 +811,11 @@ void DrawHall()
             glColor3f(0, 0, 0);
             glBegin(GL_LINES);
         }
-       
+
 
         for (int j = 0; j < HallRoom[i].size(); j++)
         {
-            glVertex2f(HallRoom[i][j].first, HallRoom[i][j].second+60);
+            glVertex2f(HallRoom[i][j].first, HallRoom[i][j].second + 60);
         }
         glEnd();
     }
@@ -836,7 +836,7 @@ void DrawColumnDesign()
 
             for (int j = 0; j < ColumnDesign[i].size(); j++)
             {
-                glVertex2f(ColumnDesign[i][j].first+increment, ColumnDesign[i][j].second + 60);
+                glVertex2f(ColumnDesign[i][j].first + increment, ColumnDesign[i][j].second + 60);
             }
             glEnd();
         }
@@ -927,9 +927,9 @@ void DrawUnderColumnDesign()
         }
         glEnd();
     }
-   
 
-    
+
+
     //Right Columns
     for (int i = 0; i < UnderColumnDesign.size(); i++)
     {
@@ -946,12 +946,12 @@ void DrawUnderColumnDesign()
 
         for (int j = 0; j < UnderColumnDesign[i].size(); j++)
         {
-            glVertex2f(UnderColumnDesign[i][j].first+520, UnderColumnDesign[i][j].second + 20);
+            glVertex2f(UnderColumnDesign[i][j].first + 520, UnderColumnDesign[i][j].second + 20);
         }
         glEnd();
     }
-   
-    
+
+
 }
 
 void DrawStairs()
@@ -963,7 +963,7 @@ void DrawStairs()
 
         if (i >= 11)
         {
-            
+
             glLineWidth(10);
         }
 
@@ -977,7 +977,7 @@ void DrawStairs()
             {
                 glColor3f(1, 0.84, 0);
             }
-            else if( i >= 15 && i<= 18)
+            else if (i >= 15 && i <= 18)
             {
                 glColor3f(0.18, 0.15, 0.13);
             }
@@ -985,7 +985,7 @@ void DrawStairs()
             {
                 glColor3f(0, 0, 0);
             }
-             
+
             glBegin(GL_LINE_LOOP);
         }
 
@@ -1066,7 +1066,7 @@ void LoadCharacter(vector<pair<int, int>> characterImageCoordinates, string char
     }
     else
     {
-              //Failed to load character
+        //Failed to load character
     }
     //freeing the image data in ram
     stbi_image_free(character);
@@ -1239,7 +1239,7 @@ void ClearFrame()
 //Recovers the BG of the frame that we lost from the prev clear frame
 void RecoverFrame()
 {
-    DrawCurrentSceneBG(currentScene); 
+    DrawCurrentSceneBG(currentScene);
 }
 #pragma endregion
 
@@ -1307,7 +1307,7 @@ void AnimateText(string dialouge)
     FillQueue(text);
 
     //While the queue is not exahausted of the dialouge we dequeue an element draw it on screen , wait for few milliseconds and repeat the process while the condition is true
-    while (!isEmpty(queue)) 
+    while (!isEmpty(queue))
     {
         //glClear(GL_COLOR_BUFFER_BIT);
         FirstLine[i] = Dequeue(queue);
@@ -1378,7 +1378,7 @@ void RenderOptions()
 {
     string fc = BranchADialouges[branchCounter][0].second;
     string sc = BranchBDialouges[branchCounter][0].second;
-    char FirstChoice[200] ="";
+    char FirstChoice[200] = "";
     char SecondChoice[200] = "";
 
     for (int i = 0; i < fc.length(); i++)
@@ -1395,16 +1395,16 @@ void RenderOptions()
     //the GL_BLEND is used to create a transparent effect
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(0, 0, 0 , 0.75);
+    glColor4f(0, 0, 0, 0.75);
     glBegin(GL_POLYGON);
     glVertex2f(400, 500);
     glVertex2f(400, 700);
     glVertex2f(1000, 700);
     glVertex2f(1000, 500);
     glEnd();
-    DrawDialouge(FirstChoice, 420, 600 , 1);
+    DrawDialouge(FirstChoice, 420, 600, 1);
 
-    glColor4f(0, 0, 0 , 0.75);
+    glColor4f(0, 0, 0, 0.75);
     glBegin(GL_POLYGON);
     glVertex2f(400, 200);
     glVertex2f(400, 400);
@@ -1431,12 +1431,14 @@ bool CheckIfBranching()
 }
 #pragma endregion
 
+//We make a file if the player has reached the secret ending at the very end
 void MakeFile()
 {
     fstream file;
     file.open("Thanks.txt", ios::out);
 
-    file << "Hey!!" 
+    //Content that we are gonna put into the file
+    file << "Hey " + PlayerName +" !!!"
         << endl << "If you have this file generated , that means you sat through the entire game and the little message we dropped the end.... "
         << endl << "Thank you so much for playing the game , we worked so hard on , it actually means a lot!!! "
         << endl << "As promised in the post credits scene the game is gonna be REMADE to be much more better "
@@ -1454,113 +1456,113 @@ void MakeFile()
 void AnimateNextDialouge(int button, int state, int x, int y)
 {
     //Here we transtion to the different state depending on the state that we are currently in
-        if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) //When the left mouse button is clicked
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) //When the left mouse button is clicked
+    {
+
+
+        switch (Scene)
         {
-           
+        case START:
+            Scene = DESCRIPTION; //if we are in Start start transition to description start
+            break;
 
-            switch (Scene)
+        case DESCRIPTION:
+            Scene = SCENE;  //if we are in description start transition to SCENE start
+            break;
+
+        case SCENE:
+            if (currentDialouge == SceneDialouges[currentScene].size() - 1) //we check if the current dialouge number we are viewing is equal to the size of the dialouges for that scene
             {
-            case START: 
-                Scene = DESCRIPTION; //if we are in Start start transition to description start
-                break;
-
-            case DESCRIPTION:
-                Scene = SCENE;  //if we are in description start transition to SCENE start
-                break;
-
-            case SCENE:
-                if (currentDialouge == SceneDialouges[currentScene].size() - 1) //we check if the current dialouge number we are viewing is equal to the size of the dialouges for that scene
+                if (CheckIfBranching()) //Check if branching exist for that scene
                 {
-                    if (CheckIfBranching()) //Check if branching exist for that scene
-                    {
-                        //If yes go to CHOOSING state
-                        Scene = CHOOSING;
-                    }
-                    else //if No go to the next scene
-                    {
-                        ClearFrame();
-                        currentScene++;
-                        currentDialouge = 0;
-                        if (currentScene == SceneDialouges.size())
-                        {
-                            Scene = THEEND; // we go to credits scene once all dialouges are exhausted
-                            return;
-                        }
-
-                        
-                        NewScene = true;
-                        cout << currentScene<<endl;
-                        cout << SceneDialouges.size()<<endl;
-                        //Scene = TOBECONTINUED;
-                    }
-                    
+                    //If yes go to CHOOSING state
+                    Scene = CHOOSING;
                 }
-                else //If we are not at the last dialouge for the scene , just increment the currentdialouge
+                else //if No go to the next scene
                 {
-                    currentDialouge++;
-                }
-                break;
-
-            case SCENEA: //Branch A of the option
-                if (currentDialouge == BranchADialouges[branchCounter].size() - 1) //if we are reached the end of dialouges , we reset the values and go back to the main scene
-                {
-                        currentScene++;
-                        branchCounter++;
-                        Scene = SCENE;
-                        currentDialouge = 0;
-                        //Scene = TOBECONTINUED;
-                }
-                else
-                {
-                    currentDialouge++;
-                }
-                break;
-
-            case SCENEB: //Branch A of the option
-                if (currentDialouge == BranchBDialouges[branchCounter].size() - 1) //if we are reached the end of dialouges , we reset the values and go back to the main scene
-                {
+                    ClearFrame();
                     currentScene++;
-                    branchCounter++;
-                    Scene = SCENE;
                     currentDialouge = 0;
+                    if (currentScene == SceneDialouges.size())
+                    {
+                        Scene = THEEND; // we go to credits scene once all dialouges are exhausted
+                        return;
+                    }
+
+
+                    NewScene = true;
+                    cout << currentScene << endl;
+                    cout << SceneDialouges.size() << endl;
                     //Scene = TOBECONTINUED;
                 }
-                else
-                {
-                    currentDialouge++;
-                }
-                break;
 
-            case CHOOSING:  
-                if (x > 400 && x < 1000 && y > 40 && y < 220) { Scene = SCENEA; currentDialouge = 1;} //if the mouse coordinates lies within boundary of the first option , branch to Branch A
-                if (x > 400 && x < 1000 && y > 320 && y < 510) { Scene = SCENEB; currentDialouge = 1;}//if the mouse coordinates lies within boundary of the second option , branch to Branch B
-                break;
-
-            case THEEND:
-                Scene = CREDITS;
-                break;
-
-            case CREDITS:
-                Scene = POSTCREDITS;
-                break;
-
-            case POSTCREDITS:
-                if (currentDialouge == PostCreditDialouges[0].size() - 1)
-                {
-                    MakeFile();
-                    exit(0);
-                }
-                else
-                {
-                    currentDialouge++;
-                }
-                break;
-                
-
-            default:
-                break;
             }
+            else //If we are not at the last dialouge for the scene , just increment the currentdialouge
+            {
+                currentDialouge++;
+            }
+            break;
+
+        case SCENEA: //Branch A of the option
+            if (currentDialouge == BranchADialouges[branchCounter].size() - 1) //if we are reached the end of dialouges , we reset the values and go back to the main scene
+            {
+                currentScene++;
+                branchCounter++;
+                Scene = SCENE;
+                currentDialouge = 0;
+                //Scene = TOBECONTINUED;
+            }
+            else
+            {
+                currentDialouge++;
+            }
+            break;
+
+        case SCENEB: //Branch A of the option
+            if (currentDialouge == BranchBDialouges[branchCounter].size() - 1) //if we are reached the end of dialouges , we reset the values and go back to the main scene
+            {
+                currentScene++;
+                branchCounter++;
+                Scene = SCENE;
+                currentDialouge = 0;
+                //Scene = TOBECONTINUED;
+            }
+            else
+            {
+                currentDialouge++;
+            }
+            break;
+
+        case CHOOSING:
+            if (x > 400 && x < 1000 && y > 40 && y < 220) { Scene = SCENEA; currentDialouge = 1; } //if the mouse coordinates lies within boundary of the first option , branch to Branch A
+            if (x > 400 && x < 1000 && y > 320 && y < 510) { Scene = SCENEB; currentDialouge = 1; }//if the mouse coordinates lies within boundary of the second option , branch to Branch B
+            break;
+
+        case THEEND: //Shows the The end text animated
+            Scene = CREDITS;
+            break;
+
+        case CREDITS: //Shows the credit scene
+            Scene = POSTCREDITS;
+            break;
+
+        case POSTCREDITS: //Shows the post Credit scene
+            if (currentDialouge == PostCreditDialouges[0].size() - 1)
+            {
+                MakeFile();
+                exit(0);
+            }
+            else
+            {
+                currentDialouge++;
+            }
+            break;
+
+
+        default:
+            break;
         }
+    }
 }
 #pragma endregion
 
@@ -1768,15 +1770,15 @@ void AnimateDescription()
 
 #pragma endregion
 
-
-//------------------THROW AWAY CODE----------------
-void DrawTOBECONTINUED()
+#pragma region Credits
+//Draw the End title
+void DrawTheEND()
 {
     string theend = "THE END....";
-   // string saav = "Yenchina Saav Ya";
+    // string saav = "Yenchina Saav Ya";
 
     char buffer1[200] = "";
-   // char buffer4[200] = "";
+    // char buffer4[200] = "";
 
     int i = 0;
 
@@ -1796,7 +1798,7 @@ void DrawTOBECONTINUED()
     {
         buffer1[i] = theend[i];
     }
-    
+
 
     glClear(GL_COLOR_BUFFER_BIT);
     DrawDescriptionText(buffer1, 600, 400);
@@ -1805,6 +1807,7 @@ void DrawTOBECONTINUED()
 
 }
 
+//Show the credits without any animation
 void DrawCredits()
 {
     char CreditsHeading[100] = "CREDITS";
@@ -1823,6 +1826,9 @@ void DrawCredits()
     glEnd();
     glFlush();
 }
+
+#pragma endregion
+
 
 //Loads the main screen
 void LoadMainScreen()
@@ -1887,7 +1893,7 @@ void display() //display function is called repeatedly by the main function so k
         DrawDialougeBox();
         RenderSpeaker(SceneDialouges[currentScene][currentDialouge].first);
         RenderOptions();
-        
+
         dialuoge = SceneDialouges[currentScene][currentDialouge].second;
         for (int i = 0; i < dialuoge.length(); i++)
         {
@@ -1918,7 +1924,7 @@ void display() //display function is called repeatedly by the main function so k
         break;
 
     case THEEND:
-        DrawTOBECONTINUED();
+        DrawTheEND();
         break;
 
     case CREDITS:
@@ -1946,7 +1952,7 @@ void display() //display function is called repeatedly by the main function so k
 void InitializeVariables()
 {
     Description = {
-    "One day John, Peter, Dan, Angela, Chris, Emily and "+ PlayerName +" , who were best friends since college, who work in ",
+    "One day John, Peter, Dan, Angela, Chris, Emily and " + PlayerName + " , who were best friends since college, who work in ",
     "different MNCs got tired of their day to day life and wanted to go on a long vaccation. John suggested to go to the ",
     "countryside so that they can get rid of the city rush and all the friends agreed. They decided to book a hotel but later ",
     "Dan suggested that he knows a person who owns a mansion and is willing to rent it for a fair price, all of them agreed ",
@@ -1955,7 +1961,7 @@ void InitializeVariables()
 
     SceneDialouges[0] = { // Pilot 
     {"Narrator" , "As they entered , they were awestruck looking at the magnificent mansion and start exploring it and checked out the    rooms they were going to stay in and started unpacking their luggages. "},
-    {"Chris" , "Hey "+ PlayerName + " , Andy come check this room out..... its even bigger than my living room!! "},
+    {"Chris" , "Hey " + PlayerName + " , Andy come check this room out..... its even bigger than my living room!! "},
     {"You" , "Wow.... my whole family can stay here. "},
     { "Andy" , "Ha ha ha... C'mon it isn't that big. But I have been wondering how did Dan get this mansion for such a low price.       Something doesnt feel right. "},
     {"Chris" , "C'mon Andy.... why are you like this, overthinking about everything, we are here to relax... we dont get this           opportunity everyday. "},
@@ -2005,7 +2011,7 @@ void InitializeVariables()
   { "Emily" , "Andy is right you don't seem to be affected by Angela's death at all.. "},
   { "Andy" , "What I'm trying to say is that MAYBE YOU ARE THE ONE WHO KILLED ANGELA ....we all know you never liked her. "},
   { "Dan" , " WHAT THE HELL???...Are you being serious right now....how dare you accuse me of such heinous crime. "},
-  { "Andy" , "We all know what kind of a person you are... i know you killed her. "+ PlayerName +" why don’t you speak up. "},
+  { "Andy" , "We all know what kind of a person you are... i know you killed her. " + PlayerName + " why don’t you speak up. "},
     };
 
     SceneDialouges[5] = { //FlashBack to Dan
@@ -2014,7 +2020,7 @@ void InitializeVariables()
  {"You" , "I can never forget the time when my parents died in a car accident 5 years ago... "},
  { "You" , "Only Dan was there to support me.... "},
  { "You" , "He was there for me whenever I needed him, he helped me overcome my depression... "},
-  };
+    };
 
     SceneDialouges[6] = { //Andy's Question
         {"Andy" ,  PlayerName + " Stop dreaming and speak up..I asked what do you think of this ? ? "},
@@ -2044,7 +2050,7 @@ void InitializeVariables()
     BranchBDialouges[0] = { //Against Dan
        {"You" , "Yes Dan you have been hating on her from so long... "},
        {"You" , "Yes Dan you have been hating on her from so long...and we all know how you act when you get angry. "},
-       {"John" , PlayerName +" is right, Dan you have had a lot of history with her and you do have a reason to kill her. "},
+       {"John" , PlayerName + " is right, Dan you have had a lot of history with her and you do have a reason to kill her. "},
        {"Dan" , "Those things were in the past...we haven't fought in years. Everything was fine between us. "}
     };
 
@@ -2068,7 +2074,7 @@ void InitializeVariables()
         {"Game" , "......ok That was the message the developer had to say. "},
         {"Game" , "I have done my job , Click once more and the game shall close on its own. Dont click on that top left X unless you wanna miss something nice.. "},
     };
-   
+
 }
 
 
