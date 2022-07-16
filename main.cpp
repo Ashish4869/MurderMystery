@@ -14,7 +14,7 @@
 using namespace std;
 
 //CONSTANTS
-const int TypingSpeed = 0; //20
+int TypingSpeed = 0; //20
 const int LineCharacterLimit = 120;
 const int DialougeXOffset = 150;
 const int FirstLineY = 110;
@@ -31,10 +31,10 @@ bool NewScene = true; //bool to give a pause when a new scene is loaded
 
 //States
 enum Scenes { START, DESCRIPTION, SCENE, TOBECONTINUED, CHOOSING, SCENEA, SCENEB, THEEND, CREDITS, POSTCREDITS };
-Scenes Scene = SCENE;
+Scenes Scene = START;
 
 //SceneVairables
-int currentScene = 7; //Stores the scene number 
+int currentScene = 0; //Stores the scene number 
 int branchCounter = 0; //Stores the no branches encountered
 int currentDialouge = 0;
 int j;
@@ -53,12 +53,33 @@ vector<pair<string, string>> Scene5DialougesWithSpeakers;
 vector<pair<string, string>> Scene6DialougesWithSpeakers;
 vector<pair<string, string>> Scene7DialougesWithSpeakers;
 vector<pair<string, string>> Scene8DialougesWithSpeakers;
+vector<pair<string, string>> Scene9DialougesWithSpeakers;
+vector<pair<string, string>> Scene10DialougesWithSpeakers;
+vector<pair<string, string>> Scene11DialougesWithSpeakers;
+vector<pair<string, string>> Scene12DialougesWithSpeakers;
+vector<pair<string, string>> Scene13DialougesWithSpeakers;
+vector<pair<string, string>> Scene14DialougesWithSpeakers;
+vector<pair<string, string>> Scene15DialougesWithSpeakers;
+vector<pair<string, string>> Scene16DialougesWithSpeakers;
+vector<pair<string, string>> Scene17DialougesWithSpeakers;
+vector<pair<string, string>> Scene18DialougesWithSpeakers;
+vector<pair<string, string>> Scene19DialougesWithSpeakers;
+vector<pair<string, string>> Scene20DialougesWithSpeakers;
+vector<pair<string, string>> Scene21DialougesWithSpeakers;
 
 //BRANCH A
 vector<pair<string, string>> Branch1ADialougesWithSpeakers;
+vector<pair<string, string>> Branch2ADialougesWithSpeakers;
+vector<pair<string, string>> Branch3ADialougesWithSpeakers;
+vector<pair<string, string>> Branch4ADialougesWithSpeakers;
+vector<pair<string, string>> Branch5ADialougesWithSpeakers;
 
 //BRANCH B
 vector<pair<string, string>> Branch1BDialougesWithSpeakers;
+vector<pair<string, string>> Branch2BDialougesWithSpeakers;
+vector<pair<string, string>> Branch3BDialougesWithSpeakers;
+vector<pair<string, string>> Branch4BDialougesWithSpeakers;
+vector<pair<string, string>> Branch5BDialougesWithSpeakers;
 
 //Initialising the dialouges in a vector 
 vector<vector<pair<string, string>>> SceneDialouges =
@@ -70,19 +91,40 @@ vector<vector<pair<string, string>>> SceneDialouges =
     Scene5DialougesWithSpeakers,
     Scene6DialougesWithSpeakers,
     Scene7DialougesWithSpeakers,
-    Scene8DialougesWithSpeakers
+    Scene8DialougesWithSpeakers,
+    Scene9DialougesWithSpeakers,
+    Scene10DialougesWithSpeakers,
+    Scene11DialougesWithSpeakers,
+    Scene12DialougesWithSpeakers,
+    Scene13DialougesWithSpeakers,
+    Scene14DialougesWithSpeakers,
+    Scene15DialougesWithSpeakers,
+    Scene16DialougesWithSpeakers,
+    Scene17DialougesWithSpeakers,
+    Scene18DialougesWithSpeakers,
+    Scene19DialougesWithSpeakers,
+    Scene20DialougesWithSpeakers,
+    Scene21DialougesWithSpeakers,
 };
 
 //Same as Scene Dialouges but for Branch A
 vector<vector<pair<string, string>>> BranchADialouges =
 {
     Branch1ADialougesWithSpeakers,
+    Branch2ADialougesWithSpeakers,
+    Branch3ADialougesWithSpeakers,
+    Branch4ADialougesWithSpeakers,
+    Branch5ADialougesWithSpeakers,
 };
 
 //Same as Scene Dialouges but for Branch B
 vector<vector<pair<string, string>>> BranchBDialouges =
 {
     Branch1BDialougesWithSpeakers,
+    Branch2BDialougesWithSpeakers,
+    Branch3BDialougesWithSpeakers,
+    Branch4BDialougesWithSpeakers,
+    Branch5BDialougesWithSpeakers,
 };
 
 //PostCredits Scene
@@ -108,7 +150,7 @@ map <string, vector<pair<int, int>> > scene1CharacterPos =
 map <string, vector<pair<int, int>> > scene2CharacterPos =
 {
     {"Andy",    { {420, 172}, {420, 400}, {620, 400}, {620, 172} } },
-    {"Angella", { {650, 172}, {650, 390}, {800, 390}, {800, 172} } },
+    {"Angela", { {650, 172}, {650, 390}, {800, 390}, {800, 172} } },
     {"Emily" ,  { {800, 172}, {800, 390}, {940, 390}, {940, 172} } },
     {"roach" ,  { {70, 500},  {70, 550},  {120, 550}, {120, 500} } },
 };
@@ -122,13 +164,12 @@ map <string, vector<pair<int, int>> > scene3CharacterPos =
     {"Dan",     { {930, 172}, {930, 400}, {1115, 400}, {1115, 172} } },
 };
 
-map <string, vector<pair<int, int>> > scene4CharacterPos =
+map <string, vector<pair<int, int>> > scene8CharacterPos =
 {
     {"Chris",   { {160, 172}, {160, 400}, {410, 400}, {410, 172} } },
     {"Andy",    { {400, 172}, {400, 400}, {600, 400}, {600, 172} } },
     {"John",    { {600, 172}, {600, 400}, {790, 400}, {790, 172} } },
     {"Emily",   { {800, 172}, {800, 400}, {940, 400}, {940, 172} } },
-    {"Dan",     { {930, 172}, {930, 400}, {1115, 400}, {1115, 172} } },
 };
 
 map <string, vector<pair<int, int>> > scene6CharacterPos =
@@ -136,17 +177,53 @@ map <string, vector<pair<int, int>> > scene6CharacterPos =
     {"Dan",     { {530, 172}, {530, 400}, {715, 400}, {715, 172} } },
 };
 
+map <string, vector<pair<int, int>> > scene11CharacterPos =
+{
+    {"John", { {450, 172}, {450,  400}, {700, 400}, {700, 172} } },
+};
+
+map <string, vector<pair<int, int>> > scene12CharacterPos =
+{
+    {"John", { {450, 172}, {450,  400}, {700, 400}, {700, 172} } },
+     {"Dan",  { {700, 172}, {700, 418}, {900, 418}, {900, 172} } },
+};
+
+map <string, vector<pair<int, int>> > scene13CharacterPos =
+{
+    {"John", { {450, 172}, {450,  400}, {700, 400}, {700, 172} } },
+     {"Dan",  { {700, 172}, {700, 418}, {900, 418}, {900, 172} } },
+     {"Chris",  { {200, 172}, {200,  400}, {450, 400}, {450, 172} } },
+};
+
+map <string, vector<pair<int, int>> > scene16CharacterPos =
+{
+    {"Danny",     { {530, 172}, {530, 400}, {715, 400}, {715, 172} } },
+};
+
 //Array of characters and their postion in the scene
 vector<map <string, vector<pair<int, int>> >> SceneCharacterPos
 {
-    scene1CharacterPos,
-    scene2CharacterPos,
-    scene3CharacterPos,
-    scene3CharacterPos,
-    scene3CharacterPos,
-    scene6CharacterPos,
-    scene3CharacterPos,
-    scene3CharacterPos
+    scene1CharacterPos, //0
+    scene2CharacterPos, //1
+    scene3CharacterPos, //2
+    scene3CharacterPos, //3
+    scene3CharacterPos, //4
+    scene6CharacterPos, //5
+    scene3CharacterPos, //6
+    scene3CharacterPos, //7
+    scene8CharacterPos, //8
+    scene8CharacterPos, //9
+    scene8CharacterPos, //10
+    scene8CharacterPos, //11
+    scene11CharacterPos, //12
+    scene12CharacterPos, //13
+    scene13CharacterPos, //14
+    scene8CharacterPos, //15
+    scene16CharacterPos, //16
+    scene8CharacterPos, //17
+    scene8CharacterPos, //18
+    scene3CharacterPos, //19
+    scene16CharacterPos, //20
 };
 
 #pragma endregion
@@ -735,7 +812,7 @@ void DrawRoomBG(int scene)
         //Sorting Colors
         if (i < 4)
         {
-            if (scene == 0)
+            if (scene != 1)
             {
                 glColor3f(1, 0.99, 0.81); // cream color
             }
@@ -747,7 +824,7 @@ void DrawRoomBG(int scene)
         } // Cream Color
         else if (i < 8)
         {
-            if (scene == 0)
+            if (scene != 1)
             {
                 glColor3f(0.58, 0.43, 0.20); // wood
             }
@@ -1005,6 +1082,9 @@ void DrawCharacterBG(int scene)
     switch (scene)
     {
     case 0:
+    case 12:
+    case 13:
+    case 14:
         glColor3f(0.58, 0.43, 0.20); // cream color
         break;
     case 1:
@@ -1014,9 +1094,19 @@ void DrawCharacterBG(int scene)
     case 4:
     case 6:
     case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 15:
+    case 17:
+    case 18:
+    case 19:
         glColor3f(0.28, 0.25, 0.23); //dark chocolate
         break;
     case 5:
+    case 16:
+    case 20:
         glColor3f(0, 0, 0); //Black
         break;
     }
@@ -1140,7 +1230,11 @@ void DrawCharacter(string Speaker)
 void DrawScene1BG()
 {
     DrawRoomBG(currentScene);
-    DrawSofa();
+
+    if (currentScene < 2)
+    {
+        DrawSofa();
+    }
     DrawCupBoard();
     DrawClock();
 
@@ -1205,6 +1299,9 @@ void DrawCurrentSceneBG(int scene)
     switch (scene)
     {
     case 0: //Pilot Scene
+    case 12://Discuss about Dan
+    case 13://Discuss with Dan
+    case 14://Dicuss with Dan and Chris
         DrawScene1BG();
         break;
 
@@ -1215,11 +1312,21 @@ void DrawCurrentSceneBG(int scene)
     case 4: //Angella's Death Scene - After Death
     case 6: //Andy's Question (This is where we get make our first choice)
     case 7: //Locking Dan
+    case 8: //Finding evidence
+    case 9://Susing everyone
+    case 10: // Andy dialouge
+    case 11:
+    case 15:
+    case 17:
+    case 18:
+    case 19: 
         DrawScene3BG();
         break;
 
     case 3: //Angella's Death Scene - Narration
     case 5: //FlashBack of Dan
+    case 16:
+    case 20:
         DrawScene4BG();
         break;
     }
@@ -1423,6 +1530,10 @@ bool CheckIfBranching()
     switch (currentScene)
     {
     case 6: //Andy's Question (This is where we get make our first choice)
+    case 8: //Questioning Andy about justice to angela
+    case 9: //john claim
+    case 10: //Sus Andy
+    case 17:
         return true;
 
     default:
@@ -1438,7 +1549,7 @@ void MakeFile()
     file.open("Thanks.txt", ios::out);
 
     //Content that we are gonna put into the file
-    file << "Hey " + PlayerName +" !!!"
+    file << "Hey " + PlayerName + " !!!"
         << endl << "If you have this file generated , that means you sat through the entire game and the little message we dropped the end.... "
         << endl << "Thank you so much for playing the game , we worked so hard on , it actually means a lot!!! "
         << endl << "As promised in the post credits scene the game is gonna be REMADE to be much more better "
@@ -1468,9 +1579,11 @@ void AnimateNextDialouge(int button, int state, int x, int y)
 
         case DESCRIPTION:
             Scene = SCENE;  //if we are in description start transition to SCENE start
+            TypingSpeed = 5;
             break;
 
         case SCENE:
+            
             if (currentDialouge == SceneDialouges[currentScene].size() - 1) //we check if the current dialouge number we are viewing is equal to the size of the dialouges for that scene
             {
                 if (CheckIfBranching()) //Check if branching exist for that scene
@@ -1961,110 +2074,370 @@ void InitializeVariables()
 
     SceneDialouges[0] = { // Pilot 
     {"Narrator" , "As they entered , they were awestruck looking at the magnificent mansion and start exploring it and checked out the    rooms they were going to stay in and started unpacking their luggages. "},
-    {"Chris" , "Hey " + PlayerName + " , Andy come check this room out..... its even bigger than my living room!! "},
+    {"Chris" , "Hey " + PlayerName + " , Andy come check this room out..... it's even bigger than my living room!! "},
     {"You" , "Wow.... my whole family can stay here. "},
-    { "Andy" , "Ha ha ha... C'mon it isn't that big. But I have been wondering how did Dan get this mansion for such a low price.       Something doesnt feel right. "},
-    {"Chris" , "C'mon Andy.... why are you like this, overthinking about everything, we are here to relax... we dont get this           opportunity everyday. "},
-    {"You" , "Yes Chris is right... we are here to release our stress so dont increase it by overthinking. "},
+    { "Andy" , "Hahaha...C'mon it isn't that big. But I have been wondering how did Dan get this mansion for such a low price.         Something doesn't feel right. "},
+    {"Chris" , "C'mon Andy... why are you like this, overthinking about everything, we are here to relax...  we don't get this         opportunity everyday. "},
+    {"You" , "Yes Chris is right... we are here to release our stress so don't increase it by overthinking. "},
     {"Andy" ,  "Yeah I think you guys are right.... if only I was a little more carefree like you guys. We are in this beautiful        mansion in this peaceful place and we are going to make the best of it. Besides, what can go wrong? "},
     {"????" ,  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHH!!!!! (Sudden scream from the other room....) "},
     {"You" ,  "I think I just heard Angela screaming...... we must hurry up and check what happened!! "},
+    {"Chris" , "You guys go ahead I'll call rest of them. "},
     {"Narrator" ,  "They rush towards the scream.... "}
     };
 
     SceneDialouges[1] = { //Intro to Angella
     {"Narrator" , "Scene 2 , They have reached the source of the scream. "},
-   {"You" , "ANGELLA!!! What happened why did you scream??? Are you alright?!! "},
-   {"Angella" , "I just saw a huge cockroach over there.... aaaahhh so scary  :'-( "},
+   {"You" , "ANGELA!!! What happened why did you scream??? Are you alright?!! "},
+   {"Angela" , "I just saw a huge cockroach over there.... aaaahhh so scary  :'-( "},
+   {"You" , "Are you serious we got so  scared... Angela why you such a coward ? " },
    { "Andy" , "Angela... you are so silly. By the way where is Emily ? ?  (^o^) "},
-   { "Emily" , "Im here, i ran and hid in the washroom after i saw the cockroach  :'-( "},
-   {"Angella" , "Im so sorry you guys.. I just got shocked seeing it all of a sudden.. let's go to bed, we have to go out tomorrow. "},
+   { "Emily" , "Im here, I ran and hid in the washroom after I saw the cockroach  :'-( "},
+   {"Angela" , "Im so sorry you guys.. I just got shocked seeing it all of a sudden.. let's go to bed, we have to go out tomorrow. "},
    {"Narrator" , "They head to their respective room to rest up for tomorrow. "}
     };
 
     SceneDialouges[2] = { //Angella's Death Scene - Before
-   {"Emily" , "Good Morning everyone...what a lovely morning. "},
-   {"Andy" , "Yeah weather is really good outside..i hope nothing goes wrong "},
-   {"Dan" , "Ohh wow Andy go ahead and jinx the day...today is a good day don’t decimate it for us. "},
-   { "Emily" , "Stop Dan why are you always after his life...don’t mind him Andy he doesn’t mean any harm. "},
-   { "John" , "Don’t worry you guys everything is planned out nothing will go wrong. "},
-   { "You" , "I knew we can trust you John....so Andy there is nothing to worry about if John has planned then you know its going to be perfect...By the way where is Angela?? "},
-   {"Emily" , "I tried waking her up in the morning but she didn’t respond...she was very tired yesterday so i thought i will let her sleep  a little more longer and after that i got ready and came here. "},
-   {"Andy" , "Ohh is that so... i will just go and wake her up. "},
-   {"Dan" , "AAGHHH...this means we will be late..i hope that girl won’t take time. "},
+   {"You" , "Good Morning everyone...what a lovely morning. "},
+   {"Andy" , "Yeah weather is really good outside..I hope nothing goes wrong. "},
+   {"Dan" , "Ohh wow Andy... go ahead and jinx the day... today is a good day don't decimate it for us. "},
+   { "Emily" , "Stop Dan why are you always after his life... don't mind him Andy he doesn’t mean any harm. "},
+   { "John" , "Don't worry you guys everything is planned out nothing will go wrong. "},
+   { "You" , "I knew we can trust you John.... so Andy there is nothing to worry about, if John has planned then you know its going  to be perfect... By the way where is Angela?? "},
+   {"Emily" , "I tried waking her up in the morning but she didn't respond...she was very tired yesterday so I thought I will let her sleep a little more longer and after that I got ready and came here. "},
+   {"Andy" , "Ohh is that so... I will just go and wake her up. "},
+   {"Dan" , "AAGHHH...this means we will be late..I hope that girl won’t take time. "},
    {"Andy" , "AAAANNNNGEEELLLAAAAAAAAAAAAA!!!!!!!!!!!!! "},
     };
 
     SceneDialouges[3] = { //Angella's Death Scene - Narration
-  {"Narrator" , "Everyone rushes into Angela’s room...... "},
-  {"Narrator" , "And they tear up as they discover that angela is no more......... "},
-  {"Narrator" , "Everyone is in utter disbelief and don’t understand what to do................... "},
-  { "Narrator" , "John being quick on his feet calls for an ambulance, but they get to know that they won’t be able to come on time as   the roads were blocked due to landslide. "},
-  { "Narrator" , "John informs the cops as well but the nearest police station is in the city and since the roads are blocked, they won’t be able to come that quickly. "},
+  {"Narrator" , "Everyone rushes into Angela's room...... "},
+  {"Narrator" , "And they tear up as they discover that Angela is no more......... "},
+  {"Narrator" , "Everyone is in utter disbelief and don't understand what to do................... "},
+  { "Narrator" , "John being quick on his feet calls for an ambulance, but they get to know that they won't be able to come on time as   the roads were blocked due to landslide. "},
+  { "Narrator" , "John informs the cops as well but the nearest police station is in the city and since the roads are blocked, they won't be able to come that quickly. "},
   { "Narrator" , "A few hours later.... "},
     };
 
     SceneDialouges[4] = { //Angella's Death Scene - After
-  {"Andy" , "OMG, poor angela, how can this happen.... "},
-  {"Dan" , "yeah it is really shocking but we need to calm down and collect our thoughts "},
-  {"Andy" , "Dan you don't have a heart...it looks like you don't even care that angela died. "},
+  {"Andy" , "OMG, poor Angela, how can this happen.... "},
+  {"Dan" , "Yeah it is really shocking but we need to calm down and collect our thoughts. "},
+  {"Andy" , "Dan you don't have a heart... it looks like you don't even care that Angela died. "},
   { "Emily" , "Andy is right you don't seem to be affected by Angela's death at all.. "},
+   {"Dan" , "What are you both implying??? "},
   { "Andy" , "What I'm trying to say is that MAYBE YOU ARE THE ONE WHO KILLED ANGELA ....we all know you never liked her. "},
-  { "Dan" , " WHAT THE HELL???...Are you being serious right now....how dare you accuse me of such heinous crime. "},
-  { "Andy" , "We all know what kind of a person you are... i know you killed her. " + PlayerName + " why don’t you speak up. "},
+  { "Dan" , " WHAT THE HELL???... Are you being serious right now.... how dare you accuse me of such heinous crime. "},
+  { "Andy" , "We all know what kind of a person you are... I know you killed her. " + PlayerName + " why don't you speak up. "},
     };
 
     SceneDialouges[5] = { //FlashBack to Dan
- {"You" , "Did...Did Dan really do this????? "},
- {"You" , " I know him very well no matter how tough he acts in front of us he has a good heart. "},
- {"You" , "I can never forget the time when my parents died in a car accident 5 years ago... "},
- { "You" , "Only Dan was there to support me.... "},
- { "You" , "He was there for me whenever I needed him, he helped me overcome my depression... "},
+    {"You" , "Did...Did Dan really do this????? "},
+    {"You" , " I know him very well no matter how tough he acts in front of us he has a good heart. "},
+    {"You" , "I can never forget the time when my parents died in a car accident 5 years ago... "},
+    { "You" , "Only Dan was there to support me.... "},
+    { "You" , "He was there for me whenever I needed him, he helped me overcome my depression... "},
     };
 
     SceneDialouges[6] = { //Andy's Question
-        {"Andy" ,  PlayerName + " Stop dreaming and speak up..I asked what do you think of this ? ? "},
+        {"Andy" ,  PlayerName + " Stop dreaming and speak up... I asked what do you think of this ? ? "},
     };
 
     SceneDialouges[7] = { //Locking Dan
         {"Andy" ,  "I don't think its safe to be around him right now. We should lock him in some room. "},
         {"Emily" ,  "Yeah Andy is right we should lock this psycho. "},
-        {"Dan" ,  "You are just blabbering about what could be the reason to kill her..but you are not bringing any proof on the table. "},
-        {"You" ,  "You are right Dan but right now we have to lock you in otherwise things can get heated up and worsen everything. "},
-        {"John" ,  "Yes Dan we have to calm things down right now, I dont believe that any of us killed her.It can be someone from outside. "},
-        {"Dan" ,  "You are right John but the fact that Andy straight up blamed me for her death without any proof seems very odd to me... i need you to find who did.. i dont want the stigma of a killer on me. "},
-        {"You" ,  "Dont worry Dan we will do something but for now you stay in this room. "},
+        {"Dan" ,  "You are just blabbering about what could be the reason to kill her.... but you are not bringing any proof on the table. "},
+        {"You" ,  "You are right Dan, but right now we have to lock you in otherwise things can get heated up and worsen everything. "},
+        {"John" ,  "Yes Dan we have to calm things down right now, I don't believe that any of us killed her. It can be someone from        outside. "},
+        {"Dan" ,  "You are right John, but the fact that Andy straight up blamed me for her death without any proof seems very odd to me.. I need you to find who did it... I don't want the stigma of a killer on me. "},
+        {"You" ,  "Don't worry Dan we will do something but for now you stay in this room. "},
+        {"Dan" ,  "I need to tell you something very important... "},
     };
+
+    SceneDialouges[8] = {
+        {"Narrator" ,  "30 minutes after locking Dan in his room. "},
+        {"Chris" ,  "I can't believe that Dan would go that far to take out his anger.  "},
+        {"Andy" ,  "It should not surprise you after all its Dan. "},
+        {"Andy" ,  "Emily didn't you see or hear anything last night when Dan was there. "},
+        {"Emily" ,  "No Andy I didn't see or hear anything... I wish I was awake... then she would have been with us. "},
+        {"Narrator", "You and John Enter the hall. "},
+        {"John", "We have locked him in the room. So now let's think this through. "},
+        {"You", "(If what Dan said is right then...) "},
+        {"Andy", "I hope the cops come fast so that they can take that killer away and bring justice to Angela. "},
+    };
+
+    SceneDialouges[9] = { //Finding Evidence
+       {"You" ,  "Hmm maybe we should go through his bags... "},
+       {"Emily" ,  "Yeah exactly... who knows how long the cops will take to reach here.  "},
+       {"John" ,  "Let me bring them real quick.  "},
+       {"Narrator" ,  "John brings everyones bags to the living room. "},
+       {"Andy" ,  "Let's start with this bag I think he hid the poison in this one. "},
+       {"Andy" ,  "Its not here... let's check the other bag it must be.... Ohh look I found it, it was here in this bag. This proves that   he is the killer. "},
+       {"Emily" ,  "Good job Andy... see we told you that he has to be the killer.  "},
+       {"John" ,  "Yeah you were right about that..... and you were right about the fact that she died because of poisoning.  "},
+       {"John" ,  "But as far as I remember you are no doctor so how did you know she died because of poison.  "},
+       {"Andy" ,  "What do you mean... I don't understand what you are trying to say...  "},
+    };
+
+    SceneDialouges[10] = { //Throwing Blame
+        {"John" ,  "And Andy , you could also have been the one to kill her I mean didn't you two have an history of your own. "},
+        {"Emily" ,  PlayerName + " you better watch your mouth! Don't blame me, I didn't do anything, I can never kill her!  "},
+        {"Emily" ,  "But Andy I do remember you two used to fight a lot.  "},
+        {"Andy" ,  "C'mon guys are you  serious?? "},
+        {"Andy" ,  "That was a long time ago! "},
+        {"Andy" ,  "And you all know I can't even kill a bug... how will I kill her and "+ PlayerName+ " , I just assumed thats how he killed her. "},
+        {"Chris" ,  "I just remembered something.... "},
+        {"Chris" ,  "Few minutes back you asked Emily if she heard anything last night... how did you know she died yesterday night... she   could have died in the morning.  "},
+        {"Andy" ,  "I just assumed that he must have poisoned her yesterday night. Guys you are just overthinking.  "},
+    };
+
+    SceneDialouges[11] = { //Andy's Dialouge
+       {"Andy" ,  "Yeah because once they come we can tell that he is the killer and we found the poison in his bag, it will be very easy for them now. "},
+    };
+
+    SceneDialouges[12] = { //Discussing about dan
+       {"Narrator" ,  "Few minutes after the arguement , they went to meet talk to Dan, but Dan is using the washroom. "},
+       {"John" ,  PlayerName +" we have no evidence to prove Dan innocent, do you think Andy is right and Dan is the one who killed him. "},
+       {"You" , "I can't say anything John, my heart doesn't believe that he killed her but the evidence makes it very difficult for me to believe Dan. "},
+       {"John" , "Maybe we should talk to Dan about this again and if he is the killer then lets ask him to surrender. "},
+       {"John" , "Ok lets talk to him. First let him come out of the washroom. "},
+    };
+
+    SceneDialouges[13] = { //Discussing with Dan
+       {"Narrator" ,  "Dan comes out of the Washroom. "},
+       {"You" ,  "Dan we found a bottle of poison in your bag. "},
+       {"Dan" , "What are you saying, its impossible!!! "},
+       {"Dan" , "Trust me guys I didn't do it. Andy is plotting this against me. He took his revenge from her and is blaming everything  on me so that he can escape. "},
+       {"John" , "We can't do anything Dan. Please if you have done just confess. "},
+       {"Dan" , "HAVE YOU LOST YOUR MIND!! "},
+       {"Dan" , "I can never do such appalling thing. You guys have to do something and get me out of this situation. "},
+       {"You" , "But do you have any proof that he is lying or that he is the one who killed her??? You have only given us the motive,   not the evidence. "},
+    };
+
+    SceneDialouges[14] = { //Discussing with Dan with chris
+      {"Narrator" ,  "Chris overhears the conversation so far.. "},
+      {"Chris" ,  "Maybe I can help. "},
+      {"John" , "Chris! What are you doing here? "},
+      {"Chris" , "I just came to see Dan because even I don't believe that he killed her. "},
+      {"Chris" , "I didn't speak up before because I was not able to think straight after seeing Angela like that. "},
+      {"Dan" , "Thanks for trusting me Chris. "},
+      {"Chris" , "I have a plan to save Dan, I think it will work. "},
+      {"John" , "What's the plan Chris?? "},
+      {"Chris" , "Yeah, I don't know if you guys noticed this or not but the moment we left that drug store Andy was acting really weird. "},
+      {"You" , "What do you mean?? "},
+      {"Chris" , "He was very cautious about his medicines... "},
+      {"Chris" , "When I asked him about what all medicines he bought he got flustered and didn't tell me properly... I even noticed him  throwing away a piece of paper, at that moment I didn't think much of it but now I believe he had bought something and  he didn't want any of us to know. "},
+      {"John" , "But that doesn't mean that we can prove that he killed Angela... "},
+      {"Chris" , "I know John, but it is very suspicious, it could be the reciept for those medicines which he bought, why would he throw it away. "},
+      {"Chris" , "I know it doesn't prove anything but we can try using it as our leverage. "},
+      {"You" , "And how will we do it? "},
+      {"Chris" , "I have an idea, first we will just go over there and talk to everyone normally and later on we will bring out the topic of the reciept from the drug store which obviously we don't have but we have to act as if we have it and we just have   to lure him to talk about it. "},
+      {"Chris" , "It can work, what do you think "+PlayerName+" ? "},
+      {"You" , "Yeah we can give it a shot. "},
+    };
+
+    SceneDialouges[15] = { //Prep for accusation
+       {"Andy" ,  "So did he confess?? "},
+       {"John" ,  "Yes Dan has agreed to surrender, he said he has no evidence to prove his innocence.  "},
+       {"Andy" ,  "Of course he doesn't have any evidence. Finally Angela will get justice and Dan will get what he deserves.  "},
+       {"John" ,  "Yeah you are right Andy, Angela will get justice and her KILLER will get what he DESERVES. "},
+       {"Chris" ,  "Guys I don't understand one thing, that why would he kill   her now I mean when we all are there. He could have killed her before or some other time. "},
+       {"Chris" ,  "Why take such a risk??? "},
+       {"Andy" ,  "He is probably not that smart as he shows. "},
+    };
+
+    SceneDialouges[16] = { //Monolouge
+       {"You" ,  "I don't know what to do now.... "},
+       {"You" ,  "If we don't catch him early we might loose Dan....  "},
+       {"You" ,  "But we don't know what all excuses he has planned and will our bluff even work?  "},
+       {"You" ,  "Should we just wait for the cops???? "},
+       {"You" ,  "But if we don't come up with any evidence Dan's life will be destroyed... "},
+       {"You" ,  "I have to think this through. "},
+    };
+
+    SceneDialouges[17] = { //Monolouge
+      {"You" ,  "I think the best thing to do is to ...."},
+    };
+
+    SceneDialouges[18] = { //Confession
+     {"Andy" ,  "I think there is no point in hiding it now..... "},
+     {"You" ,  "Yeah Andy I think its high time that you tell us why did you do that. "},
+     {"Andy" ,  "I can't believe I got caught like this... thought I was smarter than that hahaha.. "},
+     {"Chris" ,  "Its not funny Andy. "},
+     {"John" ,  "WHY...why would you do that, wasn't she your friend! "},
+     {"Emily" ,  "What are you saying Andy....I don't understand. "},
+     {"Andy" ,  "SHUT UP JUST SHUT UP!! "},
+     {"Andy" ,  "I worked so hard, I was so close and she had to steal it away from me.  "},
+     {"John" ,  "What did she take away from you that made you take her life?  "},
+     {"Andy" ,  "I'll tell you what she took away from me.  "},
+     {"Andy" ,  "You all know how hard it was for me to get into “SANTA MONICA” . I started from the bottom of the coorporate ladder and worked my way up to the senior developer post ...  "},
+     {"Andy" ,  "And that's when Angela joined our company, she was my junior and she was in my team.  "},
+     {"Andy" ,  "We both were assigned a project and we worked day and night to impress our bosses which could have given me my dream    post which is the manager of “SANTA MONICA” .  "},
+     {"Andy" ,  "Everything was going perfectly but towards the end when we were  supposed to demonstrate our project, on that very      morning my younger brother got into an accident and I had to rush him to the hospital and left everything to Angela... "},
+     {"Andy" ,  "BUT THAT WOMAN BETRAYED ME!!! "},
+     {"Emily" ,  "Andy I think you have got the wrong idea.. "},
+     {"Andy" ,  "I'M NOT DONE TALKING!!!! "},
+     {"Andy" ,  "The next morning when I went to the office....  I heard we have a new manager and to my surprise it was Angela.... "},
+     {"Andy" ,  "That made me furious, I just walked out... "},
+     {"Andy" ,  "I couldn't think about anything else except for the betrayal that I just faced not only from my colleague but from a    friend.... a close friend. "},
+     {"Andy" ,  "HOW DARE SHE BETRAY ME I HELPED HER SO MUCH!! "},
+     {"Andy" ,  "She didn't even know anything properly... I taught her from scratch!! "},
+     {"Andy" ,  "Even for the project I did the most work and in the end she took away all the credits! "},
+     {"Andy" ,  "And ever since that I didn't talk to her and just left the company... but the anger still remained and I had to get rid of that somehow...... "},
+     {"Andy" ,  "And that's when I decided that I'll get rid of her, and that's when you all asked to meet up. "},
+     {"Andy" ,  "That's when I planned how to get rid of her, I decided to use poison to kill her and put the blame on Dan as I knew      already that they both had a huge fight because Dan never liked Angela's personality.  "},
+     {"Andy" ,  "Once we started our journey I asked you to stop at the nearest drug store to get my medications and that's where I        bought pure ethanol as I knew it will be the perfect poison.  "},
+     {"Andy" ,  "At night when everyone had slept I decided go to her room and kill her so I just put some ethanol on my handkerchief,    then I just simply put it near her face so that she breathes it in and slowly goes into deep sleep.  "},
+     {"Andy" ,  "And I hid the bottle in Dan's bag to focus everything on him.  "},
+     {"Emily" ,  "Andy.... you are wrong, she didn't mean to steal your job..  "},
+     {"Emily" ,  "When she got to know that she is getting promoted she declined it and said that you deserve it, you have all the skills but the manager insisted her to take the job. "},
+     {"Andy" ,  "NOOO YOU ARE LYING!!! She wanted the post for herself. "},
+     {"Emily" ,  "She tried to contact you, but you just vanished and never picked her call. "},
+     {"You" ,  "Andy if you had not jumped to conclusion and if you had talked it out, she would have been with us. "},
+     {"Andy" ,  "THAT'S NOT TRUE..... "},
+     {"Andy" ,  "If she was actually a true friend she would have discussed it with me because she knew how badly I wanted that post. "},
+     {"Emily" ,  "But the boss rejected her suggestion he told her that we might have to cut off few people to save money for the company that's when she thought that if she becomes the manager she could save you, and that's exactly what she did Andy. "},
+     {"Emily" ,  "She never wanted to steal your job..... she just wanted to save you. "},
+     {"Andy" ,  "NO.. THIS CAN'T BE... NOOOOOO... ANGELAAA... I'M SO SORRY. "},
+     {"Andy" ,  "I got so blinded by my anger I couldn't control myself and I decided to kill her the day this happened... if only I had given her a chance to explain herself, this would have not happened. "},
+     {"Chris" ,  PlayerName + ", the cops are here. "},
+    };
+
+    SceneDialouges[19] = { //Aftermath
+      {"Narrator" ,  "They go to bring out Dan. And cops hand cufffed Andy. "},
+      {"Andy" ,  "I want to apologize to Dan before I leave. "},
+      {"Dan" ,  "I can't forgive you Andy.. "},
+      {"Dan" ,  "That you have done is unforgivable, not the fact you were blaming me for this horrendus crime but for killing our        friend, someone's daughter, someone's sister and for abandoning your family, you destroyed two families Andy you can't be forgiven. "},
+    };
+
+    SceneDialouges[20] = { //Aftermath - moral
+      {"Narrator" ,  "After the cops took Andy away they all went back home with a heavy heart... "},
+      {"You" ,  "Can't believe something like this happened... "},
+      {"You" ,  "Just because the two people didn't communicate, didn't share what they felt?! "},
+      {"You" ,  "If only people were open about their feelings.....  "},
+      {"You" ,  "Things like this could have been avoided.... "},
+    };
+
 
 
     //BRANCH A DIALOUGES
     BranchADialouges[0] = { //Suporting Dan
-        {"You" , "I think we should not hurry up to the conclusions.. "},
+        {"You" , "I think we should not hurry up to the conclusions... "},
         {"You" , "I think we should not hurry up to the conclusions and give Dan some chance to explain. "},
         {"John" , "I think " + PlayerName + " is right we should not point  fingers at each other without any solid proof. "},
         {"Dan" , "Thanks guys at least some people have brains unlike others. "}
     };
 
+    BranchADialouges[1] = { //Doubting Andy
+      {"You" , "Why are you in such a hurry?? "},
+      {"You" , "Why are you in such a hurry?? "},
+      {"Andy" , "What do you mean? Im not in any hurry I just want justice for angela... and for that reason I think we should go and    look for some evidence in his bags. "},
+    };
+
+    BranchADialouges[2] = { //Getting john claim right
+      {"You" , "He is saying you are blaming dan for no reason. "},
+      {"You" , "What he is trying to say is... you just started blaming Dan without any thought behind it. "},
+      {"You" , "You never even considered the fact that someone from outside could have come to kill her or Emily who is her room -     mate could have done it. "},
+      {"You" , "And the fact that you were so sure that she died because of the poison is very suspicious. "},
+    };
+
+    BranchADialouges[3] = { //Against Andy
+     {"You" , "But you are being very precise with everything.... "},
+     {"You" , "But you are being very precise with everything.....  its almost like you planned the whole thing. "},
+     {"Andy" , PlayerName + " thats nothing but rubbish, you are saying this just to save that killer. "},
+     {"John" , "ITS NOT YOUR JOB TO DECIDE WETHER HE IS A KILLER!!!!. "},
+     {"John" , "We have called cops and they will decide what will happen. "},
+    };
+
+    BranchADialouges[4] = { //Climax - Reciept
+    {"You" , "Try catching Andy now. "},
+    {"John" , "By the way Andy while we were there talking to Dan "+ PlayerName + " found something. "},
+    {"You" , "Yeah, its a reciept from Everyday Drugs where we stopped yesterday while we were coming to this mansion as you said you wanted to buy some of your meds. "},
+    {"Andy" , "WHAT!!!!! HOW DID YOU GET THAT!!! "},
+    {"You" , "What do you mean, it was right next to your bag. "},
+    {"Andy" , "That's not possible, its not mine, its probably Dan's he must have tried to frame me. "},
+    {"Chris" , "But this receipt is in your name, Andy. "},
+    {"Andy" , "BUT THAT'S NOT POSSIBLE!!!! "},
+    {"John" , "Why not, you went to that medical store and bought medicines for which they gave you the reciept, why are you getting so worked up about it. "},
+    {"Andy" , "BECAUSE I THREW IT AWAY AS SOON AS I GOT IT SO THAT NO ONE KNOWS I BOUGHT PURE ETHANOL. "},
+    {"You" , "Why do you need pure ethanol??? "},
+    };
+
+
+
+
 
     //BRANCH B DIALOUGES
     BranchBDialouges[0] = { //Against Dan
        {"You" , "Yes Dan you have been hating on her from so long... "},
-       {"You" , "Yes Dan you have been hating on her from so long...and we all know how you act when you get angry. "},
+       {"You" , "Yes Dan you have been hating on her from so long... and we all know how you act when you get angry. "},
        {"John" , PlayerName + " is right, Dan you have had a lot of history with her and you do have a reason to kill her. "},
-       {"Dan" , "Those things were in the past...we haven't fought in years. Everything was fine between us. "}
+       {"Dan" , "Those things were in the past... we haven't fought in years. Everything was fine between us. "}
     };
+
+    BranchBDialouges[1] = { //Suporting Andy
+       {"You" , "Yeah the cops must be here within 2 hours... "},
+       {"You" , "Yeah the cops must be here within 2 hours... Hope they find enough evidence. "},
+       {"Andy" , "Yeah since you mentioned it... I'm pretty sure that if we go through his things we can find some evidence. "},
+    };
+
+    BranchBDialouges[2] = { //Getting john claim wrong
+      {"You" , "He is saying you are not that smart. "},
+      {"You" , "What he is trying to say is that you are not that smart to figure out what could have killed her and what made you        think that it was poison that killed her. "},
+      {"John" , "Yeah "+ PlayerName + " you are kind of right...  "},
+      {"John" , "But what I'm exactly trying to say is, you never even considered the fact that someone from outside could have come to   kill her. And the fact that you were so sure that she died because of the poison is very suspicious.  "},
+      {"You" , "Yeah you are right, even Emily could have done it as she was in the same room with her all night.  "},
+    };
+
+    BranchBDialouges[3] = { //Supportign Andy
+    {"You" , "Hmm maybe you are right... "},
+    {"You" , "Hmm maybe you are right... "},
+    {"Emily" , "Yeah its probably because of the situation that he thought that Dan killed her... but he is not wrong, I mean the proof is right in front of us.   "},
+    {"Chris" , "Yeah I guess all of us must have thought that this happened yesterday night, doing it in the morning when we were awake would have been difficult. And maybe we should just wait for the cops.  "},
+    };
+
+    BranchBDialouges[4] = { //Climax - Kerchief
+    {"You" , "Try catching Andy after lunch. "},
+    {"John" , "Sorry Andy we didn't trust in you. "},
+    {"Andy" , "Its ok John, its not your fault you were just trying to save this friendship of ours, you didn't know that Dan will    turn out like that. "},
+    {"You" , "Guys I know that none of us wants to eat right now but we have to because we need to make sure that none of us fall     ill.  "},
+    {"Emily" , "Yeah you are right we should not be starving as it won't help us and only make things worse. "},
+    {"Emily" , "I'll cook something for all of us, John please help me with the cooking.  "},
+    {"Chris" , "Should we give some to Dan I mean we can't let him starve as we don't know when the cops will come.  "},
+    {"Andy" , "Why do you want a killer to eat with us?  "},
+    {"Emily" , "Its not about that its just if something happens to him before the cops come he won't be punished for his doings.  "},
+    {"Andy" , "Hmm maybe you are right...let that killer eat.  "},
+    {"Narrator" , "Few minutes after having food...  "},
+    {"Chris" , "Hey Andy, can you please pass me your handkerchief I need dry off the water.  "},
+    {"Andy" , "No I'm sorry I can't give you mine as it is dirty.  "},
+    {"John" , "How is it dirty? I never saw you use it.  "},
+    {"Emily" , "Now that you mentioned it, I remember you didn't lend me your handkerchief when I was mourning.  "},
+    {"You" , "Is it actually dirty or do you have a reason not to lend it.  "},
+    {"Andy" , "YEAH I JUST TOLD YOU TWICE THAT ITS DIRTY!  "},
+    {"Chris" , "So what, I just want something to dry my hands... now stop being so stubborn and pass me your handkerchief.  "},
+    {"Andy" , "IF YOU ARE THAT EAGER TO DIE JUST TAKE IT.  "},
+    {"You" , "What do you mean by that ANDY?  "},
+    {"Andy" , "I can't let my friends die. "},
+    {"John" , "Wasn't Angela your friend ANDY?? "},
+    };
+
+
+
+
+
+
+
 
     PostCreditDialouges[0] = { //Post Credit scene
         {"Game" , "WAAAI-WWAAIITTTTTT!!!!!"},
-        {"Game" , "Dont turn off the game yettt..."},
+        {"Game" , "Don't turn off the game yettt..."},
         {"Game" , "Damn that was close... if your are reading this , that means you are willing to listen what I have to say "},
         {"Game" , "I have a small message that the developers left for those who played the game till the very end... "},
-        {"Game" , "The message is goes as such....."},
-        {"Game" , "Hey " + PlayerName + " if your are reading this , you must have sat through the entire game , and lets be honest.... without any animation or music or some post processing it must have been a littttle bit dull and boring... "},
+        {"Game" , "The message goes as such....."},
+        {"Game" , "Hey!! " + PlayerName + " if your are reading this , you must have sat through the entire game , and let's be honest.... without any      animation or music or some post processing it must have been a littttle bit dull and boring... "},
         {"Game" , "I understand , when we were making the game , we felt the same..... "},
-        {"Game" , "The game doesn't really sell without the music and all "},
+        {"Game" , "The game doesn't really sell without the music and all. "},
         {"Game" , "But there wasn't much we could do , this being a mini project for our computer graphics subject , we have been limited to very primitive tools... "},
-        {"Game" , "GLUT being a very old API and upon that for our story we couldnt really go all out , cause you know , we have to demo this to our examiners during exam , cant have them swears and dark scenes in our game.... "},
+        {"Game" , "GLUT being a very old API and upon that for our story we couldnt really go all out , cause you know , we have to demo   this to our examiners during exam , cant have them swears and dark scenes in our game.... "},
         {"Game" , "So being kinda unsatisfied with the limitations imposed on us................. "},
         {"Game" , "We have decided to REMAKE this game in a game engine , UNITY , and go loose on the story making it R rated!!! "},
         {"Game" , "We gonna add all the good stuff , like music , animation , post processsing , sound effects and all that!! "},
@@ -2072,7 +2445,7 @@ void InitializeVariables()
         {"Game" , "I know its monsoon already , but its coming in monsoon lol. "},
         {"Game" , "See you then!! "},
         {"Game" , "......ok That was the message the developer had to say. "},
-        {"Game" , "I have done my job , Click once more and the game shall close on its own. Dont click on that top left X unless you wanna miss something nice.. "},
+        {"Game" , "I have done my job , Click once more and the game shall close on its own. Dont click on that top left X unless you       wanna miss something nice.. "},
     };
 
 }
