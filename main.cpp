@@ -2060,7 +2060,7 @@ void InitializeVariables()
         {"Game" , "Damn that was close... if your are reading this , that means you are willing to listen what I have to say "},
         {"Game" , "I have a small message that the developers left for those who played the game till the very end... "},
         {"Game" , "The message is goes as such....."},
-        {"Game" , "Hey!! " + PlayerName + " if your are reading this , you must have sat through the entire game , and lets be honest.... without any animation or music or some post processing it must have been a littttle bit dull and boring... "},
+        {"Game" , "Hey " + PlayerName + " if your are reading this , you must have sat through the entire game , and lets be honest.... without any animation or music or some post processing it must have been a littttle bit dull and boring... "},
         {"Game" , "I understand , when we were making the game , we felt the same..... "},
         {"Game" , "The game doesn't really sell without the music and all "},
         {"Game" , "But there wasn't much we could do , this being a mini project for our computer graphics subject , we have been limited to very primitive tools... "},
