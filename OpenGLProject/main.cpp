@@ -1319,7 +1319,7 @@ void DrawCurrentSceneBG(int scene)
     case 15:
     case 17:
     case 18:
-    case 19: 
+    case 19:
         DrawScene3BG();
         break;
 
@@ -1583,7 +1583,7 @@ void AnimateNextDialouge(int button, int state, int x, int y)
             break;
 
         case SCENE:
-            
+
             if (currentDialouge == SceneDialouges[currentScene].size() - 1) //we check if the current dialouge number we are viewing is equal to the size of the dialouges for that scene
             {
                 if (CheckIfBranching()) //Check if branching exist for that scene
@@ -2101,12 +2101,12 @@ void InitializeVariables()
    {"You" , "Good Morning everyone...what a lovely morning. "},
    {"Andy" , "Yeah weather is really good outside..I hope nothing goes wrong. "},
    {"Dan" , "Ohh wow Andy... go ahead and jinx the day... today is a good day don't decimate it for us. "},
-   { "Emily" , "Stop Dan why are you always after his life... don't mind him Andy he doesn‚Äôt mean any harm. "},
+   { "Emily" , "Stop Dan why are you always after his life... don't mind him Andy he doesnít mean any harm. "},
    { "John" , "Don't worry you guys everything is planned out nothing will go wrong. "},
    { "You" , "I knew we can trust you John.... so Andy there is nothing to worry about, if John has planned then you know its going  to be perfect... By the way where is Angela?? "},
    {"Emily" , "I tried waking her up in the morning but she didn't respond...she was very tired yesterday so I thought I will let her sleep a little more longer and after that I got ready and came here. "},
    {"Andy" , "Ohh is that so... I will just go and wake her up. "},
-   {"Dan" , "AAGHHH...this means we will be late..I hope that girl won‚Äôt take time. "},
+   {"Dan" , "AAGHHH...this means we will be late..I hope that girl wonít take time. "},
    {"Andy" , "AAAANNNNGEEELLLAAAAAAAAAAAAA!!!!!!!!!!!!! "},
     };
 
@@ -2184,7 +2184,7 @@ void InitializeVariables()
         {"Emily" ,  "But Andy I do remember you two used to fight a lot.  "},
         {"Andy" ,  "C'mon guys are you  serious?? "},
         {"Andy" ,  "That was a long time ago! "},
-        {"Andy" ,  "And you all know I can't even kill a bug... how will I kill her and "+ PlayerName+ " , I just assumed thats how he killed her. "},
+        {"Andy" ,  "And you all know I can't even kill a bug... how will I kill her and " + PlayerName + " , I just assumed thats how he killed her. "},
         {"Chris" ,  "I just remembered something.... "},
         {"Chris" ,  "Few minutes back you asked Emily if she heard anything last night... how did you know she died yesterday night... she   could have died in the morning.  "},
         {"Andy" ,  "I just assumed that he must have poisoned her yesterday night. Guys you are just overthinking.  "},
@@ -2196,7 +2196,7 @@ void InitializeVariables()
 
     SceneDialouges[12] = { //Discussing about dan
        {"Narrator" ,  "Few minutes after the arguement , they went to meet talk to Dan, but Dan is using the washroom. "},
-       {"John" ,  PlayerName +" we have no evidence to prove Dan innocent, do you think Andy is right and Dan is the one who killed him. "},
+       {"John" ,  PlayerName + " we have no evidence to prove Dan innocent, do you think Andy is right and Dan is the one who killed him. "},
        {"You" , "I can't say anything John, my heart doesn't believe that he killed her but the evidence makes it very difficult for me to believe Dan. "},
        {"John" , "Maybe we should talk to Dan about this again and if he is the killer then lets ask him to surrender. "},
        {"John" , "Ok lets talk to him. First let him come out of the washroom. "},
@@ -2231,7 +2231,7 @@ void InitializeVariables()
       {"Chris" , "I know it doesn't prove anything but we can try using it as our leverage. "},
       {"You" , "And how will we do it? "},
       {"Chris" , "I have an idea, first we will just go over there and talk to everyone normally and later on we will bring out the topic of the reciept from the drug store which obviously we don't have but we have to act as if we have it and we just have   to lure him to talk about it. "},
-      {"Chris" , "It can work, what do you think "+PlayerName+" ? "},
+      {"Chris" , "It can work, what do you think " + PlayerName + " ? "},
       {"You" , "Yeah we can give it a shot. "},
     };
 
@@ -2269,9 +2269,9 @@ void InitializeVariables()
      {"Andy" ,  "I worked so hard, I was so close and she had to steal it away from me.  "},
      {"John" ,  "What did she take away from you that made you take her life?  "},
      {"Andy" ,  "I'll tell you what she took away from me.  "},
-     {"Andy" ,  "You all know how hard it was for me to get into ‚ÄúSANTA MONICA‚Äù . I started from the bottom of the coorporate ladder and worked my way up to the senior developer post ...  "},
+     {"Andy" ,  "You all know how hard it was for me to get into ìSANTA MONICAî . I started from the bottom of the coorporate ladder and worked my way up to the senior developer post ...  "},
      {"Andy" ,  "And that's when Angela joined our company, she was my junior and she was in my team.  "},
-     {"Andy" ,  "We both were assigned a project and we worked day and night to impress our bosses which could have given me my dream    post which is the manager of ‚ÄúSANTA MONICA‚Äù .  "},
+     {"Andy" ,  "We both were assigned a project and we worked day and night to impress our bosses which could have given me my dream    post which is the manager of ìSANTA MONICAî .  "},
      {"Andy" ,  "Everything was going perfectly but towards the end when we were  supposed to demonstrate our project, on that very      morning my younger brother got into an accident and I had to rush him to the hospital and left everything to Angela... "},
      {"Andy" ,  "BUT THAT WOMAN BETRAYED ME!!! "},
      {"Emily" ,  "Andy I think you have got the wrong idea.. "},
@@ -2350,7 +2350,7 @@ void InitializeVariables()
 
     BranchADialouges[4] = { //Climax - Reciept
     {"You" , "Try catching Andy now. "},
-    {"John" , "By the way Andy while we were there talking to Dan "+ PlayerName + " found something. "},
+    {"John" , "By the way Andy while we were there talking to Dan " + PlayerName + " found something. "},
     {"You" , "Yeah, its a reciept from Everyday Drugs where we stopped yesterday while we were coming to this mansion as you said you wanted to buy some of your meds. "},
     {"Andy" , "WHAT!!!!! HOW DID YOU GET THAT!!! "},
     {"You" , "What do you mean, it was right next to your bag. "},
@@ -2383,7 +2383,7 @@ void InitializeVariables()
     BranchBDialouges[2] = { //Getting john claim wrong
       {"You" , "He is saying you are not that smart. "},
       {"You" , "What he is trying to say is that you are not that smart to figure out what could have killed her and what made you        think that it was poison that killed her. "},
-      {"John" , "Yeah "+ PlayerName + " you are kind of right...  "},
+      {"John" , "Yeah " + PlayerName + " you are kind of right...  "},
       {"John" , "But what I'm exactly trying to say is, you never even considered the fact that someone from outside could have come to   kill her. And the fact that you were so sure that she died because of the poison is very suspicious.  "},
       {"You" , "Yeah you are right, even Emily could have done it as she was in the same room with her all night.  "},
     };

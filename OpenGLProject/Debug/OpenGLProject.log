@@ -1,0 +1,201 @@
+﻿  main.cpp
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(460,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(463,42): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(477,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(479,54): warning C4244: 'argument': conversion from '_Ty2' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty2=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(479,35): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(490,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(511,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(513,60): warning C4244: 'argument': conversion from '_Ty2' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty2=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(513,38): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(531,49): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(539,49): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(543,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(550,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(552,64): warning C4244: 'argument': conversion from '_Ty2' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty2=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(552,40): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(563,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(566,59): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(567,36): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(583,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(585,65): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(585,41): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(596,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(604,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(606,52): warning C4244: 'argument': conversion from '_Ty2' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty2=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(606,34): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(675,23): warning C4305: 'return': truncation from 'int' to 'char'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(675,16): warning C4309: 'return': truncation of constant value
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(763,22): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(763,19): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(810,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(817,40): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(821,43): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(829,43): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(833,43): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(852,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(854,66): warning C4244: 'argument': conversion from '_Ty2' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty2=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(854,41): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(863,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(867,39): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(871,39): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(893,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(895,68): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(895,38): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(908,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(914,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(916,92): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(916,53): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(927,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(933,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(935,92): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(935,53): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(950,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(952,39): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(955,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(957,82): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(957,48): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(968,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(970,39): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(973,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(975,82): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(975,48): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(986,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(988,29): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1001,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1003,86): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1003,47): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1011,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1013,29): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1024,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1026,92): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1026,54): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1036,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1038,35): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1055,37): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1059,43): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1069,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1071,64): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1071,36): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1088,35): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1091,35): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1105,35): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1127,35): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1132,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1181,108): warning C4244: 'argument': conversion from '_Ty2' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty2=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1181,72): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1182,108): warning C4244: 'argument': conversion from '_Ty2' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty2=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1182,72): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1183,108): warning C4244: 'argument': conversion from '_Ty2' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty2=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1183,72): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1184,108): warning C4244: 'argument': conversion from '_Ty2' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty2=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1184,72): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1195,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1388,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1491,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1496,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1702,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1704,45): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1711,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1713,74): warning C4244: 'argument': conversion from '_Ty2' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty2=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1713,45): warning C4244: 'argument': conversion from '_Ty1' to 'GLfloat', possible loss of data
+          with
+          [
+              _Ty1=int
+          ]
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1742,28): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1746,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1776,22): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1776,19): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(1910,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\User\source\repos\OpenGLProject\OpenGLProject\main.cpp(2011,27): warning C4018: '<': signed/unsigned mismatch
+  OpenGLProject.vcxproj -> C:\Users\User\source\repos\OpenGLProject\Debug\OpenGLProject.exe
+          1 file(s) copied.
